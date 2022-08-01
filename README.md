@@ -3,7 +3,7 @@
 
 ![warung-kita - DB ERD](https://user-images.githubusercontent.com/46218730/182203169-e7cb2330-01eb-4c94-bae8-5e3634ca282b.png)
 
-# Project Specs :
+# All You Need and Project Specs :
 1. Spring Boot Version 2.7.2
 2. JDK Version 17.0.3
 3. PostgresSQL Database
