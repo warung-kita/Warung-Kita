@@ -25,25 +25,14 @@ public class Payment {
     private Order sales_order;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "transdate")
     private LocalDate datePay;
 
-    @Column(name = "processor")
-    private String processor;
-
-    @Column(name = "processor_trans_id")
-    private String processorTransId;
-
-    @Column(name = "amount")
     private BigDecimal amount;
 
-    @Column(name = "cc_num")
     private String ccNum;
 
-    @Column(name = "cc_type")
     private String ccType;
 
-    @Column(name = "response")
     private String response;
 
     @Override
@@ -52,8 +41,6 @@ public class Payment {
                 "paymentId=" + paymentId +
                 ", sales_order=" + sales_order +
                 ", datePay=" + datePay +
-                ", processor='" + processor + '\'' +
-                ", processorTransId='" + processorTransId + '\'' +
                 ", amount=" + amount +
                 ", ccNum='" + ccNum + '\'' +
                 ", ccType='" + ccType + '\'' +
