@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -14,12 +13,17 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Builder
-public class SalesOrder {
+public class Users {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
-    private Date orderDate;
-    private Integer ekspedisiId;
-    private Number totalOrder;
-    private Integer userId;
+    private Long userId;
+    private String email;
+    private String fullName;
+    private String username;
+    private String password;
+    private String address;
+    private String profilPicture;
+    private String phoneNum;
+
 }
