@@ -23,7 +23,7 @@ public class Payment {
 
     @ManyToOne
     @JoinColumn(name = "orderId")
-    private Sales_order sales_order;
+    private SalesOrder sales_order;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "transdate")
@@ -61,5 +61,4 @@ public class Payment {
                 ", response='" + response + '\'' +
                 '}';
     }
-}
 }
