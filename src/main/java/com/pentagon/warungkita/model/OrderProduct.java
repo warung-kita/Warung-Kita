@@ -17,15 +17,12 @@ public class OrderProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderProductId;
-
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order orderId;
-
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product products;
-
     private String sku;
     private String productName;
     private String description;

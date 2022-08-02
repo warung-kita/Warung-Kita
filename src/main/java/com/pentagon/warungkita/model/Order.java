@@ -1,6 +1,7 @@
 package com.pentagon.warungkita.model;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,14 +18,12 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date orderDate;
-
     @ManyToOne
     @JoinColumn(name = "ekspedisi_id")
     private Ekspedisi ekspedisi;
-
     private Number totalOrder;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users userId;
