@@ -12,23 +12,23 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "wishLis")
-public class Wishlist {
+@Table(name = "product_list")
+public class ProductList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long wishListId;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private Users users;
 
-    @OneToMany
-    @JoinColumn(name = "id")
-    private List<Product> product;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @Override
     public String toString() {
-        return "Wishlist{" +
+        return "ProductList{" +
                 "wishListId=" + wishListId +
                 ", users=" + users +
                 ", product=" + product +

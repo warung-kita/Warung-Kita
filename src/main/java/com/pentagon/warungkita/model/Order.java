@@ -19,19 +19,19 @@ public class Order {
     private Long orderId;
     private Date orderDate;
 
-    @OneToMany
-    @JoinColumn(name = "id")
-    private List<Ekspedisi> ekspedisi;
+    @ManyToOne
+    @JoinColumn(name = "ekspedisi_id")
+    private Ekspedisi ekspedisi;
 
     private Number totalOrder;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "user_id")
     private Users userId;
 
     @Override
     public String toString() {
-        return "SalesOrder{" +
+        return "Order{" +
                 "orderId=" + orderId +
                 ", orderDate=" + orderDate +
                 ", ekspedisi=" + ekspedisi +

@@ -19,12 +19,12 @@ public class OrderProduct {
     private Long orderProductId;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "order_id")
     private Order orderId;
 
-    @OneToMany
-    @JoinColumn(name = "id")
-    private List<Product> products = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product products;
 
     private String sku;
     private String productName;
@@ -38,6 +38,7 @@ public class OrderProduct {
         return "OrderProduct{" +
                 "orderProductId=" + orderProductId +
                 ", orderId=" + orderId +
+                ", products=" + products +
                 ", sku='" + sku + '\'' +
                 ", productName='" + productName + '\'' +
                 ", description='" + description + '\'' +
