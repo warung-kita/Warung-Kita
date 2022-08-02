@@ -23,7 +23,7 @@ public class Payment {
 
     @ManyToOne
     @JoinColumn(name = "orderId")
-    private Sales_order sales_order;
+    private SalesOrder salesOrder;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "transdate")
@@ -51,7 +51,7 @@ public class Payment {
     public String toString() {
         return "Payment{" +
                 "paymentId=" + paymentId +
-                ", sales_order=" + sales_order +
+                ", salesOrder=" + salesOrder +
                 ", datePay=" + datePay +
                 ", processor='" + processor + '\'' +
                 ", processorTransId='" + processorTransId + '\'' +
@@ -62,4 +62,5 @@ public class Payment {
                 '}';
     }
 }
-}
+
+

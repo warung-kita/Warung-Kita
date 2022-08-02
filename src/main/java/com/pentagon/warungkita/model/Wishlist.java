@@ -11,6 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Builder
+@Table(name = "wishlist")
 public class Wishlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,14 +23,14 @@ public class Wishlist {
 
     @OneToMany
     @JoinColumn(name = "productId")
-    private Products products;
+    private Product product;
 
     @Override
     public String toString() {
         return "Wishlist{" +
                 "wishListId=" + wishListId +
                 ", users=" + users +
-                ", products=" + products +
+                ", product=" + product +
                 '}';
     }
 }
