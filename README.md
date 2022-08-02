@@ -1,7 +1,7 @@
 # Warung-Kita
 # ER Diagram
 
-![warung-kita - DB ERD](https://user-images.githubusercontent.com/46218730/182203169-e7cb2330-01eb-4c94-bae8-5e3634ca282b.png)
+![warung-kita - DB ERD](https://user-images.githubusercontent.com/46218730/182288397-5b707c37-75da-4677-9b3c-951670fada36.png)
 
 # All You Need and Project Specs :
 1. Spring Boot Version 2.7.2
