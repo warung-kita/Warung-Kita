@@ -2,10 +2,11 @@ package com.pentagon.warungkita.model;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static javax.persistence.FetchType.EAGER;
 
 @Getter
 @Setter
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @Entity
 @Builder
+@Table(name = "users")
 public class Users {
 
     @Id
@@ -25,5 +27,21 @@ public class Users {
     private String address;
     private String profilPicture;
     private String phoneNum;
+    @ManyToMany(fetch = EAGER)
+    private Collection<Roles> roles = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "Users{" +
+                "userId=" + userId +
+                ", email='" + email + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", address='" + address + '\'' +
+                ", profilPicture='" + profilPicture + '\'' +
+                ", phoneNum='" + phoneNum + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
 }

@@ -4,6 +4,7 @@ package com.pentagon.warungkita.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Builder
+@Table(name = "wishLis")
 public class Wishlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,15 +23,15 @@ public class Wishlist {
     private Users users;
 
     @OneToMany
-    @JoinColumn(name = "productId")
-    private Products products;
+    @JoinColumn(name = "id")
+    private List<Product> product;
 
     @Override
     public String toString() {
         return "Wishlist{" +
                 "wishListId=" + wishListId +
                 ", users=" + users +
-                ", products=" + products +
+                ", product=" + product +
                 '}';
     }
 }

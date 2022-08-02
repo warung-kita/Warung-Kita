@@ -14,16 +14,15 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "cc_transactions")
+@Table(name = "payment")
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long paymentId;
 
     @ManyToOne
-    @JoinColumn(name = "orderId")
-    private Sales_order sales_order;
+    @JoinColumn(name = "id")
+    private Order sales_order;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "transdate")
@@ -62,4 +61,4 @@ public class Payment {
                 '}';
     }
 }
-}
+

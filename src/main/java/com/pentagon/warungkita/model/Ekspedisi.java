@@ -17,4 +17,12 @@ public class Ekspedisi {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long ekspedisiId;
     private String name;
+
+    @Override
+    public String toString() {
+        return "Ekspedisi{" +
+                "ekspedisiId=" + ekspedisiId +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
