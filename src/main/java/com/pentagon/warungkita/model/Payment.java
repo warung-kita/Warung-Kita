@@ -14,16 +14,16 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "cc_transactions")
+@Table(name = "payment")
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long paymentId;
 
     @ManyToOne
-    @JoinColumn(name = "orderId")
-    private SalesOrder salesOrder;
+    @JoinColumn(name = "id")
+    private Order sales_order;
+
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "transdate")
@@ -51,7 +51,7 @@ public class Payment {
     public String toString() {
         return "Payment{" +
                 "paymentId=" + paymentId +
-                ", salesOrder=" + salesOrder +
+                ", sales_order=" + sales_order +
                 ", datePay=" + datePay +
                 ", processor='" + processor + '\'' +
                 ", processorTransId='" + processorTransId + '\'' +

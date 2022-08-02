@@ -1,11 +1,11 @@
 package com.pentagon.warungkita.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,15 +13,26 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @Entity
 @Builder
+@Table(name = "order_product")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class OrderProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderProductId;
-    private Long orderId;
+
+    @ManyToOne
+    @JoinColumn(name = "id")
+    private Order orderId;
+
+    @ManyToOne
+    @JoinColumn(name = "id")
+    private Product product;
+
     private String sku;
     private String productName;
-    private String description;
     private Number price;
     private Integer quantity;
     private Number subtotal;
+
+
 }

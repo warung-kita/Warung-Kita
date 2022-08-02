@@ -2,10 +2,7 @@ package com.pentagon.warungkita.model;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -13,6 +10,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @Entity
 @Builder
+@Table(name = "roles")
 public class Roles {
 
     @Id
