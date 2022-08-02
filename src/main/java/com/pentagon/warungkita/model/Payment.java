@@ -33,20 +33,33 @@ public class Payment {
     private String processor;
 
     @Column(name = "processor_trans_id")
-    private String processor_trans_id;
+    private String processorTransId;
 
     @Column(name = "amount")
     private BigDecimal amount;
 
     @Column(name = "cc_num")
-    private String cc_num;
+    private String ccNum;
 
     @Column(name = "cc_type")
-    private String cc_type;
+    private String ccType;
 
     @Column(name = "response")
     private String response;
 
-
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "paymentId=" + paymentId +
+                ", sales_order=" + sales_order +
+                ", datePay=" + datePay +
+                ", processor='" + processor + '\'' +
+                ", processorTransId='" + processorTransId + '\'' +
+                ", amount=" + amount +
+                ", ccNum='" + ccNum + '\'' +
+                ", ccType='" + ccType + '\'' +
+                ", response='" + response + '\'' +
+                '}';
     }
+}
 }
