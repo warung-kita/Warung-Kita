@@ -25,10 +25,9 @@ public class Product {
     private String description;
 
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "product_status_id")
-
-    private ProductStatus productStatusId;
+    private ProductStatus productStatus;
 
 
     private Integer regularPrice;
@@ -47,7 +46,7 @@ public class Product {
                 ", sku='" + sku + '\'' +
                 ", productName='" + productName + '\'' +
                 ", description='" + description + '\'' +
-                ", productStatusId=" + productStatusId +
+                ", productStatus=" + productStatus +
                 ", regularPrice=" + regularPrice +
                 ", quantity=" + quantity +
                 ", productPicture='" + productPicture + '\'' +

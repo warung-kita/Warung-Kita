@@ -52,7 +52,7 @@ public class PaymentController {
     public ResponseEntity<Object> paymentCreate(@RequestBody PaymentRequestDTO paymentRequestDTO){
         try{
             if(paymentRequestDTO.getOrder() == null ){
-                throw new ResourceNotFoundException("Product List must have product id and user id");
+                throw new ResourceNotFoundException("Product List must have order id");
             }
             Payment payment = paymentRequestDTO.convertToEntity();
             paymentService.createPayment(payment);
@@ -67,7 +67,7 @@ public class PaymentController {
     public ResponseEntity<Object> paymentUpdate(@PathVariable Long id, @RequestBody PaymentRequestDTO paymentRequestDTO){
         try {
             if(paymentRequestDTO.getOrder() == null ){
-                throw new ResourceNotFoundException("Product List must have product id and user id");
+                throw new ResourceNotFoundException("Product List must have order id");
             }
             Payment payment = paymentRequestDTO.convertToEntity();
             payment.setPaymentId(id);
@@ -84,7 +84,7 @@ public class PaymentController {
         try {
             paymentService.deletePaymentById(id);
             Boolean result = Boolean.TRUE;
-            return ResponseHandler.generateResponse("Success Delete Booking by ID",HttpStatus.OK,result);
+            return ResponseHandler.generateResponse("Success Delete Payment by ID",HttpStatus.OK,result);
         }catch(ResourceNotFoundException e){
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }

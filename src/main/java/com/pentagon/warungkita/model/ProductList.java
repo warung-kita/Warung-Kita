@@ -1,11 +1,11 @@
 package com.pentagon.warungkita.model;
 
 
-import com.pentagon.warungkita.dto.*;
+import com.pentagon.warungkita.dto.ProductListResponseDTO;
+import com.pentagon.warungkita.dto.ProductListResponsePOST;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Getter
 @Setter
@@ -33,7 +33,7 @@ public class ProductList {
                .sku(this.getProduct().getSku())
                .nama(this.getProduct().getProductName())
                .deskripsi(this.getProduct().getDescription())
-
+               .status(this.getProduct().getProductStatus().getProductStatusId())
                .harga(this.getProduct().getRegularPrice())
                .jumlah(this.getProduct().getQuantity())
                .gambarProduct(this.getProduct().getProductPicture())
@@ -48,7 +48,7 @@ public class ProductList {
                 .sku(this.getProduct().getSku())
                 .nama(this.getProduct().getProductName())
                 .deskripsi(this.getProduct().getDescription())
-
+                .status(this.getProduct().getProductStatus().getProductStatusId())
                 .harga(this.getProduct().getRegularPrice())
                 .jumlah(this.getProduct().getQuantity())
                 .gambarProduct(this.getProduct().getProductPicture())

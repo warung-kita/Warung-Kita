@@ -11,7 +11,7 @@ public class ProductListResponsePOST {
     private String sku;
     private String nama;
     private String deskripsi;
-    //    private Long status;
+        private Long status;
     private Integer harga;
     private Integer jumlah;
     private String gambarProduct;
@@ -22,6 +22,7 @@ public class ProductListResponsePOST {
                 "sku='" + sku + '\'' +
                 ", nama='" + nama + '\'' +
                 ", deskripsi='" + deskripsi + '\'' +
+                ", status=" + status +
                 ", harga=" + harga +
                 ", jumlah=" + jumlah +
                 ", gambarProduct='" + gambarProduct + '\'' +

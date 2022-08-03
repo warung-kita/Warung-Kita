@@ -11,7 +11,7 @@ public class ProductListResponseDTO {
     private String sku;
     private String nama;
     private String deskripsi;
-//    private Long status;
+    private Long status;
     private Integer harga;
     private Integer jumlah;
     private String gambarProduct;
@@ -25,11 +25,11 @@ public class ProductListResponseDTO {
                 "sku='" + sku + '\'' +
                 ", nama='" + nama + '\'' +
                 ", deskripsi='" + deskripsi + '\'' +
-
+                ", status=" + status +
                 ", harga=" + harga +
                 ", jumlah=" + jumlah +
                 ", gambarProduct='" + gambarProduct + '\'' +
-                ", namaUser=" + namaUser +
+                ", namaUser='" + namaUser + '\'' +
                 ", alamat='" + alamat + '\'' +
                 ", nomorHandphone='" + nomorHandphone + '\'' +
                 '}';
