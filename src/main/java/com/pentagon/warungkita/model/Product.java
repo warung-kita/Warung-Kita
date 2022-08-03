@@ -4,9 +4,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.FetchType.LAZY;
 
 @Setter
@@ -28,7 +26,7 @@ public class Product {
 
     @OneToOne
     @JoinColumn(name = "product_status_id")
-    private ProdukStatus productStatusId;
+    private ProductStatus productStatusId;
 
     private Integer regularPrice;
 
