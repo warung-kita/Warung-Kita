@@ -2,6 +2,7 @@ package com.pentagon.warungkita.service.implement;
 
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Payment;
+import com.pentagon.warungkita.model.ProductList;
 import com.pentagon.warungkita.repository.PaymentRepo;
 import com.pentagon.warungkita.service.PaymentService;
 import lombok.AllArgsConstructor;
@@ -26,23 +27,38 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Optional<Payment> getPaymentById(Long Id) {
-        return Optional.empty();
+    public Optional<Payment> getPaymentById(Long Id) throws ResourceNotFoundException {
+
+        Optional<Payment> optionalPayment = paymentRepo.findById(Id);
+        if(optionalPayment.isEmpty()){
+            throw new ResourceNotFoundException("Booking not exist with id " + Id);
+        }
+        return this.paymentRepo.findById(Id);
     }
 
     @Override
     public Payment createPayment(Payment payment) {
-        return null;
+
+        return this.paymentRepo.save(payment);
     }
 
     @Override
-    public void deletePaymentById(Long Id) {
-
+    public void deletePaymentById(Long Id) throws ResourceNotFoundException{
+        Optional<Payment> optionalPayment = paymentRepo.findById(Id);
+        if(optionalPayment.isEmpty()){
+            throw new ResourceNotFoundException("Payment not exist with id " + Id);
+        }
+        Payment payment = paymentRepo.getReferenceById(Id);
+        this.paymentRepo.delete(payment);
     }
 
     @Override
-    public Payment updatePayment(Payment payment) {
-        return null;
+    public Payment updatePayment(Payment payment)throws ResourceNotFoundException {
+        Optional<Payment> optionalPayment = paymentRepo.findById(payment.getPaymentId());
+        if(optionalPayment.isEmpty()){
+            throw new ResourceNotFoundException("Booking not exist with id " + payment.getPaymentId());
+        }
+        return this.paymentRepo.save(payment);
     }
 
     @Override
