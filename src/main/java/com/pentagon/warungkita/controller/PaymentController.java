@@ -69,20 +69,20 @@ public class PaymentController {
             if(paymentRequestDTO.getOrder() == null ){
                 throw new ResourceNotFoundException("Product List must have product id and user id");
             }
-            ProductList productList = productListRequestDTO.convertToEntity();
-            productList.setProductListId(id);
-            ProductList updateList = productListService.updateProductList(productList);
-            ProductListResponseDTO results = updateList.convertToResponse();
+            Payment payment = paymentRequestDTO.convertToEntity();
+            payment.setPaymentId(id);
+            Payment updatePayment = paymentService.updatePayment(payment);
+            PaymentResponseDTO results = updatePayment.convertToResponse();
             return ResponseHandler.generateResponse("Success Update Booking",HttpStatus.CREATED,results);
         }catch (Exception e){
 
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.BAD_REQUEST,"Bad Request");
         }
     }
-    @DeleteMapping("product_list/delete/{id}")
-    public ResponseEntity<Object> deleteProductList(@PathVariable Long id){
+    @DeleteMapping("payment/delete/{id}")
+    public ResponseEntity<Object> deletePayment(@PathVariable Long id){
         try {
-            productListService.deleteProductListById(id);
+            paymentService.deletePaymentById(id);
             Boolean result = Boolean.TRUE;
             return ResponseHandler.generateResponse("Success Delete Booking by ID",HttpStatus.OK,result);
         }catch(ResourceNotFoundException e){
