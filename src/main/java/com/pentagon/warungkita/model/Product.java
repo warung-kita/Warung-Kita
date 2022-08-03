@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
 
 @Setter
 @Getter
@@ -19,26 +20,25 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
-    @Column(name = "sku")
     private String sku;
 
-    @Column(name = "name")
     private String productName;
 
-    @Column(name = "description")
     private String description;
 
-    @OneToMany
-    @Column(name = "id")
+
+    @OneToOne
+    @JoinColumn(name = "product_status_id")
+
     private ProdukStatus productStatusId;
 
-    @Column(name = "regular_price")
     private Integer regularPrice;
 
-    @Column(name = "quantity")
     private Integer quantity;
 
-    @ManyToMany(fetch = EAGER)
+    private String productPicture;
+
+    @ManyToMany(fetch = LAZY)
     private Collection<Categories> categories = new ArrayList<>();
 
     @Override
@@ -51,6 +51,7 @@ public class Product {
                 ", productStatusId=" + productStatusId +
                 ", regularPrice=" + regularPrice +
                 ", quantity=" + quantity +
+                ", productPicture='" + productPicture + '\'' +
                 ", categories=" + categories +
                 '}';
     }

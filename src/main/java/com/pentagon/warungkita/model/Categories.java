@@ -12,10 +12,9 @@ public class Categories {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long categoriesId;
 
-    @Column(name = "name")
+
     private String name;
 
     @Override

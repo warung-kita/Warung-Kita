@@ -1,6 +1,7 @@
 package com.pentagon.warungkita.model;
 
 
+import com.pentagon.warungkita.dto.PaymentResponseDTO;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -18,43 +19,41 @@ import java.time.LocalDate;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="payment_id")
     private Long paymentId;
 
     @ManyToOne
-    @JoinColumn(name = "id")
-    private Order sales_order;
-
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "transdate")
     private LocalDate datePay;
 
-    @Column(name = "processor")
-    private String processor;
-
-    @Column(name = "processor_trans_id")
-    private String processorTransId;
-
-    @Column(name = "amount")
     private BigDecimal amount;
 
-    @Column(name = "cc_num")
     private String ccNum;
 
-    @Column(name = "cc_type")
     private String ccType;
 
-    @Column(name = "response")
     private String response;
+
+    public PaymentResponseDTO convertToResponse(){
+        return PaymentResponseDTO.builder().id_pembayaran(this.getPaymentId())
+                .id_order(this.getOrder().getOrderId())
+                .tanggal_bayar(this.getDatePay())
+                .total(this.getAmount())
+                .nomor_kartu(this.getCcNum())
+                .tipe_kartu(this.getCcType())
+                .status(this.getResponse())
+                .build();
+    }
 
     @Override
     public String toString() {
         return "Payment{" +
                 "paymentId=" + paymentId +
-                ", sales_order=" + sales_order +
+                ", order=" + order +
                 ", datePay=" + datePay +
-                ", processor='" + processor + '\'' +
-                ", processorTransId='" + processorTransId + '\'' +
                 ", amount=" + amount +
                 ", ccNum='" + ccNum + '\'' +
                 ", ccType='" + ccType + '\'' +

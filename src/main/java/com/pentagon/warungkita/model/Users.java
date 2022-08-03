@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
 
 @Getter
 @Setter
@@ -27,7 +28,7 @@ public class Users {
     private String address;
     private String profilPicture;
     private String phoneNum;
-    @ManyToMany(fetch = EAGER)
+    @ManyToMany(fetch = LAZY)
     private Collection<Roles> roles = new ArrayList<>();
 
     @Override
