@@ -7,10 +7,14 @@ import com.pentagon.warungkita.repository.EkspedisiRepo;
 import com.pentagon.warungkita.repository.ProductStatusRepo;
 import com.pentagon.warungkita.service.EkspedisiService;
 import com.pentagon.warungkita.service.ProductStatusService;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
+@AllArgsConstructor
     public class ProductStatusServiceImpl implements ProductStatusService {
     private ProductStatusRepo productStatusRepo;
 
