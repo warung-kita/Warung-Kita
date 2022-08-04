@@ -24,8 +24,10 @@ public class Order {
     private Date orderDate;
     @ManyToOne
     @JoinColumn(name = "ekspedisi_id")
+
     private Ekspedisi ekspedisiId;
     private Integer total;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users userId;
