@@ -27,10 +27,9 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "product_status_id")
-    private ProductStatus productStatus;
+    private ProductStatus productStatusId;
 
-
-    private Integer regularPrice;
+     private Integer regularPrice;
 
     private Integer quantity;
 
