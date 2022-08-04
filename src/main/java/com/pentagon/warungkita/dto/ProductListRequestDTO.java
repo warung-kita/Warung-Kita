@@ -16,7 +16,7 @@ public class ProductListRequestDTO {
 
     public ProductList convertToEntity(){
         return ProductList.builder()
-                .users(this.user)
+                .user(this.user)
                 .product(this.product)
                 .build();
 

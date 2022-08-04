@@ -8,24 +8,14 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ProductListResponsePOST {
-    private String sku;
-    private String nama;
-    private String deskripsi;
-        private Long status;
-    private Integer harga;
-    private Integer jumlah;
-    private String gambarProduct;
+    private Long user_id;
+    private Long product_id;
 
     @Override
     public String toString() {
         return "ProductListResponsePOST{" +
-                "sku='" + sku + '\'' +
-                ", nama='" + nama + '\'' +
-                ", deskripsi='" + deskripsi + '\'' +
-                ", status=" + status +
-                ", harga=" + harga +
-                ", jumlah=" + jumlah +
-                ", gambarProduct='" + gambarProduct + '\'' +
+                "user_id=" + user_id +
+                ", product_id=" + product_id +
                 '}';
     }
 }

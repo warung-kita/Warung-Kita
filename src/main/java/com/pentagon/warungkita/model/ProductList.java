@@ -22,7 +22,7 @@ public class ProductList {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Users users;
+    private Users user;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -37,21 +37,16 @@ public class ProductList {
                .harga(this.getProduct().getRegularPrice())
                .jumlah(this.getProduct().getQuantity())
                .gambarProduct(this.getProduct().getProductPicture())
-               .namaUser(this.getUsers().getFullName())
-               .alamat(this.getUsers().getAddress())
-               .nomorHandphone(this.getUsers().getPhoneNum())
+               .namaUser(this.getUser().getFullName())
+               .alamat(this.getUser().getAddress())
+               .nomorHandphone(this.getUser().getPhoneNum())
                .build();
     }
 
     public ProductListResponsePOST convertToResponsePost(){
         return ProductListResponsePOST.builder()
-                .sku(this.getProduct().getSku())
-                .nama(this.getProduct().getProductName())
-                .deskripsi(this.getProduct().getDescription())
-                .status(this.getProduct().getProductStatus().getProductStatusId())
-                .harga(this.getProduct().getRegularPrice())
-                .jumlah(this.getProduct().getQuantity())
-                .gambarProduct(this.getProduct().getProductPicture())
+                .user_id(this.getUser().getUserId())
+                .product_id(this.getProduct().getProductId())
                 .build();
     }
 
@@ -61,7 +56,7 @@ public class ProductList {
    public String toString() {
       return "ProductList{" +
               "productListId=" + productListId +
-              ", users=" + users +
+              ", user=" + user +
               ", product=" + product +
               '}';
    }
