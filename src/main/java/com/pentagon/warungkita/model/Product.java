@@ -1,42 +1,85 @@
 package com.pentagon.warungkita.model;
 
+import com.pentagon.warungkita.dto.ProductResponseDTO;
+import com.pentagon.warungkita.dto.ProductResponsePOST;
 import lombok.*;
 import javax.persistence.*;
+
+import java.util.List;
+
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 import static javax.persistence.FetchType.LAZY;
 
-@Setter
-@Getter
+
+
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "products")
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
-
     private String sku;
-
     private String productName;
-
+    @ManyToMany
+    @JoinTable(
+            name = "product_categories",
+            joinColumns = @JoinColumn(name = "categories_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Categories> categories;
     private String description;
 
 
     @ManyToOne
     @JoinColumn(name = "product_status_id")
+
     private ProductStatus productStatusId;
 
      private Integer regularPrice;
 
-    private Integer quantity;
 
+    private Integer quantity;
     private String productPicture;
 
-    @ManyToMany(fetch = LAZY)
-    private Collection<Categories> categories = new ArrayList<>();
+
+    public ProductResponseDTO convertToResponse(){
+        return ProductResponseDTO.builder()
+                .kodeProduk(this.getProductId())
+                .sku(this.getSku())
+                .namaProduk(this.getProductName())
+                .kategori(this.getCategories())
+                .deskripsi(this.getDescription())
+                .status(this.getProductStatusId())
+                .harga(this.getRegularPrice())
+                .stok(this.getQuantity())
+                .gambar(this.getProductPicture())
+//                .namaKategori(this.getCategories(getName()))
+                .build();
+    }
+
+    public ProductResponsePOST convertToResponsePost(){
+        return ProductResponsePOST.builder()
+                .kodeProduk(this.getProductId())
+                .sku(this.getSku())
+                .namaProduk(this.getProductName())
+                .kategori(this.getCategories())
+                .deskripsi(this.getDescription())
+                .status(this.getProductStatusId())
+                .harga(this.getRegularPrice())
+                .stok(this.getQuantity())
+                .gambar(this.getProductPicture())
+//                .namaKategori(this.getCategories(getName()))
+                .build();
+    }
 
     @Override
     public String toString() {
@@ -44,12 +87,12 @@ public class Product {
                 "productId=" + productId +
                 ", sku='" + sku + '\'' +
                 ", productName='" + productName + '\'' +
+                ", categories=" + categories +
                 ", description='" + description + '\'' +
                 ", productStatus=" + productStatus +
                 ", regularPrice=" + regularPrice +
                 ", quantity=" + quantity +
                 ", productPicture='" + productPicture + '\'' +
-                ", categories=" + categories +
                 '}';
     }
 }
