@@ -1,10 +1,8 @@
 package com.pentagon.warungkita.service.implement;
 
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Order;
 import com.pentagon.warungkita.model.OrderProduct;
 import com.pentagon.warungkita.repository.OrderProductRepo;
-import com.pentagon.warungkita.repository.OrderRepo;
 import com.pentagon.warungkita.service.OrderProductService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

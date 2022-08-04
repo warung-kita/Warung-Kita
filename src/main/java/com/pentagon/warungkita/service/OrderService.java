@@ -1,7 +1,6 @@
 package com.pentagon.warungkita.service;
 
 import com.pentagon.warungkita.model.Order;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
