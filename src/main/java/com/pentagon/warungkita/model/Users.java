@@ -1,6 +1,10 @@
 package com.pentagon.warungkita.model;
 
+
 import com.pentagon.warungkita.dto.UsersResponseDTO;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.*;
 
 import javax.persistence.*;
