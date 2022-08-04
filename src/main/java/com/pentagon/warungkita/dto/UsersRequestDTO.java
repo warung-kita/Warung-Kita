@@ -1,7 +1,10 @@
 package com.pentagon.warungkita.dto;
 
+import com.pentagon.warungkita.model.Roles;
 import com.pentagon.warungkita.model.Users;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -10,10 +13,11 @@ import lombok.*;
 @Builder
 public class UsersRequestDTO {
 
-    private String role;
+    private List<Roles> role;
     private Long userId;
     private String fullName;
     private String username;
+    private String email;
     private String address;
     private String password;
     private String phoneNum;
@@ -22,10 +26,11 @@ public class UsersRequestDTO {
 
     public Users convertToEntity(){
         return Users.builder()
-//                .roles(this.role)
+                .roles(this.role)
                 .userId(this.userId)
                 .fullName(this.fullName)
                 .username(this.username)
+                .email(this.email)
                 .address(this.address)
                 .password(this.password)
                 .phoneNum(this.phoneNum)

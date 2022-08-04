@@ -12,10 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @AllArgsConstructor
@@ -41,10 +38,11 @@ public class UsersController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity <Object> createUser(@RequestBody Users users) {
+    public ResponseEntity <Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
         try {
+            Users users = usersRequestDTO.convertToEntity();
             usersServiceImpl.createUser(users);
-            Users userResult = usersServiceImpl.createUser(users);
+            UsersResponseDTO userResult = users.convertToResponse();
             return ResponseHandler.generateResponse("Successfully Created User!", HttpStatus.CREATED, userResult);
         } catch (Exception e) {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "User Already Exist!");
@@ -54,30 +52,37 @@ public class UsersController {
     @GetMapping("/users/{users_Id}")
     public ResponseEntity<Object> getUserById(@PathVariable Long users_Id) {
         try {
-            Users userResult = usersServiceImpl.getUserById(users_Id)
-                    .orElseThrow(() -> new ResourceNotFoundException("User not exist with user_Id :" + users_Id));
-            return ResponseHandler.generateResponse("Successfully Get User By ID!", HttpStatus.OK, userResult);
+            Optional<Users> users = usersServiceImpl.getUserById(users_Id);
+            Users userResult = users.get();
+            UsersResponseDTO result = userResult.convertToResponse();
+            return ResponseHandler.generateResponse("Successfully Get User By ID!", HttpStatus.OK, result);
         } catch (Exception e) {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!" );
         }
-
     }
 
     @PutMapping("/users/{users_Id}")
-    public ResponseEntity<Object> updateUser(@PathVariable Long users_Id, @RequestBody Users userDetails){
+    public ResponseEntity<Object> updateUser(@PathVariable Long users_Id, @RequestBody UsersRequestDTO usersRequestDTO){
         try {
-            Users user = usersServiceImpl.getUserById(users_Id)
-                    .orElseThrow(() -> new ResourceNotFoundException("User not exist with user_Id :" + users_Id));
+            if(usersRequestDTO.getUserId() == null){
+                throw new ResourceNotFoundException("User not exist");
+            }
+            Users users = usersRequestDTO.convertToEntity();
+            users.setUserId(users_Id);
+            Users updateUsers = usersServiceImpl.updateUser(users);
+            UsersResponseDTO result = updateUsers.convertToResponse();
+//            Users user = usersServiceImpl.getUserById(users_Id)
+//                    .orElseThrow(() -> new ResourceNotFoundException("User not exist with user_Id :" + users_Id));
+//
+//            user.setUsername(userDetails.getUsername());
+//            user.setFullName(userDetails.getFullName());
+//            user.setEmail(userDetails.getEmail());
+//            user.setPassword(userDetails.getPassword());
+//            user.setAddress(userDetails.getAddress());
+//            user.setPhoneNum(userDetails.getPhoneNum());
+//            Users updatedUser = usersServiceImpl.updateUser(user);
 
-            user.setUsername(userDetails.getUsername());
-            user.setFullName(userDetails.getFullName());
-            user.setEmail(userDetails.getEmail());
-            user.setPassword(userDetails.getPassword());
-            user.setAddress(userDetails.getAddress());
-            user.setPhoneNum(userDetails.getPhoneNum());
-            Users updatedUser = usersServiceImpl.updateUser(user);
-
-            return ResponseHandler.generateResponse("Successfully Updated User!",HttpStatus.OK, updatedUser);
+            return ResponseHandler.generateResponse("Successfully Updated User!",HttpStatus.OK, result);
         }catch(Exception e){
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data Not Found!");
         }

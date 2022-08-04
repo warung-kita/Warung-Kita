@@ -16,6 +16,7 @@ public class UsersResponseDTO {
     private Long id_akun;
     private String nama_lengkap;
     private String nama;
+    private String email;
     private String alamat;
     private String sandi;
     private String nomor_tlp;
@@ -25,10 +26,11 @@ public class UsersResponseDTO {
     @Override
     public String toString() {
         return "UsersResponseDTO{" +
-                "role='" + role + '\'' +
+                "role=" + role +
                 ", id_akun=" + id_akun +
                 ", nama_lengkap='" + nama_lengkap + '\'' +
                 ", nama='" + nama + '\'' +
+                ", email='" + email + '\'' +
                 ", alamat='" + alamat + '\'' +
                 ", sandi='" + sandi + '\'' +
                 ", nomor_tlp='" + nomor_tlp + '\'' +
