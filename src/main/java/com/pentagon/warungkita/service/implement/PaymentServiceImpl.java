@@ -2,7 +2,6 @@ package com.pentagon.warungkita.service.implement;
 
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Payment;
-import com.pentagon.warungkita.model.ProductList;
 import com.pentagon.warungkita.repository.PaymentRepo;
 import com.pentagon.warungkita.service.PaymentService;
 import lombok.AllArgsConstructor;

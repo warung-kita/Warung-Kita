@@ -1,21 +1,22 @@
 package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Ekspedisi;
 import com.pentagon.warungkita.model.ProductStatus;
 import com.pentagon.warungkita.repository.ProductStatusRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
-import com.pentagon.warungkita.service.ProductListService;
 import com.pentagon.warungkita.service.ProductStatusService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/teamD/v1/")
+@RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 public class ProductStatusController {
 

@@ -1,9 +1,9 @@
 package com.pentagon.warungkita.controller;
 
-import com.pentagon.warungkita.dto.*;
+import com.pentagon.warungkita.dto.PaymentRequestDTO;
+import com.pentagon.warungkita.dto.PaymentResponseDTO;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Payment;
-import com.pentagon.warungkita.model.ProductList;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.PaymentService;
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/teamD/v1")
+@RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 public class PaymentController {
 

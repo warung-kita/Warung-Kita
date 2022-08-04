@@ -1,11 +1,8 @@
 package com.pentagon.warungkita.service.implement;
 
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Ekspedisi;
 import com.pentagon.warungkita.model.ProductStatus;
-import com.pentagon.warungkita.repository.EkspedisiRepo;
 import com.pentagon.warungkita.repository.ProductStatusRepo;
-import com.pentagon.warungkita.service.EkspedisiService;
 import com.pentagon.warungkita.service.ProductStatusService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -33,7 +33,7 @@ public class ProductList {
                .sku(this.getProduct().getSku())
                .nama(this.getProduct().getProductName())
                .deskripsi(this.getProduct().getDescription())
-               .status(this.getProduct().getProductStatus().getProductStatusId())
+               .status(this.getProduct().getProductStatusId().getProductStatusId())
                .harga(this.getProduct().getRegularPrice())
                .jumlah(this.getProduct().getQuantity())
                .gambarProduct(this.getProduct().getProductPicture())

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("/teamD/v1/")
+@RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 public class EkspedisiController {
 
