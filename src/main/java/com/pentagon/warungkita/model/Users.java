@@ -1,13 +1,10 @@
 package com.pentagon.warungkita.model;
 
+import com.pentagon.warungkita.dto.UsersResponseDTO;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import static javax.persistence.FetchType.EAGER;
-import static javax.persistence.FetchType.LAZY;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,8 +25,27 @@ public class Users {
     private String address;
     private String profilPicture;
     private String phoneNum;
-    @ManyToMany(fetch = LAZY)
-    private Collection<Roles> roles = new ArrayList<>();
+    private boolean active;
+
+    @ManyToMany
+    @JoinTable(name = "user_roles",
+    joinColumns = @JoinColumn (name = "user_id"),
+    inverseJoinColumns = @JoinColumn (name = "role_id" ))
+    private List<Roles> roles;
+
+    public UsersResponseDTO convertToResponse(){
+        return UsersResponseDTO.builder()
+                .role(this.getRoles())
+                .id_akun(this.userId)
+                .nama_lengkap(this.fullName)
+                .nama(this.username)
+                .alamat(this.address)
+                .sandi(this.password)
+                .nomor_tlp(this.phoneNum)
+                .foto(this.profilPicture)
+                .status(this.active)
+                .build();
+    }
 
     @Override
     public String toString() {
@@ -42,6 +58,7 @@ public class Users {
                 ", address='" + address + '\'' +
                 ", profilPicture='" + profilPicture + '\'' +
                 ", phoneNum='" + phoneNum + '\'' +
+                ", active=" + active +
                 ", roles=" + roles +
                 '}';
     }
