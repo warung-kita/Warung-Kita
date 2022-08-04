@@ -17,6 +17,7 @@ public class OrderProductResponsePOST {
     private Integer quantity;
     private Integer subtotal;
 
+
     @Override
     public String toString() {
         return "OrderProductResponsePOST{" +

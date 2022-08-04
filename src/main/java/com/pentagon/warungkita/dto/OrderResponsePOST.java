@@ -18,6 +18,7 @@ public class OrderResponsePOST {
     private Number total;
     private Long userId;
 
+
     @Override
     public String toString() {
         return "OrderResponsePOST{" +
