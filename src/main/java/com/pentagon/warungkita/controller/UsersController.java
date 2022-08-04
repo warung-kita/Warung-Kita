@@ -17,7 +17,7 @@ import java.util.*;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping("/teamD/v1/")
+@RequestMapping("/pentagon/warung-kita")
 public class UsersController {
 
     private final UsersServiceImpl usersServiceImpl;

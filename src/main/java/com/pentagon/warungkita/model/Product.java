@@ -3,17 +3,9 @@ package com.pentagon.warungkita.model;
 import com.pentagon.warungkita.dto.ProductResponseDTO;
 import com.pentagon.warungkita.dto.ProductResponsePOST;
 import lombok.*;
+
 import javax.persistence.*;
-
 import java.util.List;
-
-
-import java.util.ArrayList;
-import java.util.Collection;
-
-import static javax.persistence.FetchType.LAZY;
-
-
 
 @Entity
 @Getter
@@ -41,11 +33,9 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "product_status_id")
-
     private ProductStatus productStatusId;
 
      private Integer regularPrice;
-
 
     private Integer quantity;
     private String productPicture;
@@ -89,7 +79,7 @@ public class Product {
                 ", productName='" + productName + '\'' +
                 ", categories=" + categories +
                 ", description='" + description + '\'' +
-                ", productStatus=" + productStatus +
+                ", productStatusId=" + productStatusId +
                 ", regularPrice=" + regularPrice +
                 ", quantity=" + quantity +
                 ", productPicture='" + productPicture + '\'' +

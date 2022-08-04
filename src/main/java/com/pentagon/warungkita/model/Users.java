@@ -1,19 +1,10 @@
 package com.pentagon.warungkita.model;
 
-
 import com.pentagon.warungkita.dto.UsersResponseDTO;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import static javax.persistence.FetchType.EAGER;
-import static javax.persistence.FetchType.LAZY;
 
 @Getter
 @Setter
@@ -35,11 +26,11 @@ public class Users {
     private String profilPicture;
     private String phoneNum;
     private boolean active;
+
     @ManyToMany
-    @JoinTable(name = "users_roles",
+    @JoinTable(name = "user_roles",
     joinColumns = @JoinColumn (name = "user_id"),
     inverseJoinColumns = @JoinColumn (name = "role_id" ))
-
     private List<Roles> roles;
 
     public UsersResponseDTO convertToResponse(){

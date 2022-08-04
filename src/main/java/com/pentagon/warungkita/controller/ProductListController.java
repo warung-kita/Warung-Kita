@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/teamD/v1")
+@RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 public class ProductListController {
 

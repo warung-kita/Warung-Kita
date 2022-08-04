@@ -1,13 +1,10 @@
 package com.pentagon.warungkita.model;
 
-import com.pentagon.warungkita.DTO.OrderProductResponseDTO;
-import com.pentagon.warungkita.DTO.OrderProductResponsePOST;
-
+import com.pentagon.warungkita.dto.OrderProductResponseDTO;
+import com.pentagon.warungkita.dto.OrderProductResponsePOST;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter

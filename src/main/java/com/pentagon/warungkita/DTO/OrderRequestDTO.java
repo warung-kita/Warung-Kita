@@ -1,4 +1,4 @@
-package com.pentagon.warungkita.DTO;
+package com.pentagon.warungkita.dto;
 
 import com.pentagon.warungkita.model.Ekspedisi;
 import com.pentagon.warungkita.model.Order;

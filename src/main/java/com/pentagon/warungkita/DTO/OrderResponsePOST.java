@@ -1,8 +1,6 @@
-package com.pentagon.warungkita.DTO;
+package com.pentagon.warungkita.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.pentagon.warungkita.model.Ekspedisi;
-import com.pentagon.warungkita.model.Users;
 import lombok.*;
 
 import java.util.Date;

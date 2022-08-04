@@ -3,12 +3,10 @@ package com.pentagon.warungkita.service.implement;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Ekspedisi;
 import com.pentagon.warungkita.repository.EkspedisiRepo;
-import com.pentagon.warungkita.repository.OrderRepo;
 import com.pentagon.warungkita.service.EkspedisiService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Id;
 import java.util.List;
 import java.util.Optional;
 

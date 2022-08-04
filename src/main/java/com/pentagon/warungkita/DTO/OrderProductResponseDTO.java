@@ -1,11 +1,9 @@
-package com.pentagon.warungkita.DTO;
+package com.pentagon.warungkita.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.pentagon.warungkita.model.Product;
 import lombok.*;
 
 import java.util.Date;
-import java.util.PrimitiveIterator;
 
 @Getter
 @Setter

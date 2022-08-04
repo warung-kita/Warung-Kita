@@ -1,13 +1,12 @@
 package com.pentagon.warungkita.model;
 
-import com.pentagon.warungkita.DTO.OrderResponseDTO;
-import com.pentagon.warungkita.DTO.OrderResponsePOST;
+import com.pentagon.warungkita.dto.OrderResponseDTO;
+import com.pentagon.warungkita.dto.OrderResponsePOST;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter

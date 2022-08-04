@@ -1,7 +1,7 @@
 package com.pentagon.warungkita.dto;
 
 import com.pentagon.warungkita.model.Categories;
-import com.pentagon.warungkita.model.ProdukStatus;
+import com.pentagon.warungkita.model.ProductStatus;
 import lombok.*;
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class ProductResponsePOST {
     private String namaProduk;
     private List<Categories> kategori;
     private String deskripsi;
-    private ProdukStatus status;
+    private ProductStatus status;
     private Integer harga;
     private Integer stok;
     private String gambar;

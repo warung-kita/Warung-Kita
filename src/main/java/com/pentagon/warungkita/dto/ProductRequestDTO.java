@@ -2,11 +2,9 @@ package com.pentagon.warungkita.dto;
 
 import com.pentagon.warungkita.model.Categories;
 import com.pentagon.warungkita.model.Product;
-import com.pentagon.warungkita.model.ProdukStatus;
+import com.pentagon.warungkita.model.ProductStatus;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -19,7 +17,7 @@ public class ProductRequestDTO {
     private String sku;
     private String productName;
     private String description;
-    private ProdukStatus productStatusId;
+    private ProductStatus productStatusId;
     private Integer regularPrice;
     private Integer quantity;
     private String productPicture;

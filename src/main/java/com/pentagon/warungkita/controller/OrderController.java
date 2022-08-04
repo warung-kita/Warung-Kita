@@ -1,8 +1,8 @@
 package com.pentagon.warungkita.controller;
 
-import com.pentagon.warungkita.DTO.OrderRequestDTO;
-import com.pentagon.warungkita.DTO.OrderResponseDTO;
-import com.pentagon.warungkita.DTO.OrderResponsePOST;
+import com.pentagon.warungkita.dto.OrderRequestDTO;
+import com.pentagon.warungkita.dto.OrderResponseDTO;
+import com.pentagon.warungkita.dto.OrderResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Order;
 import com.pentagon.warungkita.response.ResponseHandler;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+@RequestMapping("/pentagon/warung-kita")
 @RestController
 @AllArgsConstructor
 @Slf4j
