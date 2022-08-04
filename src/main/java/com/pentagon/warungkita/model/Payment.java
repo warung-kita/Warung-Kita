@@ -1,6 +1,7 @@
 package com.pentagon.warungkita.model;
 
 
+import com.pentagon.warungkita.dto.PaymentResponseDTO;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -21,8 +22,8 @@ public class Payment {
     private Long paymentId;
 
     @ManyToOne
-    @JoinColumn(name = "id")
-    private Order sales_order;
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate datePay;
@@ -35,11 +36,22 @@ public class Payment {
 
     private String response;
 
+    public PaymentResponseDTO convertToResponse(){
+        return PaymentResponseDTO.builder().id_pembayaran(this.getPaymentId())
+                .id_order(this.getOrder().getOrderId())
+                .tanggal_bayar(this.getDatePay())
+                .total(this.getAmount())
+                .nomor_kartu(this.getCcNum())
+                .tipe_kartu(this.getCcType())
+                .status(this.getResponse())
+                .build();
+    }
+
     @Override
     public String toString() {
         return "Payment{" +
                 "paymentId=" + paymentId +
-                ", sales_order=" + sales_order +
+                ", order=" + order +
                 ", datePay=" + datePay +
                 ", amount=" + amount +
                 ", ccNum='" + ccNum + '\'' +
@@ -48,4 +60,5 @@ public class Payment {
                 '}';
     }
 }
+
 

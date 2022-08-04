@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Data
 @Table (name = "product_statuses")
-public class ProdukStatus {
+public class ProductStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productStatusId;

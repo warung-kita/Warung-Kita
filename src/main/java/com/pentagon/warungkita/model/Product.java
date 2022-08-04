@@ -4,7 +4,16 @@ import com.pentagon.warungkita.dto.ProductResponseDTO;
 import com.pentagon.warungkita.dto.ProductResponsePOST;
 import lombok.*;
 import javax.persistence.*;
+
 import java.util.List;
+
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static javax.persistence.FetchType.LAZY;
+
+
 
 @Entity
 @Getter
@@ -29,10 +38,15 @@ public class Product {
     private List<Categories> categories;
     private String description;
 
-    @OneToOne
+
+    @ManyToOne
     @JoinColumn(name = "product_status_id")
-    private ProdukStatus productStatusId;
-    private Integer regularPrice;
+
+    private ProductStatus productStatusId;
+
+     private Integer regularPrice;
+
+
     private Integer quantity;
     private String productPicture;
 
@@ -75,7 +89,7 @@ public class Product {
                 ", productName='" + productName + '\'' +
                 ", categories=" + categories +
                 ", description='" + description + '\'' +
-                ", productStatusId=" + productStatusId +
+                ", productStatus=" + productStatus +
                 ", regularPrice=" + regularPrice +
                 ", quantity=" + quantity +
                 ", productPicture='" + productPicture + '\'' +
