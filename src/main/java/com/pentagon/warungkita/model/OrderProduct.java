@@ -1,5 +1,6 @@
 package com.pentagon.warungkita.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @Entity
 @Builder
 @Table(name = "order_product")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class OrderProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
