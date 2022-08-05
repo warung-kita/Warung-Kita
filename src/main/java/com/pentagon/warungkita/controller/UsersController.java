@@ -8,11 +8,14 @@ import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+
 
 @RestController
 @AllArgsConstructor
@@ -20,6 +23,7 @@ import java.util.*;
 @RequestMapping("/pentagon/warung-kita")
 public class UsersController {
 
+    private static final Logger logger = LogManager.getLogger(UsersController.class);
     private final UsersServiceImpl usersServiceImpl;
 
     @GetMapping("/users")
@@ -27,12 +31,38 @@ public class UsersController {
         try {
             List<Users> result = usersServiceImpl.getAll();
             List<UsersResponseDTO> usersResponseDTOList = new ArrayList<>();
+            logger.info("==================== Logger Start Get All User ====================");
             for (Users dataresult:result){
+                Map<String, Object> order = new HashMap<>();
+                order.put("role            : ", dataresult.getRoles());
+                order.put("id_akun         : ", dataresult.getUserId());
+                order.put("nama_lengkap    : ", dataresult.getFullName());
+                order.put("nama            : ", dataresult.getUsername());
+                order.put("email           : ", dataresult.getEmail());
+                order.put("alamat          : ", dataresult.getAddress());
+                order.put("sandi           : ", dataresult.getPassword());
+                order.put("nomor_tlp       : ", dataresult.getPhoneNum());
+                order.put("foto            : ", dataresult.getProfilPicture());
+
+                logger.info("role          : " + dataresult.getRoles());
+                logger.info("id_akun       : " + dataresult.getUserId());
+                logger.info("nama_lengkap  : " + dataresult.getFullName());
+                logger.info("nama          : " + dataresult.getUsername());
+                logger.info("email         : " + dataresult.getEmail());
+                logger.info("alamat        : " + dataresult.getAddress());
+                logger.info("sandi         : " + dataresult.getPassword());
+                logger.info("nomor_tlp     : " + dataresult.getPhoneNum());
+                logger.info("foto          : " + dataresult.getProfilPicture());
                 UsersResponseDTO usersResponseDTO = dataresult.convertToResponse();
                 usersResponseDTOList.add(usersResponseDTO);
+
+                logger.info("==================== Logger End Get All User ====================");
             }
             return ResponseHandler.generateResponse("Successfully Get All User!", HttpStatus.OK, usersResponseDTOList);
         } catch (Exception e) {
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.MULTI_STATUS, "Table Has No Value!");
         }
     }
@@ -43,8 +73,14 @@ public class UsersController {
             Users users = usersRequestDTO.convertToEntity();
             usersServiceImpl.createUser(users);
             UsersResponseDTO userResult = users.convertToResponse();
+            logger.info("==================== Logger Start Create New User ====================");
+            logger.info(userResult);
+            logger.info("==================== Logger End Create New User =================");
             return ResponseHandler.generateResponse("Successfully Created User!", HttpStatus.CREATED, userResult);
         } catch (Exception e) {
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "User Already Exist!");
         }
     }
@@ -55,8 +91,14 @@ public class UsersController {
             Optional<Users> users = usersServiceImpl.getUserById(users_Id);
             Users userResult = users.get();
             UsersResponseDTO result = userResult.convertToResponse();
+            logger.info("==================== Logger Start Get User By ID ====================");
+            logger.info(result);
+            logger.info("==================== Logger End Get User By ID =================");
             return ResponseHandler.generateResponse("Successfully Get User By ID!", HttpStatus.OK, result);
         } catch (Exception e) {
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!" );
         }
     }
@@ -71,19 +113,14 @@ public class UsersController {
             users.setUserId(users_Id);
             Users updateUsers = usersServiceImpl.updateUser(users);
             UsersResponseDTO result = updateUsers.convertToResponse();
-//            Users user = usersServiceImpl.getUserById(users_Id)
-//                    .orElseThrow(() -> new ResourceNotFoundException("User not exist with user_Id :" + users_Id));
-//
-//            user.setUsername(userDetails.getUsername());
-//            user.setFullName(userDetails.getFullName());
-//            user.setEmail(userDetails.getEmail());
-//            user.setPassword(userDetails.getPassword());
-//            user.setAddress(userDetails.getAddress());
-//            user.setPhoneNum(userDetails.getPhoneNum());
-//            Users updatedUser = usersServiceImpl.updateUser(user);
-
+            logger.info("==================== Logger Start Update User By ID ====================");
+            logger.info(result);
+            logger.info("==================== Logger End Update User By ID =================");
             return ResponseHandler.generateResponse("Successfully Updated User!",HttpStatus.OK, result);
         }catch(Exception e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data Not Found!");
         }
     }
@@ -94,8 +131,14 @@ public class UsersController {
             usersServiceImpl.deleteUserById(users_Id);
             Map<String, Boolean> response = new HashMap<>();
             response.put("hard deleted", Boolean.TRUE);
+            logger.info("==================== Logger Start Hard Delete User By ID ====================");
+            logger.info(response);
+            logger.info("==================== Logger End Hard Delete User By ID =================");
             return ResponseHandler.generateResponse("Successfully Delete User! ", HttpStatus.OK, response);
         } catch (ResourceNotFoundException e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!" );
         }
     }
