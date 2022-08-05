@@ -22,7 +22,7 @@ public class UsersRequestDTO {
     private String password;
     private String phoneNum;
     private String profilPicture;
-    private String active;
+//    private String active;
 
     public Users convertToEntity(){
         return Users.builder()
