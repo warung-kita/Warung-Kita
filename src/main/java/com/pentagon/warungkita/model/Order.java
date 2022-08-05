@@ -23,7 +23,6 @@ public class Order {
     private Date orderDate;
     @ManyToOne
     @JoinColumn(name = "ekspedisi_id")
-
     private Ekspedisi ekspedisiId;
     private Integer total;
 
