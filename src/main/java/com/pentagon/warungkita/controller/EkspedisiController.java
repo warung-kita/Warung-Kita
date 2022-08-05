@@ -7,6 +7,8 @@ import com.pentagon.warungkita.repository.EkspedisiRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.EkspedisiService;
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import java.util.*;
 @AllArgsConstructor
 public class EkspedisiController {
 
+    private static final Logger logger = LogManager.getLogger(EkspedisiController.class);
     private final EkspedisiService ekspedisiService;
     private final EkspedisiRepo ekspedisiRepo;
 
@@ -26,14 +29,22 @@ public class EkspedisiController {
         try {
             List<Ekspedisi> result = ekspedisiService.getAll();
             List<Map<String, Object>> maps = new ArrayList<>();
+            logger.info("==================== Logger Start Get All Ekspedisi ====================");
             for(Ekspedisi ekspedisi : result){
                 Map<String, Object> ekspedisidata = new HashMap<>();
                 ekspedisidata.put("ID            ", ekspedisi.getEkspedisiId());
                 ekspedisidata.put("Name          ", ekspedisi.getName());
                 maps.add(ekspedisidata);
+                logger.info("Code   :"+ekspedisi.getEkspedisiId() );
+                logger.info("Status :"+ekspedisi.getName() );
+                logger.info("------------------------------------");
             }
+            logger.info("==================== Logger End  ====================");
             return ResponseHandler.generateResponse("Successfully Get All Ekspedisi!", HttpStatus.OK, result);
         } catch (Exception e) {
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.MULTI_STATUS, "Table Has No Value!");
         }
     }
@@ -47,8 +58,15 @@ public class EkspedisiController {
             ekspedisidata.put("ID            ", ekspedisi.getEkspedisiId());
             ekspedisidata.put("Name          ", ekspedisi.getName());
             maps.add(ekspedisidata);
+            logger.info("==================== Logger Start  ====================");
+            logger.info("Code   :"+ekspedisi.getEkspedisiId() );
+            logger.info("Status :"+ekspedisi.getName() );
+            logger.info("==================== Logger End =================");
             return ResponseHandler.generateResponse("Successfully Get Ekspedisi By ID!", HttpStatus.OK, maps);
         } catch (Exception e) {
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
              return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!" );
         }
     }
@@ -64,8 +82,15 @@ public class EkspedisiController {
             ekspedisiMap.put("ID             ", ekspedisiresult.getEkspedisiId());
             ekspedisiMap.put("Username       ", ekspedisiresult.getName());
             maps.add(ekspedisiMap);
+            logger.info("==================== Logger Start  ====================");
+            logger.info("Code   :"+ekspedisi.getEkspedisiId() );
+            logger.info("Status :"+ekspedisi.getName() );
+            logger.info("==================== Logger End =================");
             return ResponseHandler.generateResponse("Successfully Created Ekspedisi!", HttpStatus.CREATED, maps);
         } catch (Exception e) {
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Ekspedisi Already Exist!");
         }
     }
@@ -76,8 +101,15 @@ public class EkspedisiController {
                     .orElseThrow(() -> new ResourceNotFoundException("Ekspedisi not exist withId :" + Id));
             ekspedisi.setName(ekspedisiDetails.getName());
              Ekspedisi updatedEkspedisi = ekspedisiRepo.save(ekspedisi);
+            logger.info("==================== Logger Start  ====================");
+            logger.info("Code   :"+ekspedisi.getEkspedisiId() );
+            logger.info("Status :"+ekspedisi.getName() );
+            logger.info("==================== Logger End =================");
             return ResponseHandler.generateResponse("Successfully Updated Ekspedisi!",HttpStatus.OK, ekspedisi);
         }catch(Exception e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data Not Found!");
         }
     }
@@ -87,9 +119,15 @@ public class EkspedisiController {
         try {
             ekspedisiService.deleteEkspedisiById(Id);
             Map<String, Boolean> response = new HashMap<>();
-            response.put("deleted", Boolean.TRUE);;
+            response.put("deleted", Boolean.TRUE);
+            logger.info("======== Logger Start   ========");
+            logger.info("Payment deleted " + response);
+            logger.info("======== Logger End   ==========");
             return ResponseHandler.generateResponse("Successfully Delete Ekspedisi! ", HttpStatus.OK, response);
         } catch (ResourceNotFoundException e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!" );
         }
     }

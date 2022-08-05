@@ -8,6 +8,8 @@ import com.pentagon.warungkita.model.Categories;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.CategoriesService;
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,23 +23,30 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CategoriesController {
     private final CategoriesService categoriesService;
-
+    private static final Logger logger = LogManager.getLogger(CategoriesController.class);
     /**
      * Get All Categories
      * @return
      */
     @GetMapping("/categories/all")
     public ResponseEntity<Object> findAll() {
-        try{
+        try {
             List<Categories> categories = categoriesService.getAll();
             List<CategoriesResponseDTO> categoriesMaps = new ArrayList<>();
-            for(Categories dataResult:categories){
+            logger.info("==================== Logger Start Get All Categories     ====================");
+            for (Categories dataResult : categories) {
                 CategoriesResponseDTO categoriesResponseDTO = dataResult.convertToResponse();
                 categoriesMaps.add(categoriesResponseDTO);
+                logger.info("Kategori ID       : " + dataResult.getCategoriesId());
+                logger.info("Nama Kategori     : " + dataResult.getName());
             }
-            return ResponseHandler.generateResponse("Successfully Get All Categories", HttpStatus.OK,categoriesMaps);
-        }catch (ResourceNotFoundException e){
-            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Table has no value");
+            logger.info("==================== Logger Start Get All Categories     ====================");
+            return ResponseHandler.generateResponse("Successfully Get All Categories", HttpStatus.OK, categoriesMaps);
+        }catch(ResourceNotFoundException e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Table has no value");
         }
     }
 
@@ -52,8 +61,15 @@ public class CategoriesController {
             Optional<Categories> categories = categoriesService.getCategoriesById(categoriesId);
             Categories categoriesGet = categories.get();
             CategoriesResponseDTO result = categoriesGet.convertToResponse();
+            logger.info("==================== Logger Start Get By ID Categories     ====================");
+            logger.info("Kategori ID       : " + categoriesGet.getCategoriesId());
+            logger.info("Nama Kategori     : " + categoriesGet.getName());
+            logger.info("==================== Logger Start Get By ID Categories     ====================");
             return ResponseHandler.generateResponse("Successfully Get Categories Id",HttpStatus.OK,result);
         }catch(ResourceNotFoundException e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
     }
@@ -66,15 +82,21 @@ public class CategoriesController {
     @PostMapping("/categories/add")
     public ResponseEntity<Object> createCategories(@RequestBody CategoriesRequestDTO categoriesRequestDTO){
         try{
-            if(categoriesRequestDTO.getName() == null){
+            if(categoriesRequestDTO.getName() == null) {
                 throw new ResourceNotFoundException("Please Add Categories Name");
             }
             Categories categories = categoriesRequestDTO.convertToEntity();
             categoriesService.createCategories(categories);
             CategoriesResponsePOST result = categories.convertToResponsePost();
+            logger.info("==================== Logger Start Add New Categories     ====================");
+            logger.info("Kategori ID       : " + categories.getCategoriesId());
+            logger.info("Nama Kategori     : " + categories.getName());
+            logger.info("==================== Logger Start Add New Categories Product     ====================");
             return ResponseHandler.generateResponse("Successfully Add Categories",HttpStatus.CREATED,result);
         }catch (Exception e){
-
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.BAD_REQUEST,"Failed Create Categories");
         }
     }
@@ -88,16 +110,19 @@ public class CategoriesController {
     @PutMapping("/categories/update/{categoriesId}")
     public ResponseEntity<Object> updateCategories(@PathVariable Long categoriesId, @RequestBody CategoriesRequestDTO categoriesRequestDTO){
         try {
-            if(categoriesRequestDTO.getName() == null){
-                throw new ResourceNotFoundException("Please Add Categories Name");
-            }
             Categories categories = categoriesRequestDTO.convertToEntity();
             categories.setCategoriesId(categoriesId);
-            Categories updateCategories = categoriesService.updateCategories(categories);
-            CategoriesResponseDTO results = categories.convertToResponse();
-            return ResponseHandler.generateResponse("Successfully Update Categories",HttpStatus.CREATED,results);
+            Categories responseUpdate = categoriesService.updateCategories(categories);
+            CategoriesResponseDTO responseDTO = responseUpdate.convertToResponse();
+            logger.info("==================== Logger Start Get Updated Categories     ====================");
+            logger.info("Kategori ID       : " + categories.getCategoriesId());
+            logger.info("Nama Kategori     : " + categories.getName());
+            logger.info("==================== Logger Start Get Updated Categories     ====================");
+            return ResponseHandler.generateResponse("Successfully Update Categories",HttpStatus.CREATED,responseDTO);
         }catch (Exception e){
-
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.BAD_REQUEST,"Bad Request");
         }
     }
@@ -112,8 +137,14 @@ public class CategoriesController {
         try {
             categoriesService.deleteCategories(categoriesId);
             Boolean result = Boolean.TRUE;
+            logger.info("==================== Logger Start Delete Categories     ====================");
+            logger.info(result);
+            logger.info("==================== Logger Start Delete Categories     ====================");
             return ResponseHandler.generateResponse("Successfully Delete Categories",HttpStatus.OK,result);
         }catch(ResourceNotFoundException e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
     }
