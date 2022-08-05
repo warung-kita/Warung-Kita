@@ -40,7 +40,7 @@ public class ProductListController {
                 logger.info("code :"+dataresult.getProductListId());
                 logger.info("User :"+dataresult.getUser() );
                 logger.info("Product :"+dataresult.getProduct() );
-                logger.error("------------------------------------");
+                logger.info("------------------------------------");
             }
             logger.info("==================== Logger End  ====================");
             return ResponseHandler.generateResponse("Succes Get All", HttpStatus.OK,productListmaps);
@@ -104,7 +104,7 @@ public class ProductListController {
             logger.info("User :"+results.getNamaUser());
             logger.info("Product :"+results.getNama());
             logger.info("==================== Logger End =================");
-            return ResponseHandler.generateResponse("Success Update Booking",HttpStatus.CREATED,results);
+            return ResponseHandler.generateResponse("Success Update Product List",HttpStatus.CREATED,results);
         }catch (Exception e){
             logger.error("------------------------------------");
             logger.error(e.getMessage());
@@ -119,9 +119,9 @@ public class ProductListController {
             Map<String, Boolean> response = new HashMap<>();
             response.put("deleted", Boolean.TRUE);
             logger.info("======== Logger Start   ========");
-            logger.info("Film deleted " + response);
+            logger.info("Product List deleted " + response);
             logger.info("==================== Logger End =================");
-            return ResponseHandler.generateResponse("Success Delete Booking by ID",HttpStatus.OK,response);
+            return ResponseHandler.generateResponse("Success Delete Product List by ID",HttpStatus.OK,response);
         }catch(ResourceNotFoundException e){
             logger.error("------------------------------------");
             logger.error(e.getMessage());
