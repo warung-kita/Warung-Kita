@@ -1,9 +1,12 @@
 package com.pentagon.warungkita.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.pentagon.warungkita.model.OrderProduct;
 import lombok.*;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,6 +15,8 @@ import java.util.Date;
 @Builder
 public class OrderResponseDTO {
     private Long orderId;
+    private List<OrderProduct> orderProductId;
+//    private List<Long> orderProductId;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date orderDate;
     private String ekspedisiName;
@@ -27,6 +32,7 @@ public class OrderResponseDTO {
     public String toString() {
         return "OrderResponseDTO{" +
                 "orderId=" + orderId +
+                ", orderProductId=" + orderProductId +
                 ", orderDate=" + orderDate +
                 ", ekspedisiName='" + ekspedisiName + '\'' +
                 ", total=" + total +
