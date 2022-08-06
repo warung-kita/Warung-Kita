@@ -38,7 +38,11 @@ public class Product {
      private Integer regularPrice;
 
     private Integer quantity;
-    private String productPicture;
+    @OneToMany
+    @JoinTable(name = "photo_product",
+            joinColumns = @JoinColumn (name = "product_id"),
+            inverseJoinColumns = @JoinColumn (name = "photo_id" ))
+    private List<Photo> productPicture;
 
 
     public ProductResponseDTO convertToResponse(){

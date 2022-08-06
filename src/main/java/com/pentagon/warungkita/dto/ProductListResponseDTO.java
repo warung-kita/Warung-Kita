@@ -1,5 +1,6 @@
 package com.pentagon.warungkita.dto;
 
+import com.pentagon.warungkita.model.Product;
 import lombok.*;
 
 @Getter
@@ -8,13 +9,14 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ProductListResponseDTO {
-    private String sku;
-    private String nama;
-    private String deskripsi;
-    private Long status;
-    private Integer harga;
-    private Integer jumlah;
-    private String gambarProduct;
+    private Product product;
+//    private String sku;
+//    private String nama;
+//    private String deskripsi;
+//    private Long status;
+//    private Integer harga;
+//    private Integer jumlah;
+//    private String gambarProduct;
     private String namaUser;
     private String alamat;
     private String nomorHandphone;
@@ -22,13 +24,7 @@ public class ProductListResponseDTO {
     @Override
     public String toString() {
         return "ProductListResponseDTO{" +
-                "sku='" + sku + '\'' +
-                ", nama='" + nama + '\'' +
-                ", deskripsi='" + deskripsi + '\'' +
-                ", status=" + status +
-                ", harga=" + harga +
-                ", jumlah=" + jumlah +
-                ", gambarProduct='" + gambarProduct + '\'' +
+                "product=" + product +
                 ", namaUser='" + namaUser + '\'' +
                 ", alamat='" + alamat + '\'' +
                 ", nomorHandphone='" + nomorHandphone + '\'' +

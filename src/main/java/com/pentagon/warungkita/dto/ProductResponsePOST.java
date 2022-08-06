@@ -1,6 +1,7 @@
 package com.pentagon.warungkita.dto;
 
 import com.pentagon.warungkita.model.Categories;
+import com.pentagon.warungkita.model.Photo;
 import com.pentagon.warungkita.model.ProductStatus;
 import lombok.*;
 import java.util.List;
@@ -19,7 +20,7 @@ public class ProductResponsePOST {
     private ProductStatus status;
     private Integer harga;
     private Integer stok;
-    private String gambar;
+    private List<Photo> gambar;
     private String namaKategori;
 
     @Override
