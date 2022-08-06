@@ -2,26 +2,20 @@ package com.pentagon.warungkita.security.service;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.pentagon.warungkita.model.Roles;
 import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.UsersRepo;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.StringUtils;
 
-import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Data
 public class UserDetailsImpl implements UserDetails {
 
     private UsersRepo usersRepo;
-
     private String email;
     private String fullName;
     private String username;

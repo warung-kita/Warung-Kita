@@ -29,7 +29,7 @@ public class ProductListServiceImpl implements ProductListService {
     public Optional<ProductList> getProductListById(Long Id) throws ResourceNotFoundException {
         Optional<ProductList> optionalProductList = productListRepo.findById(Id);
         if(optionalProductList.isEmpty()){
-            throw new ResourceNotFoundException("Booking not exist with id " + Id);
+            throw new ResourceNotFoundException("Product List not exist with id " + Id);
         }
         return this.productListRepo.findById(Id);
     }
@@ -53,7 +53,7 @@ public class ProductListServiceImpl implements ProductListService {
     public ProductList updateProductList(ProductList productList) throws ResourceNotFoundException{
         Optional<ProductList> optionalProductList = productListRepo.findById(productList.getProductListId());
         if(optionalProductList.isEmpty()){
-            throw new ResourceNotFoundException("Booking not exist with id " + productList.getProductListId());
+            throw new ResourceNotFoundException("Product List not exist with id " + productList.getProductListId());
         }
         return this.productListRepo.save(productList);
     }

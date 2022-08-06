@@ -30,7 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         Optional<Payment> optionalPayment = paymentRepo.findById(Id);
         if(optionalPayment.isEmpty()){
-            throw new ResourceNotFoundException("Booking not exist with id " + Id);
+            throw new ResourceNotFoundException("Payment not exist with id " + Id);
         }
         return this.paymentRepo.findById(Id);
     }
@@ -55,7 +55,7 @@ public class PaymentServiceImpl implements PaymentService {
     public Payment updatePayment(Payment payment)throws ResourceNotFoundException {
         Optional<Payment> optionalPayment = paymentRepo.findById(payment.getPaymentId());
         if(optionalPayment.isEmpty()){
-            throw new ResourceNotFoundException("Booking not exist with id " + payment.getPaymentId());
+            throw new ResourceNotFoundException("Payment not exist with id " + payment.getPaymentId());
         }
         return this.paymentRepo.save(payment);
     }
