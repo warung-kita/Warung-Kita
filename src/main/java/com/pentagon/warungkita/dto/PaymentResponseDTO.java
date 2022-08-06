@@ -1,5 +1,6 @@
 package com.pentagon.warungkita.dto;
 
+import com.pentagon.warungkita.model.OrderProduct;
 import lombok.*;
 
 import java.math.BigDecimal;

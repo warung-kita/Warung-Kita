@@ -1,12 +1,17 @@
 package com.pentagon.warungkita.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.pentagon.warungkita.dto.OrderResponseDTO;
 import com.pentagon.warungkita.dto.OrderResponsePOST;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -24,6 +29,13 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "ekspedisi_id")
     private Ekspedisi ekspedisiId;
+
+    @OneToMany
+    @JoinTable(name = "order_order_products",
+            joinColumns = @JoinColumn (name = "order_id"),
+            inverseJoinColumns = @JoinColumn (name = "order_product_id" ))
+    private List<OrderProduct> orderProduct;
+
     private Integer total;
 
     @ManyToOne
@@ -33,6 +45,7 @@ public class Order {
     public OrderResponseDTO convertToResponse(){
         return OrderResponseDTO.builder()
                 .orderId(this.orderId)
+                .orderProductId(this.getOrderProduct())
                 .orderDate(this.orderDate)
                 .ekspedisiName(this.ekspedisiId.getName())
                 .total(this.total)
@@ -60,6 +73,7 @@ public class Order {
                 "orderId=" + orderId +
                 ", orderDate=" + orderDate +
                 ", ekspedisiId=" + ekspedisiId +
+                ", orderProduct=" + orderProduct +
                 ", total=" + total +
                 ", userId=" + userId +
                 '}';
