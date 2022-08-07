@@ -59,7 +59,7 @@ public class ProductListController {
             ProductListResponseDTO result = productListget.convertToResponse();
             logger.info("======== Logger Start Find Product List with ID "+id+ "  ========");
             logger.info("User :"+result.getNamaUser() );
-            logger.info("Product :"+result.getNama() );
+            logger.info("Product :"+result.getProduct());
             logger.info("==================== Logger End =================");
             return ResponseHandler.generateResponse("Success Get By Id",HttpStatus.OK,result);
         }catch(ResourceNotFoundException e){
@@ -102,7 +102,7 @@ public class ProductListController {
             ProductListResponseDTO results = updateList.convertToResponse();
             logger.info("======== Logger Start   ========");
             logger.info("User :"+results.getNamaUser());
-            logger.info("Product :"+results.getNama());
+            logger.info("Product :"+results.getProduct());
             logger.info("==================== Logger End =================");
             return ResponseHandler.generateResponse("Success Update Product List",HttpStatus.CREATED,results);
         }catch (Exception e){
