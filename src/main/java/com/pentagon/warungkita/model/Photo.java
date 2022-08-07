@@ -1,5 +1,6 @@
 package com.pentagon.warungkita.model;
 
+import com.pentagon.warungkita.dto.PhotoResponseDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,6 +19,13 @@ public class Photo {
     private Long photoId;
 
     private String photoName;
+
+    public PhotoResponseDTO convertToResponse(){
+        return PhotoResponseDTO.builder()
+                .kodeFoto(this.getPhotoId())
+                .namaFoto(this.getPhotoName())
+                .build();
+    }
 
     @Override
     public String toString() {

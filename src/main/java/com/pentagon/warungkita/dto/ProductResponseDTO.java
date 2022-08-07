@@ -21,21 +21,19 @@ public class ProductResponseDTO {
     private Integer harga;
     private Integer stok;
     private List<Photo> gambar;
-    private String namaKategori;
 
     @Override
     public String toString() {
         return "ProductResponseDTO{" +
-                "kodeProduk=" + kodeProduk +
-                ", sku='" + sku + '\'' +
-                ", namaProduk='" + namaProduk + '\'' +
-                ", kategori=" + kategori +
-                ", deskripsi='" + deskripsi + '\'' +
-                ", status=" + status +
-                ", harga=" + harga +
-                ", stok=" + stok +
-                ", gambar='" + gambar + '\'' +
-                ", namaKategori=" + namaKategori +
+                "Kode Produk = " + kodeProduk +
+                ", SKU = '" + sku + '\'' +
+                ", Nama Produk = '" + namaProduk + '\'' +
+                ", Kategori = " + kategori +
+                ", Deskripsi = '" + deskripsi + '\'' +
+                ", Status = " + status +
+                ", Harga = " + harga +
+                ", Stok = " + stok +
+                ", Gambar = " + gambar +
                 '}';
     }
 }
