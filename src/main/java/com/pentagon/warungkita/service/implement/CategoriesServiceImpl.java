@@ -46,7 +46,7 @@ public class CategoriesServiceImpl implements CategoriesService {
     public Categories updateCategories(Categories categories) {
         Optional<Categories> optionalCategories = categoriesRepo.findById(categories.getCategoriesId());
         if(optionalCategories.isEmpty()){
-            throw new ResourceNotFoundException("Booking not exist with id " + categories.getCategoriesId());
+            throw new ResourceNotFoundException("Categories not exist with id " + categories.getCategoriesId());
         }
         return this.categoriesRepo.save(categories);
     }
@@ -55,7 +55,7 @@ public class CategoriesServiceImpl implements CategoriesService {
     public void deleteCategories(Long categoriesId) {
         Optional<Categories> optionalCategories = categoriesRepo.findById(categoriesId);
         if(optionalCategories.isEmpty()){
-            throw new ResourceNotFoundException("Booking not exist with id " + categoriesId);
+            throw new ResourceNotFoundException("Categories not exist with id " + categoriesId);
         }
         Categories categories = categoriesRepo.getReferenceById(categoriesId);
         this.categoriesRepo.delete(categories);
