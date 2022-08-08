@@ -5,6 +5,8 @@ import com.pentagon.warungkita.model.ProductStatus;
 import com.pentagon.warungkita.repository.ProductStatusRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.ProductStatusService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,6 +22,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
+@SecurityRequirement(name = "bearer-key")
+@Tag(name = "9. Product Status")
 public class ProductStatusController {
 
     private static final Logger logger = LogManager.getLogger(ProductStatusController.class);

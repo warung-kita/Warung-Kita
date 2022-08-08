@@ -7,6 +7,8 @@ import com.pentagon.warungkita.model.Photo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.CategoriesService;
 import com.pentagon.warungkita.service.PhotoService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +23,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
+@SecurityRequirement(name = "bearer-key")
+@Tag(name = "8. Photo")
 public class PhotoController {
 
     private final PhotoService photoService;

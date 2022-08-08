@@ -8,6 +8,8 @@ import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.ProductList;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.ProductListService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +24,8 @@ import java.util.*;
 @RestController
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
-//@PreAuthorize("isAuthenticated()")
+@SecurityRequirement(name = "bearer-key")
+@Tag(name = "5. Product List")
 public class ProductListController {
 
     private static final Logger logger = LogManager.getLogger(ProductListController.class);

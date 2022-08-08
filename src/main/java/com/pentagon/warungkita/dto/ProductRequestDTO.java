@@ -30,7 +30,7 @@ public class ProductRequestDTO {
                 .categories(this.categories)
                 .description(this.description)
                 .productStatusId(this.productStatusId)
-                .regularPrice(this.regularPrice))
+                .regularPrice(this.regularPrice)
                 .quantity(this.quantity)
                 .productPicture(this.productPicture)
                 .build();
