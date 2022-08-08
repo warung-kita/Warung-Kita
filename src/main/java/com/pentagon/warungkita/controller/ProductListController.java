@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -21,7 +22,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
-@Slf4j
+//@PreAuthorize("isAuthenticated()")
 public class ProductListController {
 
     private static final Logger logger = LogManager.getLogger(ProductListController.class);
@@ -59,7 +60,7 @@ public class ProductListController {
             ProductListResponseDTO result = productListget.convertToResponse();
             logger.info("======== Logger Start Find Product List with ID "+id+ "  ========");
             logger.info("User :"+result.getNamaUser() );
-            logger.info("Product :"+result.getProduct());
+            logger.info("Product :"+result.getProduct().getProductName());
             logger.info("==================== Logger End =================");
             return ResponseHandler.generateResponse("Success Get By Id",HttpStatus.OK,result);
         }catch(ResourceNotFoundException e){
@@ -102,7 +103,7 @@ public class ProductListController {
             ProductListResponseDTO results = updateList.convertToResponse();
             logger.info("======== Logger Start   ========");
             logger.info("User :"+results.getNamaUser());
-            logger.info("Product :"+results.getProduct());
+            logger.info("Product :"+results.getProduct().getProductName());
             logger.info("==================== Logger End =================");
             return ResponseHandler.generateResponse("Success Update Product List",HttpStatus.CREATED,results);
         }catch (Exception e){

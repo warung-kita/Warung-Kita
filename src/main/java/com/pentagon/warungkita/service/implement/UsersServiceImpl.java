@@ -22,6 +22,26 @@ public class UsersServiceImpl implements UsersService {
     private final UsersRepo usersRepo;
     private final RolesRepo rolesRepo;
 
+
+
+    @Override
+    public Users findById(Long users_Id) {
+        return usersRepo.findById(users_Id)
+                .orElseThrow(() -> new ResourceNotFoundException("Pengguna dengan id " + users_Id + " tidak ditemukan"));
+
+    }
+
+//    @Override
+//    public Users findByUsername(String username) {
+//        Users users = usersRepo.findByUsername(username);
+//        if(users.username() == null){
+//            throw new ResourceNotFoundException("User not exist with id :");
+//        }
+//        return usersRepo.findByUsername(username);
+////                .orElseThrow(() -> new ResourceNotFoundException("Pengguna dengan usernam " + username + " tidak ditemukan"));
+//    }
+
+
     @Override
     public List<Users> getAll() {
         List<Users> users = usersRepo.findAll();

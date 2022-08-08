@@ -1,5 +1,6 @@
 package com.pentagon.warungkita.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pentagon.warungkita.dto.UsersResponseDTO;
 import lombok.*;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Entity
 @Builder
 @Table(name = "users")
+@Data
 public class Users {
 
     @Id
@@ -27,11 +29,16 @@ public class Users {
     private String phoneNum;
     private boolean active;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "user_roles",
     joinColumns = @JoinColumn (name = "user_id"),
     inverseJoinColumns = @JoinColumn (name = "role_id" ))
     private List<Roles> roles;
+
+    public Users(String username) {
+        this.username = username;
+    }
 
     public UsersResponseDTO convertToResponse(){
         return UsersResponseDTO.builder()
