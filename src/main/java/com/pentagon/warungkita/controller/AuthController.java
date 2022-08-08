@@ -46,15 +46,14 @@ public class AuthController {
         return ResponseEntity.ok().body(new JwtResponse(token, principal.getUsername(), principal.getEmail()));
     }
 
-//    @PostMapping("/signup")
-//    public Users signup(@RequestBody SignupRequest request) {
-//        Users users = new Users();
-//        users.setUsername(request.getUsername());
-//        users.setEmail(request.getEmail());
-//        users.setPassword(passwordEncoder.encode(request.getPassword()));
-//        users.set(request.getNama());
-//        users.setRoles("user");
-//        Pengguna created = penggunaService.create(pengguna);
-//        return created;
-//    }
+    @PostMapping("/signup")
+    public Users signup(@RequestBody SignupRequest request) {
+        Users users = new Users();
+        users.setUsername(request.getUsername());
+        users.setEmail(request.getEmail());
+        users.setPassword(passwordEncoder.encode(request.getPassword()));
+        users.setFullName(request.getNama());
+        Users created = usersService.createUser(users);
+        return created;
+    }
 }
