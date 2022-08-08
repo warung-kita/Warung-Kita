@@ -40,19 +40,17 @@ public class OrderProductController {
             for (OrderProduct dataOrder : orderList) {
                 Map<String, Object> order = new HashMap<>();
                 order.put("OrderProductID       : ", dataOrder.getOrderProductId());
-                order.put("OrederID       : ", dataOrder.getOrderId());
                 order.put("ProductID : ", dataOrder.getOrderProductId());
-                order.put("SKU    : ", dataOrder.getSku());
-                order.put("ProductName    : ", dataOrder.getProductName());
-                order.put("Description : ", dataOrder.getDescription());
-                order.put("Price : ", dataOrder.getPrice());
+//                order.put("SKU    : ", dataOrder.getSku());
+//                order.put("ProductName    : ", dataOrder.getProductName());
+//                order.put("Description : ", dataOrder.getDescription());
+//                order.put("Price : ", dataOrder.getPrice());
                 logger.info("OrderProductID       : " + dataOrder.getOrderProductId());
-                logger.info("OrederID       : " + dataOrder.getOrderId());
                 logger.info("ProductID : " + dataOrder.getProductId());
-                logger.info("SKU    : " + dataOrder.getSku());
-                logger.info("ProductName    : " + dataOrder.getProductName());
-                logger.info("Description : " + dataOrder.getDescription());
-                logger.info("Price : " + dataOrder.getPrice());
+//                logger.info("SKU    : " + dataOrder.getSku());
+//                logger.info("ProductName    : " + dataOrder.getProductName());
+//                logger.info("Description : " + dataOrder.getDescription());
+//                logger.info("Price : " + dataOrder.getPrice());
                 OrderProductResponseDTO orderResponseDTO = dataOrder.convertToResponse();
                 orderMaps.add(orderResponseDTO);
             }

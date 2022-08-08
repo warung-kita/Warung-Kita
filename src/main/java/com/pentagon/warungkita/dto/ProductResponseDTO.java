@@ -1,6 +1,7 @@
 package com.pentagon.warungkita.dto;
 
 import com.pentagon.warungkita.model.Categories;
+import com.pentagon.warungkita.model.Photo;
 import com.pentagon.warungkita.model.ProductStatus;
 import lombok.*;
 import java.util.List;
@@ -19,22 +20,20 @@ public class ProductResponseDTO {
     private ProductStatus status;
     private Integer harga;
     private Integer stok;
-    private String gambar;
-    private String namaKategori;
+    private List<Photo> gambar;
 
     @Override
     public String toString() {
         return "ProductResponseDTO{" +
-                "kodeProduk=" + kodeProduk +
-                ", sku='" + sku + '\'' +
-                ", namaProduk='" + namaProduk + '\'' +
-                ", kategori=" + kategori +
-                ", deskripsi='" + deskripsi + '\'' +
-                ", status=" + status +
-                ", harga=" + harga +
-                ", stok=" + stok +
-                ", gambar='" + gambar + '\'' +
-                ", namaKategori=" + namaKategori +
+                "Kode Produk = " + kodeProduk +
+                ", SKU = '" + sku + '\'' +
+                ", Nama Produk = '" + namaProduk + '\'' +
+                ", Kategori = " + kategori +
+                ", Deskripsi = '" + deskripsi + '\'' +
+                ", Status = " + status +
+                ", Harga = " + harga +
+                ", Stok = " + stok +
+                ", Gambar = " + gambar +
                 '}';
     }
 }

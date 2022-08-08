@@ -36,6 +36,7 @@ public class OrderController {
             List<Order> orderList = orderService.getAll();
             List<OrderResponseDTO> orderMaps = new ArrayList<>();
             logger.info("==================== Logger Start Get All Order Product     ====================");
+
             for (Order dataOrder : orderList) {
                 Map<String, Object> order = new HashMap<>();
                 order.put("OrederID       : ", dataOrder.getOrderId());
@@ -142,5 +143,6 @@ public class OrderController {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!");
         }
     }
+
 
 }

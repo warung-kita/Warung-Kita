@@ -43,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
     public Product updateProduct(Product product) throws ResourceNotFoundException {
         Optional<Product> optionalProduct = productRepo.findById(product.getProductId());
         if(optionalProduct.isEmpty()){
-            throw new ResourceNotFoundException("Booking not exist with id " + product.getProductId());
+            throw new ResourceNotFoundException("Product not exist with id " + product.getProductId());
         }
         return this.productRepo.save(product);
     }
@@ -52,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long productId) throws ResourceNotFoundException{
         Optional<Product> optionalProduct = productRepo.findById(productId);
         if(optionalProduct.isEmpty()){
-            throw new ResourceNotFoundException("Booking not exist with id " + productId);
+            throw new ResourceNotFoundException("Product not exist with id " + productId);
         }
         Product product = productRepo.getReferenceById(productId);
         this.productRepo.delete(product);
