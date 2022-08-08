@@ -15,8 +15,6 @@ public class Roles {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @OneToMany
-    @JoinTable(name ="user_roles")
     private Long roleId;
     private String name;
 
