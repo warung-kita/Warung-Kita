@@ -1,6 +1,7 @@
 package com.pentagon.warungkita.model;
 
 import com.pentagon.warungkita.dto.PhotoResponseDTO;
+
 import lombok.*;
 
 import javax.persistence.*;
