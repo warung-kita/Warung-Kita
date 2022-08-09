@@ -11,13 +11,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class OrderProductRequestDTO {
-    private Long orderProductId;
+//    private Long orderProductId;
     private Product productId;
     private Integer subtotal;
 
     public OrderProduct convertToEntity(){
         return OrderProduct.builder()
-                .orderProductId(this.orderProductId)
                 .productId(this.productId)
                 .subtotal(this.subtotal)
                 .build();
