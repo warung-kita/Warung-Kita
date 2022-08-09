@@ -1,5 +1,7 @@
 package com.pentagon.warungkita.dto;
 
+import com.pentagon.warungkita.model.Enum.BankList;
+import com.pentagon.warungkita.model.Enum.PaymentResponse;
 import com.pentagon.warungkita.model.Order;
 import com.pentagon.warungkita.model.Payment;
 import lombok.*;
@@ -17,8 +19,8 @@ public class PaymentRequestDTO {
     private LocalDate datePay;
     private BigDecimal amount;
     private String ccNum;
-    private String ccType;
-    private String response;
+    private BankList ccType;
+    private PaymentResponse response;
 
     public Payment convertToEntity(){
         return Payment.builder()

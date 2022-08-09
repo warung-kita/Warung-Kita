@@ -1,6 +1,8 @@
 package com.pentagon.warungkita.model;
 
 import com.pentagon.warungkita.dto.PaymentResponseDTO;
+import com.pentagon.warungkita.model.Enum.BankList;
+import com.pentagon.warungkita.model.Enum.PaymentResponse;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -29,11 +31,13 @@ public class Payment {
 
     private BigDecimal amount;
 
+    @Enumerated(EnumType.STRING)
+    private BankList ccType;
+
     private String ccNum;
 
-    private String ccType;
-
-    private String response;
+    @Enumerated(EnumType.STRING)
+    private PaymentResponse response;
 
     public PaymentResponseDTO convertToResponse(){
         return PaymentResponseDTO.builder().id_pembayaran(this.getPaymentId())

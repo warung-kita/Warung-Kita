@@ -37,7 +37,7 @@ public class WebSecurityConfig {
                 .and().csrf().disable().exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler)
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeRequests().antMatchers("/pentagon/warung-kita/**").permitAll()
+                .and().authorizeRequests().antMatchers("/**").permitAll()
                 .antMatchers("/pentagon/warung-kita/**").permitAll().anyRequest().authenticated();
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();

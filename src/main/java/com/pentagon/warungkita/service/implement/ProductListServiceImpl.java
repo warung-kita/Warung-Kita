@@ -62,4 +62,13 @@ public class ProductListServiceImpl implements ProductListService {
     public ProductList getReferenceById(Long Id) {
         return null;
     }
+
+//    @Override
+//    public List<ProductList> getWishlistByUsersId(Long Id) {
+//        List<ProductList> optionalProductList = productListRepo.getWishlistByUserId(Id);
+//        if(optionalProductList.isEmpty()){
+//            throw new ResourceNotFoundException("Wishlist not exist with Users Id " +Id);
+//        }
+//        return this.productListRepo.getWishlistByUserId(Id);
+//    }
 }

@@ -7,6 +7,8 @@ import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Order;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.OrderService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
@@ -17,10 +19,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-@RequestMapping("/pentagon/warung-kita")
+ @RequestMapping("/pentagon/warung-kita")
 @RestController
 @AllArgsConstructor
 @Slf4j
+@SecurityRequirement(name = "bearer-key")
+@Tag(name = "7. Order")
 public class OrderController {
 
     private static final Logger logger = LogManager.getLogger(OrderController.class);
