@@ -30,7 +30,9 @@ public class Product {
     private List<Categories> categories;
     private String description;
 
-
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Users users;
     @ManyToOne
     @JoinColumn(name = "product_status_id")
     private ProductStatus productStatusId;
@@ -56,6 +58,7 @@ public class Product {
                 .harga(this.getRegularPrice())
                 .stok(this.getQuantity())
                 .gambar(this.getProductPicture())
+                .userId(this.users.getUserId())
 //                .namaKategori(this.getCategories(getName()))
                 .build();
     }

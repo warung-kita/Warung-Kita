@@ -185,12 +185,12 @@ public class ProductController {
         }
     }
 
-    @PostMapping ResponseEntity<Object> findProductByCategory(@RequestBody Product product){
-        List<Product> test = productService.findByProductNameContaining(product.getProductName());
-        List<ProductResponseDTO> test2 = test.stream()
-                .map(Product::convertToResponse)
-                .collect(Collectors.toList());
-logger.info(test2);
-        return ResponseHandler.generateResponse("test",HttpStatus.OK,test2);
-    }
+//    @PostMapping ResponseEntity<Object> findProductByCategory(@RequestBody Product product){
+//        List<Product> test = productService.findByProductNameContaining(product.getProductName());
+//        List<ProductResponseDTO> test2 = test.stream()
+//                .map(Product::convertToResponse)
+//                .collect(Collectors.toList());
+//logger.info(test2);
+//        return ResponseHandler.generateResponse("test",HttpStatus.OK,test2);
+//    }
 }
