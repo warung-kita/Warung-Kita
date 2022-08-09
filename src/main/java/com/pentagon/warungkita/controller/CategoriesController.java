@@ -24,7 +24,7 @@ import java.util.Optional;
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "11. Categories")
+@Tag(name = "6.Categories")
 public class CategoriesController {
     private final CategoriesService categoriesService;
     private static final Logger logger = LogManager.getLogger(CategoriesController.class);

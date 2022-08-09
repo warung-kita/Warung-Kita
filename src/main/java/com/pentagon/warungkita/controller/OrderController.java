@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-@RequestMapping("/pentagon/warung-kita")
+ @RequestMapping("/pentagon/warung-kita")
 @RestController
 @AllArgsConstructor
 @Slf4j
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "4. Order")
+@Tag(name = "7. Order")
 public class OrderController {
 
     private static final Logger logger = LogManager.getLogger(OrderController.class);

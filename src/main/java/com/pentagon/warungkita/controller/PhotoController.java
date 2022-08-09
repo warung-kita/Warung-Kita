@@ -24,7 +24,7 @@ import java.util.Optional;
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "8. Photo")
+@Tag(name = "4.Photo")
 public class PhotoController {
 
     private final PhotoService photoService;

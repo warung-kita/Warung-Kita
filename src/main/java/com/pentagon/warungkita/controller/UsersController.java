@@ -17,14 +17,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-
-
 @RestController
 @AllArgsConstructor
 @Slf4j
 @RequestMapping("/pentagon/warung-kita")
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "2. Users")
+@Tag(name = "2.Users")
 public class UsersController {
 
     private static final Logger logger = LogManager.getLogger(UsersController.class);

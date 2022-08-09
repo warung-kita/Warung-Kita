@@ -21,7 +21,7 @@ import java.util.*;
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "3. Products")
+@Tag(name = "3.Products")
 public class ProductController {
     private final ProductService productService;
     private static final Logger logger = LogManager.getLogger(ProductController.class);

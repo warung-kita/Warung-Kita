@@ -21,7 +21,7 @@ import java.util.*;
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "10. Ekspedisi")
+@Tag(name = "Ekspedisi")
 public class EkspedisiController {
 
     private static final Logger logger = LogManager.getLogger(EkspedisiController.class);

@@ -26,9 +26,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "Sign Up/Login")
+@Tag(name = "1.Sign Up/Login")
 @OpenAPIDefinition(info = @Info(title = "WarungKita",
         description = "Build by PENTAGON"))
+@Tag(name ="1.Sign Up/Login")
 public class AuthController {
 
     @Autowired
