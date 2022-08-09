@@ -6,6 +6,8 @@ import com.pentagon.warungkita.model.Ekspedisi;
 import com.pentagon.warungkita.repository.EkspedisiRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.EkspedisiService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +20,8 @@ import java.util.*;
 @RestController
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
+@SecurityRequirement(name = "bearer-key")
+@Tag(name = "Ekspedisi")
 public class EkspedisiController {
 
     private static final Logger logger = LogManager.getLogger(EkspedisiController.class);

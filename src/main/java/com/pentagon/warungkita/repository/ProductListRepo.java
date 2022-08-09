@@ -1,6 +1,6 @@
 package com.pentagon.warungkita.repository;
 
-import com.pentagon.warungkita.model.ProductList;
+import com.pentagon.warungkita.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,6 +10,8 @@ import java.util.List;
 
 @Repository
 public interface ProductListRepo extends JpaRepository<ProductList, Long> {
-//    @Query("Select p from ProdukList p where p.user.username like %:username%")
-//    public List<ProductList> getBookingByFilmName(@Param("name")String name);
+//    @Query(value = "select * from product_list p where productListUsers.user_id =1", nativeQuery = true)
+//    public List<ProductList> getWishlistByUserId(@Param("Id")Long Id);
+//
+//    List<ProductList> findAllByUserIdOrderByCreatedDateDesc(Long userId);
 }

@@ -7,6 +7,8 @@ import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.OrderProduct;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.OrderProductService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
@@ -21,6 +23,8 @@ import java.util.*;
 @RestController
 @AllArgsConstructor
 @Slf4j
+@SecurityRequirement(name = "bearer-key")
+@Tag(name = "8.Order Product")
 public class OrderProductController {
 
     private static final Logger logger = LogManager.getLogger(OrderProductController.class);

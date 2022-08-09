@@ -8,13 +8,13 @@ import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.ProductList;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.ProductListService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -22,7 +22,8 @@ import java.util.*;
 @RestController
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
-//@PreAuthorize("isAuthenticated()")
+@SecurityRequirement(name = "bearer-key")
+@Tag(name = "5.Product List")
 public class ProductListController {
 
     private static final Logger logger = LogManager.getLogger(ProductListController.class);
@@ -130,4 +131,24 @@ public class ProductListController {
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
     }
+
+//    @PostMapping("product_list/find/{id}")
+//    public ResponseEntity<Object> findWishListByUserId(@RequestBody Users users){
+//        try {
+//            List<ProductList> produkListByUserId = productListService.getWishlistByUsersId(users.getUserId());
+//            List<ProductListResponseDTO> productListResponseDTOS = produkListByUserId.stream()
+//                    .map(ProductList::convertToResponse)
+//                    .collect(Collectors.toList());
+//
+//            logger.info("Success Query By User Id : " +productListResponseDTOS);
+//
+//            return ResponseHandler.generateResponse("Succes Query By User Id",HttpStatus.OK,productListResponseDTOS);
+//        }catch (Exception e){
+//
+//            logger.error(e.getMessage());
+//
+//            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.BAD_REQUEST,"Failed Query By User Id");
+//        }
+//
+//    }
 }

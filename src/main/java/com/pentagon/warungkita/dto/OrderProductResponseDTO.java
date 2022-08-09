@@ -13,6 +13,7 @@ import java.util.Date;
 public class OrderProductResponseDTO {
     private Long orderProductId;
     private Long productId;
+    private  Integer quantity;
     private Number subtotal;;
 //    private Long order;
 //    @JsonFormat(pattern = "yyyy-MM-dd")
@@ -25,12 +26,12 @@ public class OrderProductResponseDTO {
 //    private String phoneNum;
 //    private String profilPicture;
 
-
     @Override
     public String toString() {
         return "OrderProductResponseDTO{" +
                 "orderProductId=" + orderProductId +
                 ", productId=" + productId +
+                ", quantity=" + quantity +
                 ", subtotal=" + subtotal +
                 '}';
     }

@@ -1,6 +1,7 @@
 package com.pentagon.warungkita.dto;
 
-import com.pentagon.warungkita.model.OrderProduct;
+import com.pentagon.warungkita.model.Enum.BankList;
+import com.pentagon.warungkita.model.Enum.PaymentResponse;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -17,8 +18,8 @@ public class PaymentResponseDTO {
     private LocalDate tanggal_bayar;
     private BigDecimal total;
     private String nomor_kartu;
-    private String tipe_kartu;
-    private String status;
+    private BankList tipe_kartu;
+    private PaymentResponse status;
 
     @Override
     public String toString() {

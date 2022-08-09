@@ -12,4 +12,5 @@ public interface ProductListService {
     void deleteProductListById(Long Id);
     ProductList updateProductList(ProductList productList);
     ProductList getReferenceById (Long Id);
+//    List<ProductList> getWishlistByUserId(String name);
 }
