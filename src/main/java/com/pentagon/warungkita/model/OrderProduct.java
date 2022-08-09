@@ -23,6 +23,7 @@ public class OrderProduct {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product productId;
+    private Integer quantity;
     private Integer subtotal;
 
 
@@ -30,6 +31,7 @@ public class OrderProduct {
         return OrderProductResponseDTO.builder()
                 .orderProductId(this.orderProductId)
                 .productId(this.productId.getProductId())
+                .quantity(this.quantity)
                 .subtotal(this.subtotal)
                 .build();
     }
@@ -37,6 +39,7 @@ public class OrderProduct {
     public OrderProductResponsePOST convertToResponsePOST(){
         return OrderProductResponsePOST.builder()
                 .productId(this.productId.getProductId())
+                .quantity(this.quantity)
                 .subtotal(this.subtotal)
                 .build();
     }
@@ -46,6 +49,7 @@ public class OrderProduct {
         return "OrderProduct{" +
                 "orderProductId=" + orderProductId +
                 ", productId=" + productId +
+                ", quantity=" + quantity +
                 ", subtotal=" + subtotal +
                 '}';
     }

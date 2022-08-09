@@ -9,12 +9,14 @@ import lombok.*;
 @Builder
 public class OrderProductResponsePOST {
     private Long productId;
+    private Integer quantity;
     private Integer subtotal;
 
     @Override
     public String toString() {
         return "OrderProductResponsePOST{" +
                 "productId=" + productId +
+                ", quantity=" + quantity +
                 ", subtotal=" + subtotal +
                 '}';
     }
