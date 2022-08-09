@@ -2,6 +2,7 @@ package com.pentagon.warungkita.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pentagon.warungkita.dto.UsersResponseDTO;
+import com.pentagon.warungkita.dto.UsersResponsePOST;
 import lombok.*;
 
 import javax.persistence.*;
@@ -40,6 +41,13 @@ public class Users {
         this.username = username;
     }
 
+    public Users(String fullName, String username, String email, String password) {
+        this.fullName = fullName;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+
     public UsersResponseDTO convertToResponse(){
         return UsersResponseDTO.builder()
                 .role(this.roles)
@@ -52,6 +60,13 @@ public class Users {
                 .nomor_tlp(this.phoneNum)
                 .foto(this.profilPicture)
                 .status(this.active)
+                .build();
+    }
+
+    public UsersResponsePOST convertToResponsePOST(){
+        return UsersResponsePOST.builder()
+                .email(this.email)
+                .username(this.username)
                 .build();
     }
 
