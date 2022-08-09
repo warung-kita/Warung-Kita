@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pentagon/warung-kita")
@@ -182,5 +183,14 @@ public class ProductController {
             logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
+    }
+
+    @PostMapping ResponseEntity<Object> findProductByCategory(@RequestBody Product product){
+        List<Product> test = productService.findByProductNameContaining(product.getProductName());
+        List<ProductResponseDTO> test2 = test.stream()
+                .map(Product::convertToResponse)
+                .collect(Collectors.toList());
+logger.info(test2);
+        return ResponseHandler.generateResponse("test",HttpStatus.OK,test2);
     }
 }

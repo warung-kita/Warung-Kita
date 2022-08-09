@@ -1,6 +1,7 @@
 package com.pentagon.warungkita.service.implement;
 
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
+import com.pentagon.warungkita.model.Product;
 import com.pentagon.warungkita.model.ProductList;
 import com.pentagon.warungkita.repository.ProductListRepo;
 import com.pentagon.warungkita.service.ProductListService;
@@ -61,6 +62,13 @@ public class ProductListServiceImpl implements ProductListService {
     @Override
     public ProductList getReferenceById(Long Id) {
         return null;
+    }
+
+    @Override
+    public List<ProductList> findByUserRolesNameContaining(String name) {
+        List<ProductList> productLists = productListRepo.findByUserRolesNameContaining(name);
+
+        return this.productListRepo.findByUserRolesNameContaining(name);
     }
 
 //    @Override

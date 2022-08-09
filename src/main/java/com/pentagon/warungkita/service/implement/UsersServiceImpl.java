@@ -8,6 +8,7 @@ import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.service.UsersService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,8 +22,7 @@ public class UsersServiceImpl implements UsersService {
 
     private final UsersRepo usersRepo;
     private final RolesRepo rolesRepo;
-
-
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Users findById(Long users_Id) {
@@ -30,17 +30,6 @@ public class UsersServiceImpl implements UsersService {
                 .orElseThrow(() -> new ResourceNotFoundException("Pengguna dengan id " + users_Id + " tidak ditemukan"));
 
     }
-
-//    @Override
-//    public Users findByUsername(String username) {
-//        Users users = usersRepo.findByUsername(username);
-//        if(users.username() == null){
-//            throw new ResourceNotFoundException("User not exist with id :");
-//        }
-//        return usersRepo.findByUsername(username);
-////                .orElseThrow(() -> new ResourceNotFoundException("Pengguna dengan usernam " + username + " tidak ditemukan"));
-//    }
-
 
     @Override
     public List<Users> getAll() {
@@ -58,7 +47,9 @@ public class UsersServiceImpl implements UsersService {
             List<Roles> roles = new ArrayList<>();
             roles.add(role);
             users.setRoles(roles);
+            users.setActive(true);
         }
+        users.setPassword(passwordEncoder.encode(users.getPassword()));
         return this.usersRepo.save(users);
     }
 

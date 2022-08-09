@@ -4,7 +4,9 @@ package com.pentagon.warungkita.controller;
 import com.pentagon.warungkita.dto.ProductListRequestDTO;
 import com.pentagon.warungkita.dto.ProductListResponseDTO;
 import com.pentagon.warungkita.dto.ProductListResponsePOST;
+import com.pentagon.warungkita.dto.ProductResponseDTO;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
+import com.pentagon.warungkita.model.Product;
 import com.pentagon.warungkita.model.ProductList;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.ProductListService;
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pentagon/warung-kita")
@@ -151,4 +154,13 @@ public class ProductListController {
 //        }
 //
 //    }
+
+    @PostMapping ResponseEntity<Object> findProductByCategory(@RequestBody String roles){
+        List<ProductList> test = productListService.findByUserRolesNameContaining(roles);
+        List<ProductListResponseDTO> test2 = test.stream()
+                .map(ProductList::convertToResponse)
+                .collect(Collectors.toList());
+        logger.info(test2);
+        return ResponseHandler.generateResponse("test",HttpStatus.OK,test2);
+    }
 }

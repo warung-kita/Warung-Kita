@@ -13,29 +13,29 @@ import java.util.List;
 public class UsersResponseDTO {
 
     private List<Roles> role;
-    private Long id_akun;
-    private String nama_lengkap;
-    private String nama;
+    private Long userId;
+    private String fullName;
     private String email;
-    private String alamat;
-    private String sandi;
-    private String nomor_tlp;
-    private String foto;
-    private boolean status;
+    private String username;
+    private String password;
+    private String address;
+    private String profilPicture;
+    private String phoneNum;
+    private boolean active;
 
     @Override
     public String toString() {
         return "UsersResponseDTO{" +
                 "role=" + role +
-                ", id_akun=" + id_akun +
-                ", nama_lengkap='" + nama_lengkap + '\'' +
-                ", nama='" + nama + '\'' +
+                ", userId=" + userId +
+                ", fullName='" + fullName + '\'' +
                 ", email='" + email + '\'' +
-                ", alamat='" + alamat + '\'' +
-                ", sandi='" + sandi + '\'' +
-                ", nomor_tlp='" + nomor_tlp + '\'' +
-                ", foto='" + foto + '\'' +
-                ", status=" + status +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", address='" + address + '\'' +
+                ", profilPicture='" + profilPicture + '\'' +
+                ", phoneNum='" + phoneNum + '\'' +
+                ", active=" + active +
                 '}';
     }
 }

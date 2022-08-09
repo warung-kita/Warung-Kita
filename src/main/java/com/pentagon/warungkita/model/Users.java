@@ -51,15 +51,15 @@ public class Users {
     public UsersResponseDTO convertToResponse(){
         return UsersResponseDTO.builder()
                 .role(this.roles)
-                .id_akun(this.userId)
-                .nama_lengkap(this.fullName)
-                .nama(this.username)
+                .userId(this.userId)
+                .fullName(this.fullName)
+                .username(this.username)
                 .email(this.email)
-                .alamat(this.address)
-                .sandi(this.password)
-                .nomor_tlp(this.phoneNum)
-                .foto(this.profilPicture)
-                .status(this.active)
+                .address(this.address)
+                .password(this.password)
+                .phoneNum(this.phoneNum)
+                .profilPicture(this.profilPicture)
+                .active(this.active)
                 .build();
     }
 

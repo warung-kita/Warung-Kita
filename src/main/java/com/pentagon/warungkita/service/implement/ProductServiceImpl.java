@@ -57,4 +57,11 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepo.getReferenceById(productId);
         this.productRepo.delete(product);
     }
+
+    @Override
+    public List<Product> findByProductNameContaining(String productName) {
+        List<Product> products = productRepo.findByProductNameContaining(productName);
+
+        return this.productRepo.findByProductNameContaining(productName);
+    }
 }

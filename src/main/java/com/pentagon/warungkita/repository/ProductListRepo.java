@@ -14,4 +14,5 @@ public interface ProductListRepo extends JpaRepository<ProductList, Long> {
 //    public List<ProductList> getWishlistByUserId(@Param("Id")Long Id);
 //
 //    List<ProductList> findAllByUserIdOrderByCreatedDateDesc(Long userId);
+    public List<ProductList> findByUserRolesNameContaining(String name);
 }

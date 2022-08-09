@@ -11,4 +11,5 @@ public interface ProductService {
     Product createProduct(Product product);
     Product updateProduct(Product product);
     void deleteProduct(Long productId);
+    List<Product> findByProductNameContaining(String productName);
 }

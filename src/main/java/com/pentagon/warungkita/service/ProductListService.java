@@ -13,4 +13,5 @@ public interface ProductListService {
     ProductList updateProductList(ProductList productList);
     ProductList getReferenceById (Long Id);
 //    List<ProductList> getWishlistByUserId(String name);
+    List<ProductList> findByUserRolesNameContaining(String name);
 }
