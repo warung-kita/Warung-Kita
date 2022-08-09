@@ -28,11 +28,11 @@ insert into product_statuses (name)
 values( 'Avalilable'),
 ( 'Sold Out');
 
-insert into products (sku, product_name , description, product_status_id, regular_price, quantity)
-values ('AD3412341ASDA','Minyak Goreng','Minyak Goreng 2 Liter', 1 , '35000',10),
-('ASDA3243425','GULAKU','Gula Pasir 1 kg', 1 , '15000',10),
-('FGH346T3545','Taro','Snack Ringan', 1 , '2000',10),
-('JHYF5465343','Sabun Lifeboy','Sabun Mandi', 1 , '4000',10);
+insert into products (sku, product_name , description, product_status_id, regular_price, quantity, user_id)
+values ('AD3412341ASDA','Minyak Goreng','Minyak Goreng 2 Liter', 1 , '35000',10, 1),
+('ASDA3243425','GULAKU','Gula Pasir 1 kg', 1 , '15000',10, 1),
+('FGH346T3545','Taro','Snack Ringan', 1 , '2000',10, 1),
+('JHYF5465343','Sabun Lifeboy','Sabun Mandi', 1 , '4000',10, 1);
 
 insert into photos (photo_name)
 values ('Minyak-Goreng.jpg'),
@@ -58,7 +58,7 @@ values ('2022-08-08 00:10:00','1','150000', 1 ),
 
 
 insert into payment (order_id, date_pay , amount, cc_num, cc_type,response)
-values (1,'2022-08-08 00:10:00','150000','231241421423','VISA','OK');
+values (1,'2022-08-08 00:10:00','150000','231241421423','BANK_BRI','PAYMENT_SUCCES');
 
 insert into product_categories (categories_id, product_id)
 values(1,1),
@@ -66,16 +66,14 @@ values(1,1),
 (3,2),
 (4,3);
 
+insert into order_products (quantity, subtotal, product_id)
+values (2,70000,1);
+
 insert into order_order_products (order_id, order_product_id) 
 values(1,1);
 
 
---insert into order_products (quantity, subtotal, product_id)
---values ('2' '70000',1);
-
-insert into order_products (subtotal, product_id)
-values ('70000',1);
 
 
-insert into product_list (user_id, product_id) 
+insert into wishlist (user_id, product_id) 
 values(1,1);
