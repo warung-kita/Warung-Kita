@@ -7,6 +7,7 @@ import com.pentagon.warungkita.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,5 +64,11 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepo.findByProductNameContaining(productName);
 
         return this.productRepo.findByProductNameContaining(productName);
+    }
+
+    @Override
+    public List<Product> findByUsersUsernameContaining(String userName) {
+        List<Product> products = productRepo.findByUsersUsernameContaining(userName);
+        return this.productRepo.findByUsersUsernameContaining(userName);
     }
 }

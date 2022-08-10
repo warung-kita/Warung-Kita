@@ -12,4 +12,5 @@ public interface PaymentService {
     void deletePaymentById(Long Id);
     Payment updatePayment(Payment payment);
     Payment getReferenceById (Long Id);
+    List<Payment> findByOrderUserIdUsernameContaining(String userName);
 }

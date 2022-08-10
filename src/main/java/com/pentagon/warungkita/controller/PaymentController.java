@@ -27,6 +27,13 @@ public class PaymentController {
     private static final Logger logger = LogManager.getLogger(PaymentController.class);
     private PaymentService paymentService;
 
+    @GetMapping("/payment/histori/username")
+    public ResponseEntity<Object> findByUsername(@RequestParam String username) {
+        List<Payment> payments = paymentService.findByOrderUserIdUsernameContaining(username);
+        return ResponseHandler.generateResponse("payment",HttpStatus.OK, payments);
+    }
+
+
     @GetMapping("/payment/all")
     public ResponseEntity<Object> findAll(){
         try{

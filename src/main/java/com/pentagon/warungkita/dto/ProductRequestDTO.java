@@ -1,9 +1,6 @@
 package com.pentagon.warungkita.dto;
 
-import com.pentagon.warungkita.model.Categories;
-import com.pentagon.warungkita.model.Photo;
-import com.pentagon.warungkita.model.Product;
-import com.pentagon.warungkita.model.ProductStatus;
+import com.pentagon.warungkita.model.*;
 import lombok.*;
 
 import java.util.List;
@@ -22,8 +19,9 @@ public class ProductRequestDTO {
     private Integer regularPrice;
     private Integer quantity;
     private List<Photo> productPicture;
+    private Long userId;
 
-    public Product convertToEntity(){
+    public Product convertToEntity(Users users){
         return Product.builder()
                 .sku(this.sku)
                 .productName(this.productName)
@@ -33,6 +31,7 @@ public class ProductRequestDTO {
                 .regularPrice(this.regularPrice)
                 .quantity(this.quantity)
                 .productPicture(this.productPicture)
+                .users(users)
                 .build();
     }
 }

@@ -15,5 +15,7 @@ public interface ProductRepo extends JpaRepository<Product, Long> {
 //    @Query(value = "select p2.quantity,p2.regular_price from products p2 where p2.product_name like %product_name%",nativeQuery = true)
 //    public List<Product> findProductByCategory(@Param("product_name")String product_name);
     public List<Product> findByProductNameContaining(String productName);
+    public List<Product> findByUsersUsernameContaining(String userName);
+    public List<Product> findByUsersUserId(Long userId);
 
 }
