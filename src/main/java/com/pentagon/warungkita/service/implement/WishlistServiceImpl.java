@@ -70,6 +70,14 @@ public class WishlistServiceImpl implements WishlistService {
         return this.wishlistRepo.findByUserRolesNameContaining(name);
     }
 
+    @Override
+    public List<Wishlist> findByUserUsernameContaining(String userName) {
+        List<Wishlist> wishlists = wishlistRepo.findByUserUsernameContaining(userName);
+        return this.wishlistRepo.findByUserUsernameContaining(userName);
+    }
+
+
+
 //    @Override
 //    public List<ProductList> getWishlistByUsersId(Long Id) {
 //        List<ProductList> optionalProductList = productListRepo.getWishlistByUserId(Id);

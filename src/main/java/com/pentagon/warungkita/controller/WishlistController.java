@@ -15,24 +15,25 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "5.Product List")
+@Tag(name = "5.Wishlist")
 public class WishlistController {
 
     private static final Logger logger = LogManager.getLogger(WishlistController.class);
     private WishlistService wishlistService;
 
 
-    @GetMapping("/product_list/all")
-    public ResponseEntity<Object> findAllProductList(){
+    @GetMapping("/wishlist/all")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> findAllWishlist(){
         try{
             List<Wishlist> wishlists = wishlistService.getAllProductList();
             List<WishlistResponseDTO> productListmaps = new ArrayList<>();
@@ -54,8 +55,9 @@ public class WishlistController {
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Table has no value");
         }
     }
-    @GetMapping("/product_list/{id}")
-    public ResponseEntity<Object> getProductListById(@PathVariable Long id){
+    @GetMapping("/wishlist/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> getWishlistById(@PathVariable Long id){
         try {
             Optional<Wishlist> productList = wishlistService.getProductListById(id);
             Wishlist productListget = productList.get();
@@ -72,7 +74,8 @@ public class WishlistController {
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
     }
-    @PostMapping("/product_list/create")
+    @PostMapping("/wishlist/create")
+    @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> productListCreate(@RequestBody WishlistRequestDTO wishlistRequestDTO){
         try{
             if(wishlistRequestDTO.getProduct() == null || wishlistRequestDTO.getUser() == null){
@@ -93,7 +96,8 @@ public class WishlistController {
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.BAD_REQUEST,"Failed Create Database");
         }
     }
-    @PutMapping("/product_list/update/{id}")
+    @PutMapping("/wishlist/update/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> produkListUpdate(@PathVariable Long id, @RequestBody WishlistRequestDTO wishlistRequestDTO){
         try {
             if(wishlistRequestDTO.getProduct() == null || wishlistRequestDTO.getUser() == null){
@@ -115,7 +119,8 @@ public class WishlistController {
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.BAD_REQUEST,"Bad Request");
         }
     }
-    @DeleteMapping("product_list/delete/{id}")
+    @DeleteMapping("wishlist/delete/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> deleteProductList(@PathVariable Long id){
         try {
             wishlistService.deleteProductListById(id);
@@ -153,12 +158,13 @@ public class WishlistController {
 //
 //    }
 
-    @PostMapping ResponseEntity<Object> findProductByCategory(@RequestBody String roles){
-        List<Wishlist> test = wishlistService.findByUserRolesNameContaining(roles);
-        List<WishlistResponseDTO> test2 = test.stream()
-                .map(Wishlist::convertToResponse)
-                .collect(Collectors.toList());
-        logger.info(test2);
-        return ResponseHandler.generateResponse("test",HttpStatus.OK,test2);
+    @GetMapping("/wishlist/username")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> findWishlistByUserName(@RequestParam String userName){
+        List<Wishlist> test = wishlistService.findByUserUsernameContaining(userName);
+//        List<WishlistResponseDTO> test2 = test.stream()
+//                .map(Wishlist::convertToResponse)
+//                .collect(Collectors.toList());
+        return ResponseHandler.generateResponse("test",HttpStatus.OK,test);
     }
 }

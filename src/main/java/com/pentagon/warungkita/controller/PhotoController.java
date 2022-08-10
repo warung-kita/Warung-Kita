@@ -2,10 +2,8 @@ package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Categories;
 import com.pentagon.warungkita.model.Photo;
 import com.pentagon.warungkita.response.ResponseHandler;
-import com.pentagon.warungkita.service.CategoriesService;
 import com.pentagon.warungkita.service.PhotoService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ public class PhotoController {
 
 
     @GetMapping("/photos/all")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> findAll() {
         try {
             List<Photo> photo = photoService.getAll();
@@ -57,6 +57,7 @@ public class PhotoController {
 
 
     @GetMapping("/photo/{photoId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> getPhotoById(@PathVariable Long photoId){
         try {
             Optional<Photo> photo = photoService.getPhotoById(photoId);
@@ -77,6 +78,7 @@ public class PhotoController {
 
 
     @PostMapping("/photo/add")
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> createPhoto(@RequestBody PhotoRequestDTO photoRequestDTO){
         try{
             if(photoRequestDTO.getPhotoName() == null) {
@@ -100,6 +102,7 @@ public class PhotoController {
 
 
     @PutMapping("/photo/update/{photoId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> updatePhoto(@PathVariable Long photoId, @RequestBody PhotoRequestDTO photoRequestDTO){
         try {
             Photo photo = photoRequestDTO.convertToEntity();
@@ -121,6 +124,7 @@ public class PhotoController {
 
 
     @DeleteMapping("photo/delete/{photoId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> deletePhoto(@PathVariable Long photoId){
         try {
             photoService.deletePhoto(photoId);

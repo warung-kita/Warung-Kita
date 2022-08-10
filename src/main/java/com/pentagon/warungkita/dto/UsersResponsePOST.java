@@ -1,9 +1,6 @@
 package com.pentagon.warungkita.dto;
 
-import com.pentagon.warungkita.model.Roles;
 import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Setter
