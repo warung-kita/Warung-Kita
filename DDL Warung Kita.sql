@@ -9,14 +9,14 @@ $$ LANGUAGE plpgsql;
 
 create table users (
    user_id serial NOT NULL,
-	address varchar(255) not NULL,
+	address varchar(255) NULL,
 	email varchar(255) not NULL,
 	full_name varchar(255) not NULL,
 	"password" varchar(255) not NULL,
-	phone_num varchar(255) not NULL,
+	phone_num varchar(255) NULL,
 	profil_picture varchar(255) NULL,
 	username varchar(255) not NULL,
-   active bool default false,
+   active bool default true,
    inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    constraint pk_users primary key (user_id)
@@ -82,10 +82,12 @@ create table products (
    product_status_id integer not null ,
    regular_price numeric default 0,
    quantity  integer default 0,
+   user_id integer not null ,
    inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
    constraint pk_products primary key (product_id),
-   foreign key (product_status_id) references product_statuses (product_status_id)
+   foreign key (product_status_id) references product_statuses (product_status_id),
+   foreign key (user_id) references users (user_id)
 )   ;
 CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON products
@@ -103,6 +105,7 @@ CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON photos
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
+
 
 create table user_roles (
 	user_roles_id serial not null,
@@ -197,8 +200,8 @@ BEFORE UPDATE ON order_products
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-create table product_list(
-	product_list_id serial not null,
+create table wishlist(
+	wishlist_id serial not null,
 	user_id integer not null,
 	product_id integer not null,
 	 inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

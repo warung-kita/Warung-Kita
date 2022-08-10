@@ -1,13 +1,13 @@
 package com.pentagon.warungkita.controller;
 
 
-import com.pentagon.warungkita.dto.ProductListRequestDTO;
-import com.pentagon.warungkita.dto.ProductListResponseDTO;
-import com.pentagon.warungkita.dto.ProductListResponsePOST;
+import com.pentagon.warungkita.dto.WishlistRequestDTO;
+import com.pentagon.warungkita.dto.WishlistResponseDTO;
+import com.pentagon.warungkita.dto.WishlistResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.ProductList;
+import com.pentagon.warungkita.model.Wishlist;
 import com.pentagon.warungkita.response.ResponseHandler;
-import com.pentagon.warungkita.service.ProductListService;
+import com.pentagon.warungkita.service.WishlistService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -18,28 +18,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearer-key")
 @Tag(name = "5.Product List")
-public class ProductListController {
+public class WishlistController {
 
-    private static final Logger logger = LogManager.getLogger(ProductListController.class);
-    private ProductListService productListService;
+    private static final Logger logger = LogManager.getLogger(WishlistController.class);
+    private WishlistService wishlistService;
 
 
     @GetMapping("/product_list/all")
     public ResponseEntity<Object> findAllProductList(){
         try{
-            List<ProductList> productLists = productListService.getAllProductList();
-            List<ProductListResponseDTO> productListmaps = new ArrayList<>();
+            List<Wishlist> wishlists = wishlistService.getAllProductList();
+            List<WishlistResponseDTO> productListmaps = new ArrayList<>();
             logger.info("==================== Logger Start Get All Product List ====================");
-            for(ProductList dataresult:productLists){
-                ProductListResponseDTO productListResponseDTO = dataresult.convertToResponse();
-                productListmaps.add(productListResponseDTO);
-                logger.info("code :"+dataresult.getProductListId());
+            for(Wishlist dataresult: wishlists){
+                WishlistResponseDTO wishlistResponseDTO = dataresult.convertToResponse();
+                productListmaps.add(wishlistResponseDTO);
+                logger.info("code :"+dataresult.getWishlistId());
                 logger.info("User :"+dataresult.getUser() );
                 logger.info("Product :"+dataresult.getProduct() );
                 logger.info("------------------------------------");
@@ -56,9 +57,9 @@ public class ProductListController {
     @GetMapping("/product_list/{id}")
     public ResponseEntity<Object> getProductListById(@PathVariable Long id){
         try {
-            Optional<ProductList> productList = productListService.getProductListById(id);
-            ProductList productListget = productList.get();
-            ProductListResponseDTO result = productListget.convertToResponse();
+            Optional<Wishlist> productList = wishlistService.getProductListById(id);
+            Wishlist productListget = productList.get();
+            WishlistResponseDTO result = productListget.convertToResponse();
             logger.info("======== Logger Start Find Product List with ID "+id+ "  ========");
             logger.info("User :"+result.getNamaUser() );
             logger.info("Product :"+result.getProduct().getProductName());
@@ -72,17 +73,17 @@ public class ProductListController {
         }
     }
     @PostMapping("/product_list/create")
-    public ResponseEntity<Object> productListCreate(@RequestBody ProductListRequestDTO productListRequestDTO){
+    public ResponseEntity<Object> productListCreate(@RequestBody WishlistRequestDTO wishlistRequestDTO){
         try{
-            if(productListRequestDTO.getProduct() == null || productListRequestDTO.getUser() == null){
+            if(wishlistRequestDTO.getProduct() == null || wishlistRequestDTO.getUser() == null){
                 throw new ResourceNotFoundException("Product List must have product id and user id");
             }
-            ProductList productList = productListRequestDTO.convertToEntity();
-            productListService.createProductList(productList);
-            ProductListResponsePOST result = productList.convertToResponsePost();
+            Wishlist wishlist = wishlistRequestDTO.convertToEntity();
+            wishlistService.createProductList(wishlist);
+            WishlistResponsePOST result = wishlist.convertToResponsePost();
             logger.info("======== Logger Start   ========");
-            logger.info("User :"+productList.getUser() );
-            logger.info("Product :"+productList.getProduct());
+            logger.info("User :"+ wishlist.getUser() );
+            logger.info("Product :"+ wishlist.getProduct());
             logger.info("==================== Logger End =================");
             return ResponseHandler.generateResponse("Success Create Product List",HttpStatus.CREATED,result);
         }catch (Exception e){
@@ -93,15 +94,15 @@ public class ProductListController {
         }
     }
     @PutMapping("/product_list/update/{id}")
-    public ResponseEntity<Object> produkListUpdate(@PathVariable Long id, @RequestBody ProductListRequestDTO productListRequestDTO){
+    public ResponseEntity<Object> produkListUpdate(@PathVariable Long id, @RequestBody WishlistRequestDTO wishlistRequestDTO){
         try {
-            if(productListRequestDTO.getProduct() == null || productListRequestDTO.getUser() == null){
+            if(wishlistRequestDTO.getProduct() == null || wishlistRequestDTO.getUser() == null){
                 throw new ResourceNotFoundException("Product List must have product id and user id");
             }
-            ProductList productList = productListRequestDTO.convertToEntity();
-            productList.setProductListId(id);
-            ProductList updateList = productListService.updateProductList(productList);
-            ProductListResponseDTO results = updateList.convertToResponse();
+            Wishlist wishlist = wishlistRequestDTO.convertToEntity();
+            wishlist.setWishlistId(id);
+            Wishlist updateList = wishlistService.updateProductList(wishlist);
+            WishlistResponseDTO results = updateList.convertToResponse();
             logger.info("======== Logger Start   ========");
             logger.info("User :"+results.getNamaUser());
             logger.info("Product :"+results.getProduct().getProductName());
@@ -117,7 +118,7 @@ public class ProductListController {
     @DeleteMapping("product_list/delete/{id}")
     public ResponseEntity<Object> deleteProductList(@PathVariable Long id){
         try {
-            productListService.deleteProductListById(id);
+            wishlistService.deleteProductListById(id);
             Map<String, Boolean> response = new HashMap<>();
             response.put("deleted", Boolean.TRUE);
             logger.info("======== Logger Start   ========");
@@ -151,4 +152,13 @@ public class ProductListController {
 //        }
 //
 //    }
+
+    @PostMapping ResponseEntity<Object> findProductByCategory(@RequestBody String roles){
+        List<Wishlist> test = wishlistService.findByUserRolesNameContaining(roles);
+        List<WishlistResponseDTO> test2 = test.stream()
+                .map(Wishlist::convertToResponse)
+                .collect(Collectors.toList());
+        logger.info(test2);
+        return ResponseHandler.generateResponse("test",HttpStatus.OK,test2);
+    }
 }

@@ -1,8 +1,8 @@
 package com.pentagon.warungkita.model;
 
 
-import com.pentagon.warungkita.dto.ProductListResponseDTO;
-import com.pentagon.warungkita.dto.ProductListResponsePOST;
+import com.pentagon.warungkita.dto.WishlistResponseDTO;
+import com.pentagon.warungkita.dto.WishlistResponsePOST;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,11 +14,11 @@ import javax.persistence.*;
 @Entity
 @Builder
 
-@Table(name = "product_list")
-public class ProductList {
+@Table(name = "wishlist")
+public class Wishlist {
  @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productListId;
+    private Long wishlistId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -28,8 +28,8 @@ public class ProductList {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public ProductListResponseDTO convertToResponse(){
-       return ProductListResponseDTO.builder()
+    public WishlistResponseDTO convertToResponse(){
+       return WishlistResponseDTO.builder()
                .product(this.getProduct())
 //               .sku(this.getProduct().getSku())
 //               .nama(this.getProduct().getProductName())
@@ -44,21 +44,19 @@ public class ProductList {
                .build();
     }
 
-    public ProductListResponsePOST convertToResponsePost(){
-        return ProductListResponsePOST.builder()
+    public WishlistResponsePOST convertToResponsePost(){
+        return WishlistResponsePOST.builder()
                 .user_id(this.getUser().getUserId())
                 .product_id(this.getProduct().getProductId())
                 .build();
     }
 
-
-
-   @Override
-   public String toString() {
-      return "ProductList{" +
-              "productListId=" + productListId +
-              ", user=" + user +
-              ", product=" + product +
-              '}';
-   }
+    @Override
+    public String toString() {
+        return "Wishlist{" +
+                "wishlistId=" + wishlistId +
+                ", user=" + user +
+                ", product=" + product +
+                '}';
+    }
 }

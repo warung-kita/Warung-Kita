@@ -2,6 +2,7 @@ package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.dto.UsersRequestDTO;
 import com.pentagon.warungkita.dto.UsersResponseDTO;
+import com.pentagon.warungkita.dto.UsersResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.response.ResponseHandler;
@@ -65,7 +66,7 @@ public class UsersController {
             logger.error("------------------------------------");
             logger.error(e.getMessage());
             logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.MULTI_STATUS, "Table Has No Value!");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.MULTI_STATUS, "Bad Request!!");
         }
     }
 
@@ -74,7 +75,7 @@ public class UsersController {
         try {
             Users users = usersRequestDTO.convertToEntity();
             usersServiceImpl.createUser(users);
-            UsersResponseDTO userResult = users.convertToResponse();
+            UsersResponsePOST userResult = users.convertToResponsePOST();
             logger.info("==================== Logger Start Create New User ====================");
             logger.info(userResult);
             logger.info("==================== Logger End Create New User =================");
@@ -83,7 +84,7 @@ public class UsersController {
             logger.error("------------------------------------");
             logger.error(e.getMessage());
             logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "User Already Exist!");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
         }
     }
 
@@ -108,9 +109,9 @@ public class UsersController {
     @PutMapping("/users/{users_Id}")
     public ResponseEntity<Object> updateUser(@PathVariable Long users_Id, @RequestBody UsersRequestDTO usersRequestDTO){
         try {
-            if(usersRequestDTO.getUserId() == null){
-                throw new ResourceNotFoundException("User not exist");
-            }
+//            if(usersRequestDTO.getUserId() == null){
+//                throw new ResourceNotFoundException("User not exist");
+//            }
             Users users = usersRequestDTO.convertToEntity();
             users.setUserId(users_Id);
             Users updateUsers = usersServiceImpl.updateUser(users);
@@ -123,7 +124,7 @@ public class UsersController {
             logger.error("------------------------------------");
             logger.error(e.getMessage());
             logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data Not Found!");
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Bad Request!!");
         }
     }
 

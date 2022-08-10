@@ -64,4 +64,10 @@ public class PaymentServiceImpl implements PaymentService {
     public Payment getReferenceById(Long Id) {
         return null;
     }
+
+    @Override
+    public List<Payment> findByOrderUserIdUsernameContaining(String userName) {
+        List<Payment> optionalPayment = paymentRepo.findByOrderUserIdUsernameContaining(userName);
+        return this.paymentRepo.findByOrderUserIdUsernameContaining(userName);
+    }
 }

@@ -11,7 +11,6 @@ public interface UsersService {
     Users createUser(Users users);
     Optional<Users> getUserById(Long users_Id);
     Users findById(Long users_Id);
-//    Users findByUsername(String username);
     Users updateUser(Users users) throws Exception;
     void deleteUserById(Long users_Id);
 

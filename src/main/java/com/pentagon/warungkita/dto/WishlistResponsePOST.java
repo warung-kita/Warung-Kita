@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductListResponsePOST {
+public class WishlistResponsePOST {
     private Long user_id;
     private Long product_id;
 

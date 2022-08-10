@@ -13,8 +13,6 @@ import java.util.List;
 @Builder
 public class UsersRequestDTO {
 
-    private List<Roles> role;
-    private Long userId;
     private String fullName;
     private String username;
     private String email;
@@ -26,8 +24,6 @@ public class UsersRequestDTO {
 
     public Users convertToEntity(){
         return Users.builder()
-                .roles(this.role)
-                .userId(this.userId)
                 .fullName(this.fullName)
                 .username(this.username)
                 .email(this.email)

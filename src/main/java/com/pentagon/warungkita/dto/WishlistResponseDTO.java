@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductListResponseDTO {
+public class WishlistResponseDTO {
     private Product product;
 //    private String sku;
 //    private String nama;

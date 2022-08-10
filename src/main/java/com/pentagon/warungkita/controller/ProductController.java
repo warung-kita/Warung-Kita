@@ -3,7 +3,12 @@ package com.pentagon.warungkita.controller;
 import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Categories;
+import com.pentagon.warungkita.model.Photo;
 import com.pentagon.warungkita.model.Product;
+import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.repository.PhotoRepo;
+import com.pentagon.warungkita.repository.ProductRepo;
+import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.ProductService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -16,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pentagon/warung-kita")
@@ -24,6 +30,9 @@ import java.util.*;
 @Tag(name = "3.Products")
 public class ProductController {
     private final ProductService productService;
+    private final ProductRepo productRepo;
+    private final PhotoRepo photoRepo;
+    private final UsersRepo usersRepo;
     private static final Logger logger = LogManager.getLogger(ProductController.class);
     /**
      * Get All Product
@@ -101,8 +110,21 @@ public class ProductController {
                     || productRequestDTO.getSku() == null || productRequestDTO.getProductStatusId() == null || productRequestDTO.getRegularPrice() == null){
                 throw new ResourceNotFoundException("Please Input All Field");
             }
-            Product product= productRequestDTO.convertToEntity();
+
+            Users users = usersRepo.findById(productRequestDTO.getUserId()).orElseThrow();
+            Product product= productRequestDTO.convertToEntity(users);
+
+//            Photo photo = new Photo();
+//            Photo photos = photoRepo.save(photo);
+//            product.setProductPicture(photos);
+            List<Product> products = productRepo.findByUsersUserId(productRequestDTO.getUserId());
+            Integer count = products.size();
+            if (count >= 4){
+                throw new ResourceNotFoundException("tidak boleh posting lagi");
+            }
             productService.createProduct(product);
+
+
             ProductResponsePOST result = product.convertToResponsePost();
             logger.info("==================== Logger Start Get New Add Product     ====================");
             logger.info("Produk ID       : " + product.getProductId());
@@ -137,7 +159,10 @@ public class ProductController {
                     || productRequestDTO.getSku() == null || productRequestDTO.getProductStatusId() == null || productRequestDTO.getRegularPrice() == null){
                 throw new ResourceNotFoundException("Please Input All Field");
             }
-            Product product = productRequestDTO.convertToEntity();
+
+            Users users = usersRepo.findById(productRequestDTO.getUserId()).orElseThrow();
+            Product product = productRequestDTO.convertToEntity(users);
+
             product.setProductId(productId);
             Product responseUpdate = productService.updateProduct(product);
             ProductResponseDTO responseDTO = responseUpdate.convertToResponse();
@@ -182,5 +207,21 @@ public class ProductController {
             logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
+    }
+
+    @GetMapping("/product/namelike")
+    public ResponseEntity<Object> findByProductName(@RequestParam String productName){
+        List<Product> test = productService.findByProductNameContaining(productName);
+//        List<ProductResponseDTO> test2 = test.stream()
+//                .map(Product::convertToResponse)
+//                .collect(Collectors.toList());
+//        logger.info(test2);
+        return ResponseHandler.generateResponse("test",HttpStatus.OK,test);
+    }
+
+    @GetMapping("/product/username")
+    public ResponseEntity<Object> findByUsername(@RequestParam String username){
+        List<Product> products = productService.findByUsersUsernameContaining(username);
+        return ResponseHandler.generateResponse("product",HttpStatus.OK, products);
     }
 }
