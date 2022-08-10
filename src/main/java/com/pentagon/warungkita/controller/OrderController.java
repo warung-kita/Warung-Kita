@@ -90,7 +90,7 @@ public class OrderController {
     * membuat RequestDTO
     * */
     @PostMapping("/save/order")
-    public ResponseEntity<Object> saveOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
+    public ResponseEntity<Object> saveOrder(@RequestBody OrderRequestDTO orderRequestDTO) throws ResourceNotFoundException {
         try {
             Order orderSave = orderRequestDTO.convertToEntity();
             Order order = orderService.saveOrder(orderSave);
@@ -99,11 +99,11 @@ public class OrderController {
             logger.info(orderResponsePOST);
             logger.info("==================== Logger Start Post Order Product =================");
             return ResponseHandler.generateResponse("Successfully  save Order", HttpStatus.CREATED, orderResponsePOST);
-        } catch (ResourceNotFoundException e) {
+        } catch (Exception e) {
             logger.error("------------------------------------");
-            logger.error(e.getMessage());
+            logger.error(e);
             logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Bad Request!!");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
         }
     }
 
@@ -123,11 +123,11 @@ public class OrderController {
             logger.info(responseDTO);
             logger.info("==================== Logger End Update Order Product By ID =================");
             return ResponseHandler.generateResponse("Data Updated!", HttpStatus.CREATED, responseDTO);
-        }catch (ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             logger.error("------------------------------------");
             logger.error(e.getMessage());
             logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Bad Request");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request");
         }
     }
 

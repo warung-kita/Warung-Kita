@@ -51,15 +51,12 @@ public class Users {
     public UsersResponseDTO convertToResponse(){
         return UsersResponseDTO.builder()
                 .role(this.roles)
-                .userId(this.userId)
                 .fullName(this.fullName)
                 .username(this.username)
                 .email(this.email)
                 .address(this.address)
-                .password(this.password)
                 .phoneNum(this.phoneNum)
                 .profilPicture(this.profilPicture)
-                .active(this.active)
                 .build();
     }
 
