@@ -1,6 +1,7 @@
 package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.dto.*;
+import com.pentagon.warungkita.model.Roles;
 import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.jwt.JwtUtils;
@@ -26,7 +27,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -56,8 +59,13 @@ public class AuthController {
                 .setAuthentication(authentication);
         String token = jwtUtils.generateJwtToken(authentication);
         UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = principal.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList());
-        return ResponseEntity.ok().body(new JwtResponse(token, principal.getUsername(), principal.getPassword(), roles));
+        Optional<Users> users = usersService.findByUsername(principal.getUsername());
+        List<Roles> roles = users.get().getRoles();
+        List<String> stringsrole = new ArrayList<>();
+        roles.forEach(roles1 -> {
+            stringsrole.add(roles1.getName());
+        });
+        return ResponseEntity.ok().body(new JwtResponse(token, principal.getUsername(), principal.getPassword(), stringsrole));
     }
 
     @PostMapping("/signup")

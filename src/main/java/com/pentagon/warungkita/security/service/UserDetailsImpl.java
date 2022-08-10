@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
 
+    private Long userId;
     private String username;
 
      @JsonIgnore
@@ -34,7 +35,7 @@ public class UserDetailsImpl implements UserDetails {
         user.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
         });
-        return new UserDetailsImpl(  user.getUsername(), user.getPassword(), authorities);
+        return new UserDetailsImpl(user.getUserId(), user.getUsername(), user.getPassword(), authorities);
     }
 
     @Override
@@ -56,7 +57,12 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDetailsImpl user = (UserDetailsImpl) o;
+        return Objects.equals(userId, user.userId);
+    }
 
 }
 

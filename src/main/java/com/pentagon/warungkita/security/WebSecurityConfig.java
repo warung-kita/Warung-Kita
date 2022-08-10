@@ -73,17 +73,17 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers(
-                "/images/**",
-                "/js/**",
-                "/webjars/**",
-                "/v2/api-docs",
-                "/configuration/ui",
-                "/swagger-resources/**",
-                "/configuration/security",
-                "/swagger-ui.html",
-                "/webjars/**");
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.ignoring().antMatchers(
+//                "/images/**",
+//                "/js/**",
+//                "/webjars/**",
+//                "/v2/api-docs",
+//                "/configuration/ui",
+//                "/swagger-resources/**",
+//                "/configuration/security",
+//                "/swagger-ui.html",
+//                "/webjars/**");
+//    }
 }
