@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -35,6 +36,7 @@ public class OrderController {
     * Untuk Penampilan Data Bisa Menggunakan ResponseDTO
     * */
     @GetMapping("/list/order")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> OrderList(){
         try {
             List<Order> orderList = orderService.getAll();
@@ -67,6 +69,7 @@ public class OrderController {
     }
 
     @GetMapping("/list/order/{orderId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> OrderListById(@PathVariable Long orderId){
         try {
             Optional<Order> orderList = orderService.getOrderById(orderId);
@@ -90,6 +93,7 @@ public class OrderController {
     * membuat RequestDTO
     * */
     @PostMapping("/save/order")
+    @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> saveOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
         try {
             Order orderSave = orderRequestDTO.convertToEntity();
@@ -113,6 +117,7 @@ public class OrderController {
      * membuat RequestDTO
      * */
     @PutMapping("/update/order/{orderId}")
+    @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> updateOrder(@PathVariable Long orderId, @RequestBody OrderRequestDTO orderRequest){
         try {
             Order order = orderRequest.convertToEntity();
@@ -132,6 +137,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/delete/order/{orderId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> deleteOrder(@PathVariable Long orderId){
         try {
             orderService.deleteOrderById(orderId);

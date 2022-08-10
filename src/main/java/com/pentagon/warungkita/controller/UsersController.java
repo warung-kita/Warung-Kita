@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -29,6 +30,7 @@ public class UsersController {
     private final UsersServiceImpl usersServiceImpl;
 
     @GetMapping("/users")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity <Object> getAll() {
         try {
             List<Users> result = usersServiceImpl.getAll();
@@ -70,6 +72,7 @@ public class UsersController {
     }
 
     @PostMapping("/users")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity <Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
         try {
             Users users = usersRequestDTO.convertToEntity();
@@ -88,6 +91,7 @@ public class UsersController {
     }
 
     @GetMapping("/users/{users_Id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> getUserById(@PathVariable Long users_Id) {
         try {
             Optional<Users> users = usersServiceImpl.getUserById(users_Id);
@@ -106,6 +110,7 @@ public class UsersController {
     }
 
     @PutMapping("/users/{users_Id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> updateUser(@PathVariable Long users_Id, @RequestBody UsersRequestDTO usersRequestDTO){
         try {
             if(usersRequestDTO.getUserId() == null){
@@ -128,6 +133,7 @@ public class UsersController {
     }
 
     @DeleteMapping("/users/{users_Id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> deleteUser(@PathVariable Long users_Id){
         try {
             usersServiceImpl.deleteUserById(users_Id);

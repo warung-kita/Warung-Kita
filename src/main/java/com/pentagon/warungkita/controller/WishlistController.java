@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -31,7 +32,8 @@ public class WishlistController {
 
 
     @GetMapping("/wishlist/all")
-    public ResponseEntity<Object> findAllProductList(){
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> findAllWishlist(){
         try{
             List<Wishlist> wishlists = wishlistService.getAllProductList();
             List<WishlistResponseDTO> productListmaps = new ArrayList<>();
@@ -54,7 +56,8 @@ public class WishlistController {
         }
     }
     @GetMapping("/wishlist/{id}")
-    public ResponseEntity<Object> getProductListById(@PathVariable Long id){
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> getWishlistById(@PathVariable Long id){
         try {
             Optional<Wishlist> productList = wishlistService.getProductListById(id);
             Wishlist productListget = productList.get();
@@ -72,6 +75,7 @@ public class WishlistController {
         }
     }
     @PostMapping("/wishlist/create")
+    @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> productListCreate(@RequestBody WishlistRequestDTO wishlistRequestDTO){
         try{
             if(wishlistRequestDTO.getProduct() == null || wishlistRequestDTO.getUser() == null){
@@ -93,6 +97,7 @@ public class WishlistController {
         }
     }
     @PutMapping("/wishlist/update/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> produkListUpdate(@PathVariable Long id, @RequestBody WishlistRequestDTO wishlistRequestDTO){
         try {
             if(wishlistRequestDTO.getProduct() == null || wishlistRequestDTO.getUser() == null){
@@ -115,6 +120,7 @@ public class WishlistController {
         }
     }
     @DeleteMapping("wishlist/delete/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> deleteProductList(@PathVariable Long id){
         try {
             wishlistService.deleteProductListById(id);
@@ -153,11 +159,12 @@ public class WishlistController {
 //    }
 
     @GetMapping("/wishlist/username")
-    public ResponseEntity<Object> findWishlistByRoleName(@RequestParam String roles){
-        List<Wishlist> test = wishlistService.findByUserRolesNameContaining(roles);
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> findWishlistByUserName(@RequestParam String userName){
+        List<Wishlist> test = wishlistService.findByUserUsernameContaining(userName);
 //        List<WishlistResponseDTO> test2 = test.stream()
 //                .map(Wishlist::convertToResponse)
 //                .collect(Collectors.toList());
-         return ResponseHandler.generateResponse("test",HttpStatus.OK,test);
+        return ResponseHandler.generateResponse("test",HttpStatus.OK,test);
     }
 }
