@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class CategoriesController {
      * @return
      */
     @GetMapping("/categories/all")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> findAll() {
         try {
             List<Categories> categories = categoriesService.getAll();
@@ -60,6 +62,7 @@ public class CategoriesController {
      * @return
      */
     @GetMapping("/categories/{categoriesId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> getCategoriesById(@PathVariable Long categoriesId){
         try {
             Optional<Categories> categories = categoriesService.getCategoriesById(categoriesId);
@@ -84,6 +87,7 @@ public class CategoriesController {
      * @return
      */
     @PostMapping("/categories/add")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> createCategories(@RequestBody CategoriesRequestDTO categoriesRequestDTO){
         try{
             if(categoriesRequestDTO.getName() == null) {
@@ -112,6 +116,7 @@ public class CategoriesController {
      * @return
      */
     @PutMapping("/categories/update/{categoriesId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> updateCategories(@PathVariable Long categoriesId, @RequestBody CategoriesRequestDTO categoriesRequestDTO){
         try {
             Categories categories = categoriesRequestDTO.convertToEntity();
@@ -137,6 +142,7 @@ public class CategoriesController {
      * @return
      */
     @DeleteMapping("categories/delete/{categoriesId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> deleteCategories(@PathVariable Long categoriesId){
         try {
             categoriesService.deleteCategories(categoriesId);

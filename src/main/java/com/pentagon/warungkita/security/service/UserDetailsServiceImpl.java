@@ -22,12 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         Users user = usersRepo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " tidak ditemukan"));
-//            if (user == null) {
-//                log.error("User not found");
-//                throw new UsernameNotFoundException("User not found" + username);
-//            } else {
-//                log.info("User found: {}", username);
-//            }
+
             return UserDetailsImpl.build(user);
 
     }

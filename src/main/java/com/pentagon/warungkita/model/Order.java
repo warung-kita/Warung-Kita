@@ -1,17 +1,13 @@
 package com.pentagon.warungkita.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.pentagon.warungkita.dto.OrderResponseDTO;
 import com.pentagon.warungkita.dto.OrderResponsePOST;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter

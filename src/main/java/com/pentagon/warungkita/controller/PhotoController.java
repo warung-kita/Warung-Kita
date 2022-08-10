@@ -2,10 +2,8 @@ package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Categories;
 import com.pentagon.warungkita.model.Photo;
 import com.pentagon.warungkita.response.ResponseHandler;
-import com.pentagon.warungkita.service.CategoriesService;
 import com.pentagon.warungkita.service.PhotoService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;

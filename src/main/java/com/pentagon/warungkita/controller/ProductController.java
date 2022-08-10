@@ -2,8 +2,6 @@ package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Categories;
-import com.pentagon.warungkita.model.Photo;
 import com.pentagon.warungkita.model.Product;
 import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.PhotoRepo;
@@ -21,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pentagon/warung-kita")
@@ -117,8 +114,10 @@ public class ProductController {
 //            Photo photo = new Photo();
 //            Photo photos = photoRepo.save(photo);
 //            product.setProductPicture(photos);
+
             List<Product> products = productRepo.findByUsersUserId(productRequestDTO.getUserId());
             Integer count = products.size();
+
             if (count >= 4){
                 throw new ResourceNotFoundException("tidak boleh posting lagi");
             }

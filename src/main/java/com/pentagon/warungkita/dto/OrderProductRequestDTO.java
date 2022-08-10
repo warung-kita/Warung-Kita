@@ -1,6 +1,5 @@
 package com.pentagon.warungkita.dto;
 
-import com.pentagon.warungkita.model.Order;
 import com.pentagon.warungkita.model.OrderProduct;
 import com.pentagon.warungkita.model.Product;
 import lombok.*;

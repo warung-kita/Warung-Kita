@@ -1,8 +1,8 @@
 package com.pentagon.warungkita.model;
 
-import com.pentagon.warungkita.dto.PaymentResponseDTO;
 import com.pentagon.warungkita.model.Enum.BankList;
 import com.pentagon.warungkita.model.Enum.PaymentResponse;
+import com.pentagon.warungkita.dto.PaymentResponseDTO;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 

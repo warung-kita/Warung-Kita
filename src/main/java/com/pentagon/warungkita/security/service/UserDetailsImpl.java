@@ -2,67 +2,39 @@ package com.pentagon.warungkita.security.service;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.pentagon.warungkita.model.Roles;
 import com.pentagon.warungkita.model.Users;
-import com.pentagon.warungkita.repository.UsersRepo;
-import lombok.Data;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
 public class UserDetailsImpl implements UserDetails {
+    private static final long serialVersionUID = 1L;
 
-    private UsersRepo usersRepo;
-
-    private String email;
-    private String fullName;
     private String username;
-    @JsonIgnore
+
+     @JsonIgnore
     private String password;
-    @JsonIgnore
-    private String roles;
-;
 
-    public UserDetailsImpl(String email, String fullName, String username, String password, List<Roles> roles) {
-        this.email = email;
-        this.fullName = fullName;
-        this.username = username;
-        this.password = password;
-        this.roles = String.valueOf(roles);
+    private Collection<? extends GrantedAuthority> authorities;
 
-    }
-
-    public static UserDetailsImpl build(Users users){
-        return new UserDetailsImpl(
-                users.getEmail(),
-                users.getFullName(),
-                users.getUsername(),
-                users.getPassword(),
-                users.getRoles());
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        if (StringUtils.hasText(roles)) {
-            String[] splits = roles.replaceAll(" ", "").split(",");
-            for (String string : splits) {
-                authorities.add(new SimpleGrantedAuthority(string));
-            }
-        }
-        return authorities;
-//        Users user = usersRepo.findByUsername(username);
-//        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//        user.getRoles().forEach(role -> {
-//            authorities.add(new SimpleGrantedAuthority(role.getName()));
-//        });
-//        return authorities;
+    public static UserDetailsImpl build(Users user) {
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        user.getRoles().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        });
+        return new UserDetailsImpl(  user.getUsername(), user.getPassword(), authorities);
     }
 
     @Override
@@ -84,4 +56,7 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }
+

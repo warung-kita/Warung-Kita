@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "5.Product List")
+@Tag(name = "5.Wishlist")
 public class WishlistController {
 
     private static final Logger logger = LogManager.getLogger(WishlistController.class);
     private WishlistService wishlistService;
 
 
-    @GetMapping("/product_list/all")
+    @GetMapping("/wishlist/all")
     public ResponseEntity<Object> findAllProductList(){
         try{
             List<Wishlist> wishlists = wishlistService.getAllProductList();
@@ -54,7 +54,7 @@ public class WishlistController {
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Table has no value");
         }
     }
-    @GetMapping("/product_list/{id}")
+    @GetMapping("/wishlist/{id}")
     public ResponseEntity<Object> getProductListById(@PathVariable Long id){
         try {
             Optional<Wishlist> productList = wishlistService.getProductListById(id);
@@ -72,7 +72,7 @@ public class WishlistController {
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
     }
-    @PostMapping("/product_list/create")
+    @PostMapping("/wishlist/create")
     public ResponseEntity<Object> productListCreate(@RequestBody WishlistRequestDTO wishlistRequestDTO){
         try{
             if(wishlistRequestDTO.getProduct() == null || wishlistRequestDTO.getUser() == null){
@@ -93,7 +93,7 @@ public class WishlistController {
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.BAD_REQUEST,"Failed Create Database");
         }
     }
-    @PutMapping("/product_list/update/{id}")
+    @PutMapping("/wishlist/update/{id}")
     public ResponseEntity<Object> produkListUpdate(@PathVariable Long id, @RequestBody WishlistRequestDTO wishlistRequestDTO){
         try {
             if(wishlistRequestDTO.getProduct() == null || wishlistRequestDTO.getUser() == null){
@@ -115,7 +115,7 @@ public class WishlistController {
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.BAD_REQUEST,"Bad Request");
         }
     }
-    @DeleteMapping("product_list/delete/{id}")
+    @DeleteMapping("wishlist/delete/{id}")
     public ResponseEntity<Object> deleteProductList(@PathVariable Long id){
         try {
             wishlistService.deleteProductListById(id);
@@ -153,12 +153,12 @@ public class WishlistController {
 //
 //    }
 
-    @PostMapping ResponseEntity<Object> findProductByCategory(@RequestBody String roles){
+    @GetMapping("/wishlist/username")
+    public ResponseEntity<Object> findWishlistByRoleName(@RequestParam String roles){
         List<Wishlist> test = wishlistService.findByUserRolesNameContaining(roles);
-        List<WishlistResponseDTO> test2 = test.stream()
-                .map(Wishlist::convertToResponse)
-                .collect(Collectors.toList());
-        logger.info(test2);
-        return ResponseHandler.generateResponse("test",HttpStatus.OK,test2);
+//        List<WishlistResponseDTO> test2 = test.stream()
+//                .map(Wishlist::convertToResponse)
+//                .collect(Collectors.toList());
+         return ResponseHandler.generateResponse("test",HttpStatus.OK,test);
     }
 }
