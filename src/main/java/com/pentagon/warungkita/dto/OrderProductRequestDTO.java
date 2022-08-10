@@ -12,13 +12,15 @@ import lombok.*;
 @Builder
 public class OrderProductRequestDTO {
     private Long orderProductId;
-    private Product productId;
+    private Product product;
+    private Integer quantity;
     private Integer subtotal;
 
     public OrderProduct convertToEntity(){
         return OrderProduct.builder()
                 .orderProductId(this.orderProductId)
-                .productId(this.productId)
+                .productId(this.product)
+                .quantity(this.quantity)
                 .subtotal(this.subtotal)
                 .build();
     }

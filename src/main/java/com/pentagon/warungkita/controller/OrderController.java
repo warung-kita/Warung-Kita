@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -99,11 +100,12 @@ public class OrderController {
             logger.info(orderResponsePOST);
             logger.info("==================== Logger Start Post Order Product =================");
             return ResponseHandler.generateResponse("Successfully  save Order", HttpStatus.CREATED, orderResponsePOST);
-        } catch (Exception e) {
+        } catch (ResponseStatusException e) {
             logger.error("------------------------------------");
-            logger.error(e);
+            logger.error(e.getMessage());
             logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad Request", e);
+//            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
         }
     }
 
