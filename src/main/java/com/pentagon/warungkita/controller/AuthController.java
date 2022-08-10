@@ -3,8 +3,10 @@ package com.pentagon.warungkita.controller;
 import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.model.Roles;
 import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.jwt.JwtUtils;
+import com.pentagon.warungkita.security.service.AuthServiceImpl;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.UsersService;
 
@@ -42,10 +44,14 @@ public class AuthController {
     AuthenticationManager authenticationManager;
 
     @Autowired
+    UsersRepo usersRepo;
+    @Autowired
     UsersService usersService;;
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    AuthServiceImpl authServiceImpl;
     @Autowired
     JwtUtils jwtUtils;
 
@@ -70,25 +76,12 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<Object> signup(@RequestBody SignupRequest request) {
-        try {
-            Users users = new Users();
-            users.setUsername(request.getUsername());
-            users.setEmail(request.getEmail());
-            users.setPassword(passwordEncoder.encode(request.getPassword()));
-            users.setFullName(request.getFullName());
-            usersService.createUser(users);
-            UsersResponsePOST userResult = users.convertToResponsePOST();
-            return ResponseHandler.generateResponse("Successfully Created User!", HttpStatus.CREATED, userResult);
-        } catch (Exception e) {
-            logger.error("------------------------------------");
-            logger.error(e.getMessage());
-            logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "User Already Exist!");
-        }
+        return authServiceImpl.signup(request);
+    }
+
 
 //    @PostMapping("/signup")
 //    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) throws ResourceAlreadyExistException {
 //        return authServiceImpl.registerUser(signupRequest);
 //    }
-    }
 }
