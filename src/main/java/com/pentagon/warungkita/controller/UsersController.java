@@ -5,6 +5,7 @@ import com.pentagon.warungkita.dto.UsersResponseDTO;
 import com.pentagon.warungkita.dto.UsersResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,11 +30,13 @@ public class UsersController {
 
     private static final Logger logger = LogManager.getLogger(UsersController.class);
     private final UsersServiceImpl usersServiceImpl;
+    private final UsersRepo usersRepo;
 
     @GetMapping("/users")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity <Object> getAll() {
         try {
+
             List<Users> result = usersServiceImpl.getAll();
             List<UsersResponseDTO> usersResponseDTOList = new ArrayList<>();
             logger.info("==================== Logger Start Get All User ====================");
@@ -76,6 +79,12 @@ public class UsersController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity <Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
         try {
+            if (usersRepo.existsByUsername(usersRequestDTO.getUsername())) {
+                throw new Exception("Username already taken!");
+            }
+            if (usersRepo.existsByEmail(usersRequestDTO.getEmail())) {
+                throw new Exception("Email already in use!");
+            }
             Users users = usersRequestDTO.convertToEntity();
             usersServiceImpl.createUser(users);
             UsersResponsePOST userResult = users.convertToResponsePOST();
