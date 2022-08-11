@@ -2,12 +2,15 @@ package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
+import com.pentagon.warungkita.model.Categories;
+import com.pentagon.warungkita.model.Photo;
 import com.pentagon.warungkita.model.Product;
 import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.PhotoRepo;
 import com.pentagon.warungkita.repository.ProductRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
+import com.pentagon.warungkita.service.CategoriesService;
 import com.pentagon.warungkita.service.ProductService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,6 +23,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pentagon/warung-kita")
@@ -117,12 +121,15 @@ public class ProductController {
 //            Photo photo = new Photo();
 //            Photo photos = photoRepo.save(photo);
 //            product.setProductPicture(photos);
-
             List<Product> products = productRepo.findByUsersUserId(productRequestDTO.getUserId());
+            List<Categories> categories = productRequestDTO.getCategories();
             Integer count = products.size();
-
+            Integer test = categories.size();
             if (count >= 4){
                 throw new ResourceNotFoundException("tidak boleh posting lagi");
+            }
+            if (test > 4) {
+                throw new ResourceNotFoundException("categories max 4");
             }
             productService.createProduct(product);
 
