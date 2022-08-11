@@ -63,12 +63,7 @@ public class WishlistServiceImpl implements WishlistService {
         return null;
     }
 
-    @Override
-    public List<Wishlist> findByUserRolesNameContaining(String name) {
-        List<Wishlist> wishlists = wishlistRepo.findByUserRolesNameContaining(name);
 
-        return this.wishlistRepo.findByUserRolesNameContaining(name);
-    }
 
     @Override
     public List<Wishlist> findByUserUsernameContaining(String userName) {
