@@ -1,6 +1,8 @@
 package com.pentagon.warungkita.controller;
 
-import com.pentagon.warungkita.dto.*;
+import com.pentagon.warungkita.dto.ProductRequestDTO;
+import com.pentagon.warungkita.dto.ProductResponseDTO;
+import com.pentagon.warungkita.dto.ProductResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Categories;
 import com.pentagon.warungkita.model.Photo;
@@ -10,7 +12,6 @@ import com.pentagon.warungkita.repository.PhotoRepo;
 import com.pentagon.warungkita.repository.ProductRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
-import com.pentagon.warungkita.service.CategoriesService;
 import com.pentagon.warungkita.service.ProductService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,8 +23,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/pentagon/warung-kita")
@@ -41,7 +43,7 @@ public class ProductController {
      * @return
      */
     @GetMapping("/product/all")
-    public ResponseEntity<Object> findAll() {
+    public ResponseEntity<Object> findAllProduct() {
         try{
             List<Product> products = productService.getAll();
             List<ProductResponseDTO> productMaps = new ArrayList<>();
@@ -50,14 +52,15 @@ public class ProductController {
                 ProductResponseDTO productResponseDTO = dataResult.convertToResponse();
                 productMaps.add(productResponseDTO);
                 logger.info("Produk ID       : " + dataResult.getProductId());
-                logger.info("SKU     : " + dataResult.getSku());
-                logger.info("Nama Produk       : " + dataResult.getProductName());
-                logger.info("Kategori     : " + dataResult.getCategories());
+                logger.info("SKU             : " + dataResult.getSku());
+                logger.info("Nama Produk     : " + dataResult.getProductName());
+                logger.info("Kategori        : " + dataResult.getCategories());
                 logger.info("Deskripsi       : " + dataResult.getDescription());
-                logger.info("Status     : " + dataResult.getProductStatusId());
-                logger.info("Harga       : " + dataResult.getRegularPrice());
-                logger.info("Stok     : " + dataResult.getQuantity());
-                logger.info("Gambar       : " + dataResult.getProductPicture());
+                logger.info("Status          : " + dataResult.getProductStatusId());
+                logger.info("Harga           : " + dataResult.getRegularPrice());
+                logger.info("Stok            : " + dataResult.getQuantity());
+                logger.info("Gambar          : " + dataResult.getProductPicture());
+                logger.info("----------------------------------------------------------");
             }
             logger.info("==================== Logger Start Get All Product     ====================");
             return ResponseHandler.generateResponse("Successfully Get All Product", HttpStatus.OK,productMaps);
@@ -76,21 +79,21 @@ public class ProductController {
      */
     @GetMapping("/product/{productId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
-    public ResponseEntity<Object> getCategoriesById(@PathVariable Long productId){
+    public ResponseEntity<Object> getProductById(@PathVariable Long productId){
         try {
             Optional<Product> product = productService.getProductById(productId);
             Product productGet = product.get();
             ProductResponseDTO result = productGet.convertToResponse();
             logger.info("==================== Logger Start Get By ID Product     ====================");
-            logger.info("Produk ID       : " + productGet.getProductId());
-            logger.info("SKU     : " + productGet.getSku());
-            logger.info("Nama Produk       : " + productGet.getProductName());
-            logger.info("Kategori     : " + productGet.getCategories());
-            logger.info("Deskripsi       : " + productGet.getDescription());
-            logger.info("Status     : " + productGet.getProductStatusId());
-            logger.info("Harga       : " + productGet.getRegularPrice());
-            logger.info("Stok     : " + productGet.getQuantity());
-            logger.info("Gambar       : " + productGet.getProductPicture());
+            logger.info("Produk ID     : " + productGet.getProductId());
+            logger.info("SKU           : " + productGet.getSku());
+            logger.info("Nama Produk   : " + productGet.getProductName());
+            logger.info("Kategori      : " + productGet.getCategories());
+            logger.info("Deskripsi     : " + productGet.getDescription());
+            logger.info("Status        : " + productGet.getProductStatusId());
+            logger.info("Harga         : " + productGet.getRegularPrice());
+            logger.info("Stok          : " + productGet.getQuantity());
+            logger.info("Gambar        : " + productGet.getProductPicture());
             logger.info("==================== Logger Start Get By ID Product     ====================");
             return ResponseHandler.generateResponse("Successfully Get Product Id",HttpStatus.OK,result);
         }catch(ResourceNotFoundException e){
@@ -108,10 +111,10 @@ public class ProductController {
      */
     @PostMapping("/product/add")
     @PreAuthorize("hasAuthority('ROLE_SELLER')")
-    public ResponseEntity<Object> createCategories(@RequestBody ProductRequestDTO productRequestDTO){
+    public ResponseEntity<Object> createProduct(@RequestBody ProductRequestDTO productRequestDTO){
         try{
-            if(productRequestDTO.getProductName() == null || productRequestDTO.getCategories() == null || productRequestDTO.getQuantity() == null
-                    || productRequestDTO.getSku() == null || productRequestDTO.getProductStatusId() == null || productRequestDTO.getRegularPrice() == null){
+            if(productRequestDTO.getProductName().isEmpty() && productRequestDTO.getCategories().isEmpty() && productRequestDTO.getQuantity() != null
+                    && productRequestDTO.getSku().isEmpty() && productRequestDTO.getProductStatusId() != null && productRequestDTO.getRegularPrice() != null){
                 throw new ResourceNotFoundException("Please Input All Field");
             }
 
@@ -122,36 +125,40 @@ public class ProductController {
 //            Photo photos = photoRepo.save(photo);
 //            product.setProductPicture(photos);
             List<Product> products = productRepo.findByUsersUserId(productRequestDTO.getUserId());
+            List<Photo> photos = productRequestDTO.getProductPicture();
             List<Categories> categories = productRequestDTO.getCategories();
-            Integer count = products.size();
-            Integer test = categories.size();
-            if (count >= 4){
+            Integer countProduct = products.size();
+            Integer countPhoto = photos.size();
+            Integer countCategories = categories.size();
+            if (countProduct >= 4){
                 throw new ResourceNotFoundException("tidak boleh posting lagi");
             }
-            if (test > 4) {
+            if (countCategories > 4) {
                 throw new ResourceNotFoundException("categories max 4");
+            }
+            if (countPhoto > 4) {
+                throw new ResourceNotFoundException("Maximum Photo is 4");
             }
             productService.createProduct(product);
 
-
             ProductResponsePOST result = product.convertToResponsePost();
             logger.info("==================== Logger Start Get New Add Product     ====================");
-            logger.info("Produk ID       : " + product.getProductId());
-            logger.info("SKU     : " + product.getSku());
-            logger.info("Nama Produk       : " + product.getProductName());
-            logger.info("Kategori     : " + product.getCategories());
-            logger.info("Deskripsi       : " + product.getDescription());
-            logger.info("Status     : " + product.getProductStatusId());
-            logger.info("Harga       : " + product.getRegularPrice());
-            logger.info("Stok     : " + product.getQuantity());
-            logger.info("Gambar       : " + product.getProductPicture());
+            logger.info("Produk ID     : " + product.getProductId());
+            logger.info("SKU           : " + product.getSku());
+            logger.info("Nama Produk   : " + product.getProductName());
+            logger.info("Kategori      : " + product.getCategories());
+            logger.info("Deskripsi     : " + product.getDescription());
+            logger.info("Status        : " + product.getProductStatusId());
+            logger.info("Harga         : " + product.getRegularPrice());
+            logger.info("Stok          : " + product.getQuantity());
+            logger.info("Gambar        : " + product.getProductPicture());
             logger.info("==================== Logger Start Get New Add Product     ====================");
             return ResponseHandler.generateResponse("Successfully Add Product",HttpStatus.CREATED,result);
         }catch (Exception e){
             logger.error("------------------------------------");
             logger.error(e.getMessage());
             logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.BAD_REQUEST,"Failed Create Categories");
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.BAD_REQUEST,"Failed Create Product");
         }
     }
 
@@ -163,37 +170,34 @@ public class ProductController {
      */
     @PutMapping("/product/update/{productId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
-    public ResponseEntity<Object> updateCategories(@PathVariable Long productId, @RequestBody ProductRequestDTO productRequestDTO){
+    public ResponseEntity<Object> updateProduct(@PathVariable Long productId, @RequestBody ProductRequestDTO productRequestDTO){
         try {
-            if(productRequestDTO.getProductName() == null || productRequestDTO.getCategories() == null || productRequestDTO.getQuantity() == null
-                    || productRequestDTO.getSku() == null || productRequestDTO.getProductStatusId() == null || productRequestDTO.getRegularPrice() == null){
+            if(productRequestDTO.getProductName().isEmpty() && productRequestDTO.getCategories().isEmpty() && productRequestDTO.getQuantity() != null
+                    && productRequestDTO.getSku().isEmpty() && productRequestDTO.getProductStatusId() != null && productRequestDTO.getRegularPrice() != null){
                 throw new ResourceNotFoundException("Please Input All Field");
             }
-
             Users users = usersRepo.findById(productRequestDTO.getUserId()).orElseThrow();
             Product product = productRequestDTO.convertToEntity(users);
-
             product.setProductId(productId);
             Product responseUpdate = productService.updateProduct(product);
             ProductResponseDTO responseDTO = responseUpdate.convertToResponse();
-            ProductResponseDTO results = product.convertToResponse();
             logger.info("==================== Logger Start Get Update Product     ====================");
-            logger.info("Produk ID       : " + product.getProductId());
-            logger.info("SKU     : " + product.getSku());
-            logger.info("Nama Produk       : " + product.getProductName());
-            logger.info("Kategori     : " + product.getCategories());
-            logger.info("Deskripsi       : " + product.getDescription());
-            logger.info("Status     : " + product.getProductStatusId());
-            logger.info("Harga       : " + product.getRegularPrice());
-            logger.info("Stok     : " + product.getQuantity());
-            logger.info("Gambar       : " + product.getProductPicture());
+            logger.info("Produk ID     : " + product.getProductId());
+            logger.info("SKU           : " + product.getSku());
+            logger.info("Nama Produk   : " + product.getProductName());
+            logger.info("Kategori      : " + product.getCategories());
+            logger.info("Deskripsi     : " + product.getDescription());
+            logger.info("Status        : " + product.getProductStatusId());
+            logger.info("Harga         : " + product.getRegularPrice());
+            logger.info("Stok          : " + product.getQuantity());
+            logger.info("Gambar        : " + product.getProductPicture());
             logger.info("==================== Logger Start Get Update Product     ====================");
             return ResponseHandler.generateResponse("Successfully Update Product",HttpStatus.CREATED,responseDTO);
-        }catch (Exception e){
+        }catch (ResourceNotFoundException e){
             logger.error("------------------------------------");
             logger.error(e.getMessage());
             logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.BAD_REQUEST,"Bad Request");
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.BAD_REQUEST,"Failed Update Product");
         }
     }
 
@@ -204,7 +208,7 @@ public class ProductController {
      */
     @DeleteMapping("product/delete/{productId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
-    public ResponseEntity<Object> deleteCategories(@PathVariable Long productId){
+    public ResponseEntity<Object> deleteProduct(@PathVariable Long productId){
         try {
             productService.deleteProduct(productId);
             Boolean result = Boolean.TRUE;
@@ -220,7 +224,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/product/namelike")
+    @GetMapping("/product/byProductName")
     public ResponseEntity<Object> findByProductName(@RequestParam String productName){
         List<Product> test = productService.findByProductNameContaining(productName);
 //        List<ProductResponseDTO> test2 = test.stream()
@@ -230,8 +234,8 @@ public class ProductController {
         return ResponseHandler.generateResponse("test",HttpStatus.OK,test);
     }
 
-    @GetMapping("/product/username")
-    public ResponseEntity<Object> findByUsername(@RequestParam String username){
+    @GetMapping("/product/byUsername")
+    public ResponseEntity<Object> findBySellerUsername(@RequestParam String username){
         List<Product> products = productService.findByUsersUsernameContaining(username);
         return ResponseHandler.generateResponse("product",HttpStatus.OK, products);
     }
