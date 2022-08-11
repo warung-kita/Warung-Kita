@@ -29,7 +29,6 @@ public class Photo {
                 .build();
     }
 
-
     @Override
     public String toString() {
         return "Photo{" +

@@ -90,10 +90,10 @@ public class CategoriesController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> createCategories(@RequestBody CategoriesRequestDTO categoriesRequestDTO){
         try{
-            if(categoriesRequestDTO.getName() == null) {
+            Categories categories = categoriesRequestDTO.convertToEntity();
+            if(categoriesRequestDTO.getName().isEmpty()) {
                 throw new ResourceNotFoundException("Please Add Categories Name");
             }
-            Categories categories = categoriesRequestDTO.convertToEntity();
             categoriesService.createCategories(categories);
             CategoriesResponsePOST result = categories.convertToResponsePost();
             logger.info("==================== Logger Start Add New Categories     ====================");
@@ -120,6 +120,9 @@ public class CategoriesController {
     public ResponseEntity<Object> updateCategories(@PathVariable Long categoriesId, @RequestBody CategoriesRequestDTO categoriesRequestDTO){
         try {
             Categories categories = categoriesRequestDTO.convertToEntity();
+            if(categoriesRequestDTO.getName().isEmpty()) {
+                throw new ResourceNotFoundException("Please Add Categories Name");
+            }
             categories.setCategoriesId(categoriesId);
             Categories responseUpdate = categoriesService.updateCategories(categories);
             CategoriesResponseDTO responseDTO = responseUpdate.convertToResponse();
