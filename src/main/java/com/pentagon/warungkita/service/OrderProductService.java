@@ -1,6 +1,5 @@
 package com.pentagon.warungkita.service;
 
-import com.pentagon.warungkita.model.Order;
 import com.pentagon.warungkita.model.OrderProduct;
 
 import java.util.List;

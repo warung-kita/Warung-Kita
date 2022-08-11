@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -29,6 +30,7 @@ public class EkspedisiController {
     private final EkspedisiRepo ekspedisiRepo;
 
     @GetMapping("/ekspedisi/all")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> getAllEkspedisi() {
         try {
             List<Ekspedisi> result = ekspedisiService.getAll();
@@ -53,7 +55,8 @@ public class EkspedisiController {
         }
     }
     @GetMapping("/ekspedisi/{Id}")
-    public ResponseEntity<Object> getUserById(@PathVariable Long Id) {
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> getEkspedisiById(@PathVariable Long Id) {
         try {
             Ekspedisi ekspedisi = ekspedisiService.getEkspedisiById(Id)
                     .orElseThrow(() -> new ResourceNotFoundException("Ekspedisi not exist with Id :" + Id));
@@ -76,6 +79,7 @@ public class EkspedisiController {
     }
 
     @PostMapping("/ekspedisi/create")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity <Object> createEkspedisi(@RequestBody Ekspedisi ekspedisi) {
 
         try {
@@ -99,6 +103,7 @@ public class EkspedisiController {
         }
     }
     @PutMapping("/ekspedisi/update/{Id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> updateEkspedisi(@PathVariable Long Id, @RequestBody Ekspedisi ekspedisiDetails){
         try {
             Ekspedisi ekspedisi = ekspedisiService.getEkspedisiById(Id)
@@ -119,6 +124,7 @@ public class EkspedisiController {
     }
 
     @DeleteMapping("/ekspedisi/delete/{Id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> deleteEkspedisi(@PathVariable Long Id){
         try {
             ekspedisiService.deleteEkspedisiById(Id);

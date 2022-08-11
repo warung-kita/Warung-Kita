@@ -15,7 +15,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -35,6 +37,7 @@ public class OrderController {
     * Untuk Penampilan Data Bisa Menggunakan ResponseDTO
     * */
     @GetMapping("/list/order")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> OrderList(){
         try {
             List<Order> orderList = orderService.getAll();
@@ -67,6 +70,7 @@ public class OrderController {
     }
 
     @GetMapping("/list/order/{orderId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> OrderListById(@PathVariable Long orderId){
         try {
             Optional<Order> orderList = orderService.getOrderById(orderId);
@@ -90,7 +94,9 @@ public class OrderController {
     * membuat RequestDTO
     * */
     @PostMapping("/save/order")
+    @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> saveOrder(@RequestBody OrderRequestDTO orderRequestDTO) throws ResourceNotFoundException {
+
         try {
             Order orderSave = orderRequestDTO.convertToEntity();
             Order order = orderService.saveOrder(orderSave);
@@ -99,11 +105,12 @@ public class OrderController {
             logger.info(orderResponsePOST);
             logger.info("==================== Logger Start Post Order Product =================");
             return ResponseHandler.generateResponse("Successfully  save Order", HttpStatus.CREATED, orderResponsePOST);
-        } catch (Exception e) {
+        } catch (ResponseStatusException e) {
             logger.error("------------------------------------");
-            logger.error(e);
+            logger.error(e.getMessage());
             logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad Request", e);
+//            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
         }
     }
 
@@ -113,6 +120,7 @@ public class OrderController {
      * membuat RequestDTO
      * */
     @PutMapping("/update/order/{orderId}")
+    @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> updateOrder(@PathVariable Long orderId, @RequestBody OrderRequestDTO orderRequest){
         try {
             Order order = orderRequest.convertToEntity();
@@ -132,6 +140,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/delete/order/{orderId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> deleteOrder(@PathVariable Long orderId){
         try {
             orderService.deleteOrderById(orderId);

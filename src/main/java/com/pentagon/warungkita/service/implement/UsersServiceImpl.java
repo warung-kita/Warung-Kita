@@ -79,4 +79,10 @@ public class UsersServiceImpl implements UsersService {
         Users users = usersRepo.getReferenceById(users_Id);
         this.usersRepo.delete(users);
     }
+
+    @Override
+    public Optional<Users> findByUsername(String username) {
+
+        return this.usersRepo.findByUsername(username);
+    }
 }

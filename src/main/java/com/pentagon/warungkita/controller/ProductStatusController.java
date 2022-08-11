@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class ProductStatusController {
     private final ProductStatusRepo productStatusRepo;
 
     @GetMapping("/product_status/all")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> getAllProductStatus() {
         try {
             List<ProductStatus> result = productStatusService.getAll();
@@ -55,6 +57,7 @@ public class ProductStatusController {
         }
     }
     @GetMapping("/product_status/{Id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> getProductStatusById(@PathVariable Long Id) {
         try {
             ProductStatus productStatus = productStatusService.getProductStatusById(Id)
@@ -78,6 +81,7 @@ public class ProductStatusController {
     }
 
     @PostMapping("/product_status/create")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity <Object> createProductStatus(@RequestBody ProductStatus productStatus) {
 
         try {
@@ -101,6 +105,7 @@ public class ProductStatusController {
         }
     }
     @PutMapping("/product_status/update/{Id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> updateProductStatus(@PathVariable Long Id, @RequestBody ProductStatus productStatusDetails){
         try {
             ProductStatus productStatus = productStatusService.getProductStatusById(Id)
@@ -121,6 +126,7 @@ public class ProductStatusController {
     }
 
     @DeleteMapping("/product_status/delete/{Id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> deleteProductStatus(@PathVariable Long Id){
         try {
             productStatusService.deleteProductStatusById(Id);

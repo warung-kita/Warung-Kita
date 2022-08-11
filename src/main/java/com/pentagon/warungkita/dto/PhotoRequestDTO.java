@@ -1,6 +1,5 @@
 package com.pentagon.warungkita.dto;
 
-import com.pentagon.warungkita.model.Categories;
 import com.pentagon.warungkita.model.Photo;
 import lombok.*;
 

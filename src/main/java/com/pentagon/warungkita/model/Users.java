@@ -31,7 +31,7 @@ public class Users {
     private boolean active;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch= FetchType.LAZY)
     @JoinTable(name = "user_roles",
     joinColumns = @JoinColumn (name = "user_id"),
     inverseJoinColumns = @JoinColumn (name = "role_id" ))

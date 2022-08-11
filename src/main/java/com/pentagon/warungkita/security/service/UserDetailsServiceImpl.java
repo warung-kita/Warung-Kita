@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 @Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -18,16 +20,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     UsersRepo usersRepo;
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         Users user = usersRepo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " tidak ditemukan"));
-//            if (user == null) {
-//                log.error("User not found");
-//                throw new UsernameNotFoundException("User not found" + username);
-//            } else {
-//                log.info("User found: {}", username);
-//            }
+
             return UserDetailsImpl.build(user);
 
     }

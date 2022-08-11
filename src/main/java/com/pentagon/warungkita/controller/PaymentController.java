@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -28,6 +29,7 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @GetMapping("/payment/histori/username")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> findByUsername(@RequestParam String username) {
         List<Payment> payments = paymentService.findByOrderUserIdUsernameContaining(username);
         return ResponseHandler.generateResponse("payment",HttpStatus.OK, payments);
@@ -35,6 +37,7 @@ public class PaymentController {
 
 
     @GetMapping("/payment/all")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> findAll(){
         try{
             List<Payment> payments = paymentService.getAllPayment();
@@ -60,6 +63,7 @@ public class PaymentController {
         }
     }
     @GetMapping("/payment/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> getPaymentById(@PathVariable Long id){
         try {
             Optional<Payment> payment = paymentService.getPaymentById(id);
@@ -80,6 +84,7 @@ public class PaymentController {
         }
     }
     @PostMapping("/payment/create")
+    @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> paymentCreate(@RequestBody PaymentRequestDTO paymentRequestDTO){
         try{
             if(paymentRequestDTO.getOrder() == null ){
@@ -103,6 +108,7 @@ public class PaymentController {
         }
     }
     @PutMapping("/payment/update/{id}")
+    @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> paymentUpdate(@PathVariable Long id, @RequestBody PaymentRequestDTO paymentRequestDTO){
         try {
             if(paymentRequestDTO.getOrder() == null ){
@@ -127,6 +133,7 @@ public class PaymentController {
         }
     }
     @DeleteMapping("payment/delete/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> deletePayment(@PathVariable Long id){
         try {
             paymentService.deletePaymentById(id);

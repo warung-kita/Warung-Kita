@@ -6,7 +6,6 @@ import com.pentagon.warungkita.model.Categories;
 import com.pentagon.warungkita.model.Photo;
 import com.pentagon.warungkita.model.Product;
 import com.pentagon.warungkita.model.Users;
-import com.pentagon.warungkita.repository.CategoriesRepo;
 import com.pentagon.warungkita.repository.PhotoRepo;
 import com.pentagon.warungkita.repository.ProductRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
@@ -20,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -75,6 +75,7 @@ public class ProductController {
      * @return
      */
     @GetMapping("/product/{productId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> getCategoriesById(@PathVariable Long productId){
         try {
             Optional<Product> product = productService.getProductById(productId);
@@ -106,6 +107,7 @@ public class ProductController {
      * @return
      */
     @PostMapping("/product/add")
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> createCategories(@RequestBody ProductRequestDTO productRequestDTO){
         try{
             if(productRequestDTO.getProductName() == null || productRequestDTO.getCategories() == null || productRequestDTO.getQuantity() == null
@@ -160,6 +162,7 @@ public class ProductController {
      * @return
      */
     @PutMapping("/product/update/{productId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> updateCategories(@PathVariable Long productId, @RequestBody ProductRequestDTO productRequestDTO){
         try {
             if(productRequestDTO.getProductName() == null || productRequestDTO.getCategories() == null || productRequestDTO.getQuantity() == null
@@ -200,6 +203,7 @@ public class ProductController {
      * @return
      */
     @DeleteMapping("product/delete/{productId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> deleteCategories(@PathVariable Long productId){
         try {
             productService.deleteProduct(productId);

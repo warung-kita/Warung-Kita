@@ -1,7 +1,7 @@
 package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.dto.*;
-import com.pentagon.warungkita.exception.ResourceAlreadyExistException;
+import com.pentagon.warungkita.model.Roles;
 import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
@@ -10,16 +10,11 @@ import com.pentagon.warungkita.security.service.AuthServiceImpl;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.UsersService;
 
-import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +29,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @Tag(name = "1.Sign Up/Login")
@@ -67,7 +65,13 @@ public class AuthController {
                 .setAuthentication(authentication);
         String token = jwtUtils.generateJwtToken(authentication);
         UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
-        return ResponseEntity.ok().body(new JwtResponse(token, principal.getUsername(), principal.getEmail()));
+        Optional<Users> users = usersService.findByUsername(principal.getUsername());
+        List<Roles> roles = users.get().getRoles();
+        List<String> stringsrole = new ArrayList<>();
+        roles.forEach(roles1 -> {
+            stringsrole.add(roles1.getName());
+        });
+        return ResponseEntity.ok().body(new JwtResponse(token, principal.getUsername(), principal.getPassword(), stringsrole));
     }
 
     @PostMapping("/signup")

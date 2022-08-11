@@ -1,7 +1,5 @@
 package com.pentagon.warungkita.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.pentagon.warungkita.dto.OrderProductResponseDTO;
 import com.pentagon.warungkita.dto.OrderProductResponsePOST;
 import lombok.*;
