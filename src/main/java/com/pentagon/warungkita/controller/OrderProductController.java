@@ -3,9 +3,16 @@ package com.pentagon.warungkita.controller;
 import com.pentagon.warungkita.dto.OrderProductRequestDTO;
 import com.pentagon.warungkita.dto.OrderProductResponseDTO;
 import com.pentagon.warungkita.dto.OrderProductResponsePOST;
+import com.pentagon.warungkita.exception.ResourceAlreadyExistException;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.OrderProduct;
+import com.pentagon.warungkita.model.Product;
+import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.repository.OrderProductRepo;
+import com.pentagon.warungkita.repository.ProductRepo;
+import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
+import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.OrderProductService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,6 +23,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -30,6 +39,9 @@ public class OrderProductController {
 
     private static final Logger logger = LogManager.getLogger(OrderProductController.class);
     private OrderProductService orderProductService;
+    private UsersRepo usersRepo;
+    private ProductRepo productRepo;
+    private OrderProductRepo orderProductRepo;
 
     /*
      * Get all Data Order products table
@@ -93,20 +105,26 @@ public class OrderProductController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> saveOrderProduct(@RequestBody OrderProductRequestDTO orderProductRequestDTO) {
         try {
-            OrderProduct orderProductSave = orderProductRequestDTO.convertToEntity();
-            OrderProduct orderProduct = orderProductService.saveOrderProduct(orderProductSave);
-            OrderProductResponsePOST responsePOST = orderProduct.convertToResponsePOST();
-            logger.info("==================== Logger Start Post Order Product ====================");
-            logger.info(responsePOST);
-            logger.info("==================== Logger Start Post Order Product =================");
-            return ResponseHandler.generateResponse("Successfully  save Order", HttpStatus.CREATED, responsePOST);
-        } catch (ResourceNotFoundException e) {
-            logger.error("------------------------------------");
-            logger.error(e.getMessage());
-            logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
+
+                Product product = productRepo.findById(orderProductRequestDTO.getProduct().getProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
+                OrderProduct orderProduct = OrderProduct.builder()
+                        .productId(orderProductRequestDTO.getProduct())
+                        .quantity(orderProductRequestDTO.getQuantity())
+                        .build();
+                Integer totalPrice = product.getRegularPrice() * orderProductRequestDTO.getQuantity();
+                orderProduct.setSubtotal(totalPrice);
+                this.orderProductRepo.save(orderProduct);
+                return ResponseHandler.generateResponse("Successfully  save Order", HttpStatus.CREATED, totalPrice);
+
+        }catch(ResourceNotFoundException e){
+                logger.error("------------------------------------");
+                logger.error(e.getMessage());
+                logger.error("------------------------------------");
+                return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
+            }
         }
-    }
+
+
 
     @PutMapping("/update/order-products/{orderProductId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
