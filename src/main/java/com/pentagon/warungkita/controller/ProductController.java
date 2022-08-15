@@ -4,10 +4,7 @@ import com.pentagon.warungkita.dto.ProductRequestDTO;
 import com.pentagon.warungkita.dto.ProductResponseDTO;
 import com.pentagon.warungkita.dto.ProductResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Categories;
-import com.pentagon.warungkita.model.Photo;
-import com.pentagon.warungkita.model.Product;
-import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.model.*;
 import com.pentagon.warungkita.repository.PhotoRepo;
 import com.pentagon.warungkita.repository.ProductRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
@@ -35,7 +32,8 @@ import java.util.Optional;
 public class ProductController {
     private final ProductService productService;
     private final ProductRepo productRepo;
-    private final PhotoRepo photoRepo;
+//    private final Product product;
+//    private final PhotoRepo photoRepo;
     private final UsersRepo usersRepo;
     private static final Logger logger = LogManager.getLogger(ProductController.class);
     /**

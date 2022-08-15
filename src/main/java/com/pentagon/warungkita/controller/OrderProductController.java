@@ -7,9 +7,11 @@ import com.pentagon.warungkita.exception.ResourceAlreadyExistException;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.OrderProduct;
 import com.pentagon.warungkita.model.Product;
+import com.pentagon.warungkita.model.ProductStatus;
 import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.OrderProductRepo;
 import com.pentagon.warungkita.repository.ProductRepo;
+import com.pentagon.warungkita.repository.ProductStatusRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
@@ -39,9 +41,10 @@ public class OrderProductController {
 
     private static final Logger logger = LogManager.getLogger(OrderProductController.class);
     private OrderProductService orderProductService;
-    private UsersRepo usersRepo;
+//    private UsersRepo usersRepo;
     private ProductRepo productRepo;
     private OrderProductRepo orderProductRepo;
+    private ProductStatusRepo productStatusRepo;
 
     /*
      * Get all Data Order products table
@@ -103,7 +106,7 @@ public class OrderProductController {
 
     @PostMapping("/list/order-products")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> saveOrderProduct(@RequestBody OrderProductRequestDTO orderProductRequestDTO) {
+    public ResponseEntity<Object> saveOrderProduct(@RequestBody OrderProductRequestDTO orderProductRequestDTO, ProductStatus productStatus) {
         try {
 
                 Product product = productRepo.findById(orderProductRequestDTO.getProduct().getProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
@@ -113,6 +116,16 @@ public class OrderProductController {
                         .build();
                 Integer totalPrice = product.getRegularPrice() * orderProductRequestDTO.getQuantity();
                 orderProduct.setSubtotal(totalPrice);
+
+
+                if(product.getQuantity() < orderProduct.getQuantity()){
+                    throw new ResourceNotFoundException("stok kurang");
+                }
+
+                Integer newQty = product.getQuantity() - orderProductRequestDTO.getQuantity();
+                product.setQuantity(newQty);
+
+
                 this.orderProductRepo.save(orderProduct);
                 return ResponseHandler.generateResponse("Successfully  save Order", HttpStatus.CREATED, totalPrice);
 
