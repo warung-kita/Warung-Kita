@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class OrderRequestDTO {
-    private Long orderId;
+//    private Long orderId;
     private List<OrderProduct> orderProduct;
     private Date orderDate;
     private Ekspedisi ekspedisiId;
@@ -24,7 +24,7 @@ public class OrderRequestDTO {
 
     public Order convertToEntity(){
         return Order.builder()
-                .orderId(this.orderId)
+//                .orderId(this.orderId)
                 .orderProduct(this.orderProduct)
                 .orderDate(this.orderDate)
                 .ekspedisiId(this.ekspedisiId)

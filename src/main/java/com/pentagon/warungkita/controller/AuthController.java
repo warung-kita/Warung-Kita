@@ -59,7 +59,7 @@ public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> authenticateUser(@RequestBody LoginRequest request,String username) {
+    public ResponseEntity<JwtResponse> authenticateUser(@RequestBody LoginRequest request) {
 
 
         Authentication authentication = authenticationManager

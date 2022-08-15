@@ -7,6 +7,7 @@ import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
+import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -100,11 +102,13 @@ public class UsersController {
         }
     }
 
-    @GetMapping("/users/{users_Id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> getUserById(@PathVariable Long users_Id) {
+    @GetMapping("/users/user_details")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> getUserById() {
         try {
-            Optional<Users> users = usersServiceImpl.getUserById(users_Id);
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            Optional<Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
             Users userResult = users.get();
             UsersResponseDTO result = userResult.convertToResponse();
             logger.info("==================== Logger Start Get User By ID ====================");

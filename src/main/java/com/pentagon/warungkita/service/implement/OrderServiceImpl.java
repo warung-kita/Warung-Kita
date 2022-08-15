@@ -2,12 +2,15 @@ package com.pentagon.warungkita.service.implement;
 
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Order;
+import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.OrderRepo;
+import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.service.OrderService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +20,7 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
 
     private OrderRepo orderRepo;
+    private UsersRepo usersRepo;
 
     @Override
     public List<Order> getAll() {
@@ -40,7 +44,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order saveOrder(Order order) {
-        return this.orderRepo.save(order);
+
+              return this.orderRepo.save(order);
     }
 
     @Override
