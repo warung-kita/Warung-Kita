@@ -206,12 +206,12 @@ create table wishlist(
 	product_id integer not null,
 	 inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    constraint pk_product_list primary key (product_list_id),
+    constraint pk_wishlist primary key (wishlist_id),
     foreign key (user_id)references users (user_id),
     foreign key (product_id)references products (product_id) 
 );
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON product_list
+BEFORE UPDATE ON wishlist
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 

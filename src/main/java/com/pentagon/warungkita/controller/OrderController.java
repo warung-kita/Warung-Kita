@@ -1,10 +1,15 @@
 package com.pentagon.warungkita.controller;
 
+import com.pentagon.warungkita.dto.OrderProductResponseDTO;
 import com.pentagon.warungkita.dto.OrderRequestDTO;
 import com.pentagon.warungkita.dto.OrderResponseDTO;
 import com.pentagon.warungkita.dto.OrderResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Order;
+import com.pentagon.warungkita.model.OrderProduct;
+import com.pentagon.warungkita.model.Product;
+import com.pentagon.warungkita.repository.OrderProductRepo;
+import com.pentagon.warungkita.repository.OrderRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.OrderService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -31,6 +36,9 @@ public class OrderController {
 
     private static final Logger logger = LogManager.getLogger(OrderController.class);
     private OrderService orderService;
+    private OrderProductRepo orderProductRepo;
+//    private OrderRepo orderRepo;
+//    private OrderProductResponseDTO orderProductResponseDto;
 
 
     /*Get All Data dari Order Table
@@ -56,7 +64,15 @@ public class OrderController {
                 logger.info("EkspedisiID    : " + dataOrder.getEkspedisiId());
                 logger.info("Total    : " + dataOrder.getTotal());
                 logger.info("UserID : " + dataOrder.getUserId());
-                OrderResponseDTO orderResponseDTO = dataOrder.convertToResponse();
+//                OrderResponseDTO orderResponseDTO = dataOrder.convertToResponse();
+                OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
+                        .orderId(dataOrder.getOrderId())
+                        .orderDate(dataOrder.getOrderDate())
+                        .ekspedisiName(dataOrder.getEkspedisiId().getName())
+                        .total(dataOrder.getTotal())
+                        .build();
+                orderResponseDTO.setOrderProductId(dataOrder.getOrderProduct());
+                orderResponseDTO.setUser(dataOrder.getUserId());
                 orderMaps.add(orderResponseDTO);
             }
             logger.info("==================== Logger Start Get All Order Product     ====================");
@@ -98,8 +114,25 @@ public class OrderController {
     public ResponseEntity<Object> saveOrder(@RequestBody OrderRequestDTO orderRequestDTO) throws ResourceNotFoundException {
 
         try {
-            Order orderSave = orderRequestDTO.convertToEntity();
-            Order order = orderService.saveOrder(orderSave);
+//            Order orderSave = orderRequestDTO.convertToEntity();
+
+            List<Integer> subtotal = new ArrayList<>();
+            orderRequestDTO.getOrderProduct().forEach(orderProductId -> {
+                OrderProduct orderProduct = orderProductRepo.findById(orderProductId.getOrderProductId()).orElseThrow(() -> new ResourceNotFoundException("not found"));
+                subtotal.add(orderProduct.getSubtotal());
+            });
+//            OrderProduct orderProduct = orderProductRepo.findById(orderProductResponseDto.getOrderProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
+            Integer total = subtotal.stream().mapToInt(map -> map.intValue()).sum();
+            Order order = Order.builder()
+                    .orderProduct(orderRequestDTO.getOrderProduct())
+                    .orderDate(orderRequestDTO.getOrderDate())
+                    .ekspedisiId(orderRequestDTO.getEkspedisiId())
+                    .total(total.intValue())
+                    .userId(orderRequestDTO.getUserId())
+                    .build();
+//            order.setTotal(total);
+//            Order newOrder = orderService.saveOrder(order);
+            orderService.saveOrder(order);
             OrderResponsePOST orderResponsePOST = order.convertToResponsePOST();
             logger.info("==================== Logger Start Post Order Product ====================");
             logger.info(orderResponsePOST);
@@ -109,8 +142,8 @@ public class OrderController {
             logger.error("------------------------------------");
             logger.error(e.getMessage());
             logger.error("------------------------------------");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad Request", e);
-//            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad Request", e);
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
         }
     }
 
