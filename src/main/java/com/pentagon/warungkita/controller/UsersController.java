@@ -142,13 +142,13 @@ public class UsersController {
         }
     }
 
-    @DeleteMapping("/users/{users_Id}")
+    @DeleteMapping("/users/deactive_user/{users_Id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> deleteUser(@PathVariable Long users_Id){
+    public ResponseEntity<Object> deactiveUser(@PathVariable Long users_Id){
         try {
             usersServiceImpl.deleteUserById(users_Id);
             Map<String, Boolean> response = new HashMap<>();
-            response.put("hard deleted", Boolean.TRUE);
+            response.put("Delete Status", Boolean.TRUE);
             logger.info("==================== Logger Start Hard Delete User By ID ====================");
             logger.info(response);
             logger.info("==================== Logger End Hard Delete User By ID =================");

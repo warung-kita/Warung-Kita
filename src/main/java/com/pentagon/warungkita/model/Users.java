@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pentagon.warungkita.dto.UsersResponseDTO;
 import com.pentagon.warungkita.dto.UsersResponsePOST;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.List;
@@ -31,7 +33,7 @@ public class Users {
     private boolean active;
 
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL, fetch= FetchType.LAZY)
+    @ManyToMany
     @JoinTable(name = "user_roles",
     joinColumns = @JoinColumn (name = "user_id"),
     inverseJoinColumns = @JoinColumn (name = "role_id" ))

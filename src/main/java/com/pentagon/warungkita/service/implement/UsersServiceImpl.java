@@ -72,13 +72,14 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public void deleteUserById(Long users_Id) {
+    public Users deleteUserById(Long users_Id) {
         Optional<Users> optionalUser = usersRepo.findById(users_Id);
         if(optionalUser.isEmpty()){
             throw new ResourceNotFoundException("User not exist with id :" + users_Id);
         }
         Users users = usersRepo.getReferenceById(users_Id);
-        this.usersRepo.delete(users);
+        users.setActive(false);
+        return this.usersRepo.save(users);
     }
 
     @Override
