@@ -41,16 +41,16 @@ public class Order {
     public OrderResponseDTO convertToResponse(){
         return OrderResponseDTO.builder()
                 .orderId(this.orderId)
-                .orderProductId(this.getOrderProduct())
+//                .orderProductId(this.getOrderProduct())
                 .orderDate(this.orderDate)
                 .ekspedisiName(this.ekspedisiId.getName())
                 .total(this.total)
-                .fullName(this.userId.getFullName())
-                .userName(this.userId.getUsername())
-                .email(this.userId.getEmail())
-                .address(this.userId.getAddress())
-                .phoneNum(this.userId.getPhoneNum())
-                .profilPicture(this.userId.getProfilPicture())
+//                .fullName(this.userId.getFullName())
+//                .userName(this.userId.getUsername())
+//                .email(this.userId.getEmail())
+//                .address(this.userId.getAddress())
+//                .phoneNum(this.userId.getPhoneNum())
+//                .profilPicture(this.userId.getProfilPicture())
                 .build();
     }
 

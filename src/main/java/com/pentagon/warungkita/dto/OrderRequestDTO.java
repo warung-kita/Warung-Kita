@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class OrderRequestDTO {
-//    private Long orderId;
+    private Long orderId;
     private List<OrderProduct> orderProduct;
     private Date orderDate;
     private Ekspedisi ekspedisiId;

@@ -1,40 +1,36 @@
 package com.pentagon.warungkita.controller;
 
-import com.pentagon.warungkita.dto.OrderProductRequestDTO;
+import com.pentagon.warungkita.dto.OrderProductResponseDTO;
 import com.pentagon.warungkita.dto.OrderRequestDTO;
 import com.pentagon.warungkita.dto.OrderResponseDTO;
 import com.pentagon.warungkita.dto.OrderResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Order;
 import com.pentagon.warungkita.model.OrderProduct;
+import com.pentagon.warungkita.model.Product;
 import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.OrderProductRepo;
 import com.pentagon.warungkita.repository.OrderRepo;
-import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
-import com.pentagon.warungkita.service.OrderProductService;
 import com.pentagon.warungkita.service.OrderService;
+import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigDecimal;
 import java.util.*;
 
- @RequestMapping("/pentagon/warung-kita")
+@RequestMapping("/pentagon/warung-kita")
 @RestController
 @AllArgsConstructor
 @Slf4j
@@ -44,17 +40,15 @@ public class OrderController {
 
     private static final Logger logger = LogManager.getLogger(OrderController.class);
     private OrderService orderService;
-    @Autowired
     private OrderProductRepo orderProductRepo;
+   private UsersServiceImpl usersServiceImpl;
 
-    private OrderProductService orderProductService;
-    private UsersRepo usersRepo;
-    private OrderRepo orderRepo;
+
 
 
     /*Get All Data dari Order Table
-    * Untuk Penampilan Data Bisa Menggunakan ResponseDTO
-    * */
+     * Untuk Penampilan Data Bisa Menggunakan ResponseDTO
+     * */
     @GetMapping("/list/order")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> OrderList(){
@@ -75,7 +69,15 @@ public class OrderController {
                 logger.info("EkspedisiID    : " + dataOrder.getEkspedisiId());
                 logger.info("Total    : " + dataOrder.getTotal());
                 logger.info("UserID : " + dataOrder.getUserId());
-                OrderResponseDTO orderResponseDTO = dataOrder.convertToResponse();
+//                OrderResponseDTO orderResponseDTO = dataOrder.convertToResponse();
+                OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
+                        .orderId(dataOrder.getOrderId())
+                        .orderDate(dataOrder.getOrderDate())
+                        .ekspedisiName(dataOrder.getEkspedisiId().getName())
+                        .total(dataOrder.getTotal())
+                        .build();
+                orderResponseDTO.setOrderProductId(dataOrder.getOrderProduct());
+                orderResponseDTO.setUser(dataOrder.getUserId());
                 orderMaps.add(orderResponseDTO);
             }
             logger.info("==================== Logger Start Get All Order Product     ====================");
@@ -108,17 +110,35 @@ public class OrderController {
     }
 
     /*
-    *save(create) order baru untuk order table
-    *throws ResourceNotFoundException jika data tidak ditemukan
-    * membuat RequestDTO
-    * */
+     *save(create) order baru untuk order table
+     *throws ResourceNotFoundException jika data tidak ditemukan
+     * membuat RequestDTO
+     * */
     @PostMapping("/save/order")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
-    @Transactional
     public ResponseEntity<Object> saveOrder(@RequestBody OrderRequestDTO orderRequestDTO) throws ResourceNotFoundException {
-    try{
-            Order orderSave = orderRequestDTO.convertToEntity();
-            Order order = orderService.saveOrder(orderSave);
+
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            Optional <Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
+
+            List<Integer> subtotal = new ArrayList<>();
+            orderRequestDTO.getOrderProduct().forEach(orderProductId -> {
+                OrderProduct orderProduct = orderProductRepo.findById(orderProductId.getOrderProductId()).orElseThrow(() -> new ResourceNotFoundException("not found"));
+                subtotal.add(orderProduct.getSubtotal());
+            });
+
+            Integer total = subtotal.stream().mapToInt(map -> map.intValue()).sum();
+            Order order = Order.builder()
+                    .orderProduct(orderRequestDTO.getOrderProduct())
+                    .orderDate(orderRequestDTO.getOrderDate())
+                    .ekspedisiId(orderRequestDTO.getEkspedisiId())
+                    .total(total.intValue())
+                    .userId(users.get())
+                    .build();
+
+            orderService.saveOrder(order);
             OrderResponsePOST orderResponsePOST = order.convertToResponsePOST();
             logger.info("==================== Logger Start Post Order Product ====================");
             logger.info(orderResponsePOST);
@@ -128,11 +148,10 @@ public class OrderController {
             logger.error("------------------------------------");
             logger.error(e.getMessage());
             logger.error("------------------------------------");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad Request", e);
-//            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad Request", e);
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
         }
     }
-
 
     /*
      *update order baru untuk order table

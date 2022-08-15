@@ -14,7 +14,7 @@ public class OrderProductResponseDTO {
     private Long orderProductId;
     private Long productId;
     private  Integer quantity;
-    private Number subtotal;;
+    private Integer subtotal;
 //    private Long order;
 //    @JsonFormat(pattern = "yyyy-MM-dd")
 //    private Date orderDate;
