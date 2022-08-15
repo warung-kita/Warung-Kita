@@ -1,11 +1,19 @@
 package com.pentagon.warungkita.controller;
 
+import com.pentagon.warungkita.dto.OrderProductRequestDTO;
 import com.pentagon.warungkita.dto.OrderRequestDTO;
 import com.pentagon.warungkita.dto.OrderResponseDTO;
 import com.pentagon.warungkita.dto.OrderResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Order;
+import com.pentagon.warungkita.model.OrderProduct;
+import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.repository.OrderProductRepo;
+import com.pentagon.warungkita.repository.OrderRepo;
+import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
+import com.pentagon.warungkita.security.service.UserDetailsImpl;
+import com.pentagon.warungkita.service.OrderProductService;
 import com.pentagon.warungkita.service.OrderService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,12 +21,17 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.*;
 
  @RequestMapping("/pentagon/warung-kita")
@@ -31,6 +44,12 @@ public class OrderController {
 
     private static final Logger logger = LogManager.getLogger(OrderController.class);
     private OrderService orderService;
+    @Autowired
+    private OrderProductRepo orderProductRepo;
+
+    private OrderProductService orderProductService;
+    private UsersRepo usersRepo;
+    private OrderRepo orderRepo;
 
 
     /*Get All Data dari Order Table
@@ -95,9 +114,9 @@ public class OrderController {
     * */
     @PostMapping("/save/order")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
+    @Transactional
     public ResponseEntity<Object> saveOrder(@RequestBody OrderRequestDTO orderRequestDTO) throws ResourceNotFoundException {
-
-        try {
+    try{
             Order orderSave = orderRequestDTO.convertToEntity();
             Order order = orderService.saveOrder(orderSave);
             OrderResponsePOST orderResponsePOST = order.convertToResponsePOST();
@@ -113,6 +132,7 @@ public class OrderController {
 //            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
         }
     }
+
 
     /*
      *update order baru untuk order table

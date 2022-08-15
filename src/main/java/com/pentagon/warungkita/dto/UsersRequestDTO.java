@@ -20,6 +20,8 @@ public class UsersRequestDTO {
     private String password;
     private String phoneNum;
     private String profilPicture;
+
+    private List<Roles> roles;
 //    private String active;
 
     public Users convertToEntity(){
@@ -31,6 +33,7 @@ public class UsersRequestDTO {
                 .password(this.password)
                 .phoneNum(this.phoneNum)
                 .profilPicture(this.profilPicture)
+                .roles(this.roles)
 //                .active(this.active)
                 .build();
     }

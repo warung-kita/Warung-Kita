@@ -130,13 +130,21 @@ public class OrderProductController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> updateOrderProduct(@PathVariable Long orderProductId, @RequestBody OrderProductRequestDTO orderProductRequestDTO) {
         try {
-            OrderProduct orderProduct = orderProductRequestDTO.convertToEntity();
+            Product product = productRepo.findById(orderProductRequestDTO.getProduct().getProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
+            OrderProduct orderProduct = OrderProduct.builder()
+                    .productId(orderProductRequestDTO.getProduct())
+                    .quantity(orderProductRequestDTO.getQuantity())
+                    .build();
+            Integer totalPrice = product.getRegularPrice() * orderProductRequestDTO.getQuantity();
+            orderProduct.setSubtotal(totalPrice);
+
             orderProduct.setOrderProductId(orderProductId);
             OrderProduct responseUpdate = orderProductService.updateOrderProduct(orderProduct);
             OrderProductResponseDTO responseDTO = responseUpdate.convertToResponse();
             logger.info("==================== Logger Start Update Order Product By ID ====================");
             logger.info(responseDTO);
             logger.info("==================== Logger End Update Order Product By ID =================");
+            this.orderProductRepo.save(orderProduct);
             return ResponseHandler.generateResponse("Data Updated!", HttpStatus.CREATED, responseDTO);
         } catch (ResourceNotFoundException e) {
             logger.error("------------------------------------");

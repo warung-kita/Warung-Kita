@@ -67,6 +67,7 @@ public class UsersServiceImpl implements UsersService {
         if(optionalUser.isEmpty()){
             throw new ResourceNotFoundException("User not exist with id :" + users.getUserId());
         }
+        users.setPassword(passwordEncoder.encode(users.getPassword()));
         return this.usersRepo.save(users);
     }
 

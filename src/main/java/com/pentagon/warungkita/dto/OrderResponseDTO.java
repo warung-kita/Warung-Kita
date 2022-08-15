@@ -19,7 +19,7 @@ public class OrderResponseDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date orderDate;
     private String ekspedisiName;
-    private Number total;
+    private Integer total;
     private String fullName;
     private String email;
     private String userName;
@@ -30,7 +30,7 @@ public class OrderResponseDTO {
     @Override
     public String toString() {
         return "OrderResponseDTO{" +
-                "orderId=" + orderId +
+//                "orderId=" + orderId +
                 ", orderProductId=" + orderProductId +
                 ", orderDate=" + orderDate +
                 ", ekspedisiName='" + ekspedisiName + '\'' +
