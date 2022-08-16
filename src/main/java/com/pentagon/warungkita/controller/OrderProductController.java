@@ -108,7 +108,9 @@ public class OrderProductController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> saveOrderProduct(@RequestBody OrderProductRequestDTO orderProductRequestDTO, ProductStatus productStatus) {
         try {
-
+                /**
+                * Logic subtotal on Order Product
+                * */
                 Product product = productRepo.findById(orderProductRequestDTO.getProduct().getProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
                 OrderProduct orderProduct = OrderProduct.builder()
                         .productId(orderProductRequestDTO.getProduct())
@@ -117,11 +119,15 @@ public class OrderProductController {
                 Integer totalPrice = product.getRegularPrice() * orderProductRequestDTO.getQuantity();
                 orderProduct.setSubtotal(totalPrice);
 
-
+                /**
+                 * Logic if Qty of Product less then Qty of Order Product
+                * */
                 if(product.getQuantity() < orderProduct.getQuantity()){
                     throw new ResourceNotFoundException("stok kurang");
                 }
-
+                /**
+                 * Update Qty Product
+                 * */
                 Integer newQty = product.getQuantity() - orderProductRequestDTO.getQuantity();
                 product.setQuantity(newQty);
 
