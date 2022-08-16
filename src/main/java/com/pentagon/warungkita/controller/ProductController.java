@@ -4,10 +4,7 @@ import com.pentagon.warungkita.dto.ProductRequestDTO;
 import com.pentagon.warungkita.dto.ProductResponseDTO;
 import com.pentagon.warungkita.dto.ProductResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Categories;
-import com.pentagon.warungkita.model.Photo;
-import com.pentagon.warungkita.model.Product;
-import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.model.*;
 import com.pentagon.warungkita.repository.PhotoRepo;
 import com.pentagon.warungkita.repository.ProductRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
@@ -35,7 +32,8 @@ import java.util.Optional;
 public class ProductController {
     private final ProductService productService;
     private final ProductRepo productRepo;
-    private final PhotoRepo photoRepo;
+//    private final Product product;
+//    private final PhotoRepo photoRepo;
     private final UsersRepo usersRepo;
     private static final Logger logger = LogManager.getLogger(ProductController.class);
     /**
@@ -113,6 +111,9 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> createProduct(@RequestBody ProductRequestDTO productRequestDTO){
         try{
+            /**
+             * Logic to complete fill all field request
+             * */
             if(productRequestDTO.getProductName().isEmpty() && productRequestDTO.getCategories().isEmpty() && productRequestDTO.getQuantity() != null
                     && productRequestDTO.getSku().isEmpty() && productRequestDTO.getProductStatusId() != null && productRequestDTO.getRegularPrice() != null){
                 throw new ResourceNotFoundException("Please Input All Field");
@@ -130,12 +131,21 @@ public class ProductController {
             Integer countProduct = products.size();
             Integer countPhoto = photos.size();
             Integer countCategories = categories.size();
+            /**
+             * Logic 1 User only can post product max 4 post
+             * */
             if (countProduct >= 4){
                 throw new ResourceNotFoundException("tidak boleh posting lagi");
             }
+            /**
+             * Logic 1 post just add max 4 categories on 1 item
+             * */
             if (countCategories > 4) {
                 throw new ResourceNotFoundException("categories max 4");
             }
+            /**
+             * Logic 1 post just add max 4 photos on 1 item
+             * */
             if (countPhoto > 4) {
                 throw new ResourceNotFoundException("Maximum Photo is 4");
             }
