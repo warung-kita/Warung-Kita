@@ -42,6 +42,9 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Users createUser(Users users) {
+        /**
+         * Logic add role buyer when creating new user
+         * */
         if(users.getRoles() == null){
             Roles role = rolesRepo.findByName("ROLE_BUYER");
             List<Roles> roles = new ArrayList<>();

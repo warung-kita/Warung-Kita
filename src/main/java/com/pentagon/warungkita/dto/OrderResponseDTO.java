@@ -21,6 +21,7 @@ public class OrderResponseDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date orderDate;
     private String ekspedisiName;
+
     private Number total;
     private UsersResponsePOST user;
     //    private String fullName;
@@ -40,6 +41,7 @@ public class OrderResponseDTO {
             orderProductResponseDTO.setSubtotal(orderProducts.getSubtotal());
             responseDTOs.add(orderProductResponseDTO);
         });
+
 
     }
 

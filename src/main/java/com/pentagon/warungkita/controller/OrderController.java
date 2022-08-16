@@ -1,18 +1,32 @@
 package com.pentagon.warungkita.controller;
 
+
+import com.pentagon.warungkita.dto.OrderProductRequestDTO;
+
 import com.pentagon.warungkita.dto.OrderProductResponseDTO;
+
 import com.pentagon.warungkita.dto.OrderRequestDTO;
 import com.pentagon.warungkita.dto.OrderResponseDTO;
 import com.pentagon.warungkita.dto.OrderResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Order;
 import com.pentagon.warungkita.model.OrderProduct;
+
+import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.repository.OrderProductRepo;
+import com.pentagon.warungkita.repository.OrderRepo;
+import com.pentagon.warungkita.repository.UsersRepo;
+
 import com.pentagon.warungkita.model.Product;
 import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.OrderProductRepo;
 import com.pentagon.warungkita.repository.OrderRepo;
+
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
+
+import com.pentagon.warungkita.service.OrderProductService;
+
 import com.pentagon.warungkita.service.OrderService;
 import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -21,13 +35,19 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import org.springframework.security.core.userdetails.User;
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @RequestMapping("/pentagon/warung-kita")
@@ -40,8 +60,17 @@ public class OrderController {
 
     private static final Logger logger = LogManager.getLogger(OrderController.class);
     private OrderService orderService;
+
+    @Autowired
     private OrderProductRepo orderProductRepo;
+
     private UsersServiceImpl usersServiceImpl;
+
+
+
+    private OrderProductService orderProductService;
+    private UsersRepo usersRepo;
+    private OrderRepo orderRepo;
 
 
 
@@ -115,7 +144,9 @@ public class OrderController {
      * */
     @PostMapping("/save/order")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
+    @Transactional
     public ResponseEntity<Object> saveOrder(@RequestBody OrderRequestDTO orderRequestDTO) throws ResourceNotFoundException {
+
 
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -137,6 +168,7 @@ public class OrderController {
                     .build();
 
             orderService.saveOrder(order);
+
             OrderResponsePOST orderResponsePOST = order.convertToResponsePOST();
             logger.info("==================== Logger Start Post Order Product ====================");
             logger.info(orderResponsePOST);
@@ -150,6 +182,7 @@ public class OrderController {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
         }
     }
+
 
     /*
      *update order baru untuk order table
