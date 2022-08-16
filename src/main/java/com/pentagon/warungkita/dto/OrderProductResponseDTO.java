@@ -15,16 +15,6 @@ public class OrderProductResponseDTO {
     private Long productId;
     private  Integer quantity;
     private Integer subtotal;
-//    private Long order;
-//    @JsonFormat(pattern = "yyyy-MM-dd")
-//    private Date orderDate;
-//    private String ekspedisiName;
-//    private String fullName;
-//    private String email;
-//    private String userName;
-//    private String address;
-//    private String phoneNum;
-//    private String profilPicture;
 
     @Override
     public String toString() {
