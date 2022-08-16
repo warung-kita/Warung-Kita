@@ -36,10 +36,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@Tag(name = "1.Sign Up/Login")
 @OpenAPIDefinition(info = @Info(title = "WarungKita",
         description = "Build by PENTAGON"))
-@Tag(name ="1.Sign Up/Login")
+@Tag(name ="01.Sign Up/Login")
 public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;

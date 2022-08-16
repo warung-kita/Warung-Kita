@@ -22,7 +22,7 @@ import java.util.*;
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "9.Payment")
+@Tag(name = "09.Payment")
 public class PaymentController {
 
     private static final Logger logger = LogManager.getLogger(PaymentController.class);

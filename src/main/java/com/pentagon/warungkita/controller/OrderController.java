@@ -35,13 +35,13 @@ import java.util.*;
 @AllArgsConstructor
 @Slf4j
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "7. Order")
+@Tag(name = "07. Order")
 public class OrderController {
 
     private static final Logger logger = LogManager.getLogger(OrderController.class);
     private OrderService orderService;
     private OrderProductRepo orderProductRepo;
-   private UsersServiceImpl usersServiceImpl;
+    private UsersServiceImpl usersServiceImpl;
 
 
 
@@ -69,7 +69,6 @@ public class OrderController {
                 logger.info("EkspedisiID    : " + dataOrder.getEkspedisiId());
                 logger.info("Total    : " + dataOrder.getTotal());
                 logger.info("UserID : " + dataOrder.getUserId());
-//                OrderResponseDTO orderResponseDTO = dataOrder.convertToResponse();
                 OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
                         .orderId(dataOrder.getOrderId())
                         .orderDate(dataOrder.getOrderDate())

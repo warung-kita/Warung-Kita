@@ -31,11 +31,10 @@ import java.util.Optional;
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "3.Products")
+@Tag(name = "03.Products")
 public class ProductController {
     private final ProductService productService;
     private final ProductRepo productRepo;
-
     private final UsersServiceImpl usersServiceImpl;
 
     private static final Logger logger = LogManager.getLogger(ProductController.class);

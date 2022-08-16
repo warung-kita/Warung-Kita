@@ -27,7 +27,7 @@ import java.util.*;
 @Slf4j
 @RequestMapping("/pentagon/warung-kita")
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "2.Users")
+@Tag(name = "02.Users")
 public class UsersController {
 
     private static final Logger logger = LogManager.getLogger(UsersController.class);

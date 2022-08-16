@@ -28,7 +28,7 @@ import java.util.*;
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "5.Wishlist")
+@Tag(name = "05.Wishlist")
 public class WishlistController {
 
     private static final Logger logger = LogManager.getLogger(WishlistController.class);
