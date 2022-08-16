@@ -16,6 +16,7 @@ import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.OrderProductService;
+import com.pentagon.warungkita.service.ProductStatusService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -44,6 +45,7 @@ public class OrderProductController {
 //    private UsersRepo usersRepo;
     private ProductRepo productRepo;
     private OrderProductRepo orderProductRepo;
+    private ProductStatusService productStatusService;
     private ProductStatusRepo productStatusRepo;
 
     /*
@@ -106,7 +108,7 @@ public class OrderProductController {
 
     @PostMapping("/list/order-products")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> saveOrderProduct(@RequestBody OrderProductRequestDTO orderProductRequestDTO, ProductStatus productStatus) {
+    public ResponseEntity<Object> saveOrderProduct(@RequestBody OrderProductRequestDTO orderProductRequestDTO) {
         try {
                 /**
                 * Logic subtotal on Order Product
@@ -130,7 +132,13 @@ public class OrderProductController {
                  * */
                 Integer newQty = product.getQuantity() - orderProductRequestDTO.getQuantity();
                 product.setQuantity(newQty);
-
+                 /**
+                 * Update if qty product 0 set to Sold Out
+                 * */
+                if(newQty==0){
+                    ProductStatus psSoldOut = productStatusService.getProductStatusById(2L).get();
+                    product.setProductStatusId(psSoldOut);
+                }
 
                 this.orderProductRepo.save(orderProduct);
                 return ResponseHandler.generateResponse("Successfully  save Order", HttpStatus.CREATED, totalPrice);
