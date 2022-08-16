@@ -220,7 +220,7 @@ create table order_order_products (
    order_id integer not null,
    inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-   constraint pk_order_order_products primary key (order_product_id, order_id),
+   constraint pk_order_order_products primary key (order_product_id,order_id),
     foreign key (order_product_id) references  order_products (order_product_id),
     foreign key (order_id) references  orders (order_id)
      
