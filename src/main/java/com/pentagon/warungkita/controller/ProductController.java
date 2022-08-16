@@ -4,15 +4,14 @@ import com.pentagon.warungkita.dto.ProductRequestDTO;
 import com.pentagon.warungkita.dto.ProductResponseDTO;
 import com.pentagon.warungkita.dto.ProductResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Categories;
-import com.pentagon.warungkita.model.Photo;
-import com.pentagon.warungkita.model.Product;
-import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.model.*;
 import com.pentagon.warungkita.repository.PhotoRepo;
 import com.pentagon.warungkita.repository.ProductRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
+import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.ProductService;
+import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -21,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -35,8 +35,9 @@ import java.util.Optional;
 public class ProductController {
     private final ProductService productService;
     private final ProductRepo productRepo;
-    private final PhotoRepo photoRepo;
-    private final UsersRepo usersRepo;
+
+    private final UsersServiceImpl usersServiceImpl;
+
     private static final Logger logger = LogManager.getLogger(ProductController.class);
     /**
      * Get All Product
@@ -113,18 +114,28 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> createProduct(@RequestBody ProductRequestDTO productRequestDTO){
         try{
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional <Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
+
             if(productRequestDTO.getProductName().isEmpty() && productRequestDTO.getCategories().isEmpty() && productRequestDTO.getQuantity() != null
                     && productRequestDTO.getSku().isEmpty() && productRequestDTO.getProductStatusId() != null && productRequestDTO.getRegularPrice() != null){
                 throw new ResourceNotFoundException("Please Input All Field");
             }
 
-            Users users = usersRepo.findById(productRequestDTO.getUserId()).orElseThrow();
-            Product product= productRequestDTO.convertToEntity(users);
+            Product product = Product.builder()
+                    .sku(productRequestDTO.getSku())
+                    .productName(productRequestDTO.getProductName())
+                    .categories(productRequestDTO.getCategories())
+                    .description(productRequestDTO.getDescription())
+                    .regularPrice(productRequestDTO.getRegularPrice())
+                    .quantity(productRequestDTO.getQuantity())
+                    .productStatusId(productRequestDTO.getProductStatusId())
+                    .productPicture(productRequestDTO.getProductPicture())
+                    .users(users.get())
+                    .build();
 
-//            Photo photo = new Photo();
-//            Photo photos = photoRepo.save(photo);
-//            product.setProductPicture(photos);
-            List<Product> products = productRepo.findByUsersUserId(productRequestDTO.getUserId());
+
+            List<Product> products = productRepo.findByUsersUserId(userDetails.getUserId());
             List<Photo> photos = productRequestDTO.getProductPicture();
             List<Categories> categories = productRequestDTO.getCategories();
             Integer countProduct = products.size();
@@ -165,19 +176,49 @@ public class ProductController {
     /**
      * Edit Product Data
      * @param productId
-     * @param productRequestDTO
-     * @return
+     *
      */
     @PutMapping("/product/update/{productId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
-    public ResponseEntity<Object> updateProduct(@PathVariable Long productId, @RequestBody ProductRequestDTO productRequestDTO){
+    public ResponseEntity<Object> updateProduct(@PathVariable Long
+                                                            productId, @RequestBody ProductRequestDTO productRequestDTO){
         try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional <Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
+
             if(productRequestDTO.getProductName().isEmpty() && productRequestDTO.getCategories().isEmpty() && productRequestDTO.getQuantity() != null
                     && productRequestDTO.getSku().isEmpty() && productRequestDTO.getProductStatusId() != null && productRequestDTO.getRegularPrice() != null){
                 throw new ResourceNotFoundException("Please Input All Field");
             }
-            Users users = usersRepo.findById(productRequestDTO.getUserId()).orElseThrow();
-            Product product = productRequestDTO.convertToEntity(users);
+
+            Product product = Product.builder()
+                    .sku(productRequestDTO.getSku())
+                    .productName(productRequestDTO.getProductName())
+                    .categories(productRequestDTO.getCategories())
+                    .description(productRequestDTO.getDescription())
+                    .regularPrice(productRequestDTO.getRegularPrice())
+                    .quantity(productRequestDTO.getQuantity())
+                    .productStatusId(productRequestDTO.getProductStatusId())
+                    .productPicture(productRequestDTO.getProductPicture())
+                    .users(users.get())
+                    .build();
+
+
+            List<Product> products = productRepo.findByUsersUserId(userDetails.getUserId());
+            List<Photo> photos = productRequestDTO.getProductPicture();
+            List<Categories> categories = productRequestDTO.getCategories();
+            Integer countProduct = products.size();
+            Integer countPhoto = photos.size();
+            Integer countCategories = categories.size();
+            if (countProduct >= 4){
+                throw new ResourceNotFoundException("tidak boleh posting lagi");
+            }
+            if (countCategories > 4) {
+                throw new ResourceNotFoundException("categories max 4");
+            }
+            if (countPhoto > 4) {
+                throw new ResourceNotFoundException("Maximum Photo is 4");
+            }
             product.setProductId(productId);
             Product responseUpdate = productService.updateProduct(product);
             ProductResponseDTO responseDTO = responseUpdate.convertToResponse();

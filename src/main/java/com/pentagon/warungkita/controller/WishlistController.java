@@ -5,9 +5,12 @@ import com.pentagon.warungkita.dto.WishlistRequestDTO;
 import com.pentagon.warungkita.dto.WishlistResponseDTO;
 import com.pentagon.warungkita.dto.WishlistResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
+import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.model.Wishlist;
 import com.pentagon.warungkita.response.ResponseHandler;
+import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.WishlistService;
+import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -16,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -29,6 +33,7 @@ public class WishlistController {
 
     private static final Logger logger = LogManager.getLogger(WishlistController.class);
     private WishlistService wishlistService;
+    private final UsersServiceImpl usersServiceImpl;
 
 
     @GetMapping("/wishlist/all")
@@ -76,12 +81,17 @@ public class WishlistController {
     }
     @PostMapping("/wishlist/create")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> productListCreate(@RequestBody WishlistRequestDTO wishlistRequestDTO){
+    public ResponseEntity<Object> wishlistCreate(@RequestBody WishlistRequestDTO wishlistRequestDTO){
         try{
-            if(wishlistRequestDTO.getProduct() == null || wishlistRequestDTO.getUser() == null){
-                throw new ResourceNotFoundException("Product List must have product id and user id");
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional <Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
+            if(wishlistRequestDTO.getProduct() == null ){
+                throw new ResourceNotFoundException("Product List must have product id");
             }
-            Wishlist wishlist = wishlistRequestDTO.convertToEntity();
+            Wishlist wishlist = Wishlist.builder()
+                    .user(users.get())
+                    .product(wishlistRequestDTO.getProduct())
+                    .build();
             wishlistService.createProductList(wishlist);
             WishlistResponsePOST result = wishlist.convertToResponsePost();
             logger.info("======== Logger Start   ========");
@@ -98,7 +108,7 @@ public class WishlistController {
     }
     @PutMapping("/wishlist/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> produkListUpdate(@PathVariable Long id, @RequestBody WishlistRequestDTO wishlistRequestDTO){
+    public ResponseEntity<Object> wishlistUpdate(@PathVariable Long id, @RequestBody WishlistRequestDTO wishlistRequestDTO){
         try {
             if(wishlistRequestDTO.getProduct() == null || wishlistRequestDTO.getUser() == null){
                 throw new ResourceNotFoundException("Product List must have product id and user id");
@@ -121,7 +131,7 @@ public class WishlistController {
     }
     @DeleteMapping("wishlist/delete/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> deleteProductList(@PathVariable Long id){
+    public ResponseEntity<Object> deletewishlist(@PathVariable Long id){
         try {
             wishlistService.deleteProductListById(id);
             Map<String, Boolean> response = new HashMap<>();
@@ -138,33 +148,14 @@ public class WishlistController {
         }
     }
 
-//    @PostMapping("product_list/find/{id}")
-//    public ResponseEntity<Object> findWishListByUserId(@RequestBody Users users){
-//        try {
-//            List<ProductList> produkListByUserId = productListService.getWishlistByUsersId(users.getUserId());
-//            List<ProductListResponseDTO> productListResponseDTOS = produkListByUserId.stream()
-//                    .map(ProductList::convertToResponse)
-//                    .collect(Collectors.toList());
-//
-//            logger.info("Success Query By User Id : " +productListResponseDTOS);
-//
-//            return ResponseHandler.generateResponse("Succes Query By User Id",HttpStatus.OK,productListResponseDTOS);
-//        }catch (Exception e){
-//
-//            logger.error(e.getMessage());
-//
-//            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.BAD_REQUEST,"Failed Query By User Id");
-//        }
-//
-//    }
 
-    @GetMapping("/wishlist/username")
+    @GetMapping("/wishlist")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> findWishlistByUserName(@RequestParam String userName){
-        List<Wishlist> test = wishlistService.findByUserUsernameContaining(userName);
-//        List<WishlistResponseDTO> test2 = test.stream()
-//                .map(Wishlist::convertToResponse)
-//                .collect(Collectors.toList());
+    public ResponseEntity<Object> findWishlistByUserName(){
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        List<Wishlist> test = wishlistService.findByUserUsernameContaining(userDetails.getUsername());
+
         return ResponseHandler.generateResponse("test",HttpStatus.OK,test);
     }
 }

@@ -120,7 +120,6 @@ public class OrderController {
 
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
             Optional <Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
 
             List<Integer> subtotal = new ArrayList<>();
@@ -158,12 +157,27 @@ public class OrderController {
      *throws ResourceNotFoundException jika data tidak ditemukan
      * membuat RequestDTO
      * */
-    @PutMapping("/update/order/{orderId}")
+    @PutMapping("/update/order")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> updateOrder(@PathVariable Long orderId, @RequestBody OrderRequestDTO orderRequest){
+    public ResponseEntity<Object> updateOrder( @RequestBody OrderRequestDTO orderRequestDTO){
         try {
-            Order order = orderRequest.convertToEntity();
-            order.setOrderId(orderId);
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional <Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
+
+            List<Integer> subtotal = new ArrayList<>();
+            orderRequestDTO.getOrderProduct().forEach(orderProductId -> {
+                OrderProduct orderProduct = orderProductRepo.findById(orderProductId.getOrderProductId()).orElseThrow(() -> new ResourceNotFoundException("not found"));
+                subtotal.add(orderProduct.getSubtotal());
+            });
+
+            Integer total = subtotal.stream().mapToInt(map -> map.intValue()).sum();
+            Order order = Order.builder()
+                    .orderProduct(orderRequestDTO.getOrderProduct())
+                    .orderDate(orderRequestDTO.getOrderDate())
+                    .ekspedisiId(orderRequestDTO.getEkspedisiId())
+                    .total(total.intValue())
+                    .userId(users.get())
+                    .build();
             Order responseUpdate = orderService.updateOrder(order);
             OrderResponseDTO responseDTO = responseUpdate.convertToResponse();
             logger.info("==================== Logger Start Update Order Product By ID ====================");
