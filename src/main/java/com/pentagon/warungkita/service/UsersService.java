@@ -12,7 +12,7 @@ public interface UsersService {
     Optional<Users> getUserById(Long users_Id);
     Users findById(Long users_Id);
     Users updateUser(Users users) throws Exception;
-    void deleteUserById(Long users_Id);
+    Users deleteUserById(Long users_Id);
 
     Optional<Users> findByUsername(String username);
 

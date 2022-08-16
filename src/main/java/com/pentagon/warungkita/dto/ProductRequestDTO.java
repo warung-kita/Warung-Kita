@@ -19,7 +19,7 @@ public class ProductRequestDTO {
     private Integer regularPrice;
     private Integer quantity;
     private List<Photo> productPicture;
-    private Long userId;
+//    private Long userId;
 
     public Product convertToEntity(Users users){
         return Product.builder()

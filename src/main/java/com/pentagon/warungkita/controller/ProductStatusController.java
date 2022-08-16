@@ -24,7 +24,7 @@ import java.util.Map;
 @RequestMapping("/pentagon/warung-kita")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "Product Status")
+@Tag(name = "10.Product Status")
 public class ProductStatusController {
 
     private static final Logger logger = LogManager.getLogger(ProductStatusController.class);

@@ -18,13 +18,17 @@ import com.pentagon.warungkita.repository.OrderRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
 
 import com.pentagon.warungkita.model.Product;
+import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.OrderProductRepo;
 import com.pentagon.warungkita.repository.OrderRepo;
 
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
+
 import com.pentagon.warungkita.service.OrderProductService;
+
 import com.pentagon.warungkita.service.OrderService;
+import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -36,20 +40,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.security.core.userdetails.User;
 import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.*;
 
- @RequestMapping("/pentagon/warung-kita")
+@RequestMapping("/pentagon/warung-kita")
 @RestController
 @AllArgsConstructor
 @Slf4j
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "7. Order")
+@Tag(name = "07. Order")
 public class OrderController {
 
     private static final Logger logger = LogManager.getLogger(OrderController.class);
@@ -58,15 +64,20 @@ public class OrderController {
     @Autowired
     private OrderProductRepo orderProductRepo;
 
+    private UsersServiceImpl usersServiceImpl;
+
+
+
     private OrderProductService orderProductService;
     private UsersRepo usersRepo;
     private OrderRepo orderRepo;
 
 
 
+
     /*Get All Data dari Order Table
-    * Untuk Penampilan Data Bisa Menggunakan ResponseDTO
-    * */
+     * Untuk Penampilan Data Bisa Menggunakan ResponseDTO
+     * */
     @GetMapping("/list/order")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> OrderList(){
@@ -87,7 +98,6 @@ public class OrderController {
                 logger.info("EkspedisiID    : " + dataOrder.getEkspedisiId());
                 logger.info("Total    : " + dataOrder.getTotal());
                 logger.info("UserID : " + dataOrder.getUserId());
-//                OrderResponseDTO orderResponseDTO = dataOrder.convertToResponse();
                 OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
                         .orderId(dataOrder.getOrderId())
                         .orderDate(dataOrder.getOrderDate())
@@ -128,10 +138,10 @@ public class OrderController {
     }
 
     /*
-    *save(create) order baru untuk order table
-    *throws ResourceNotFoundException jika data tidak ditemukan
-    * membuat RequestDTO
-    * */
+     *save(create) order baru untuk order table
+     *throws ResourceNotFoundException jika data tidak ditemukan
+     * membuat RequestDTO
+     * */
     @PostMapping("/save/order")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
     @Transactional
@@ -139,24 +149,24 @@ public class OrderController {
 
 
         try {
-//            Order orderSave = orderRequestDTO.convertToEntity();
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional <Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
 
             List<Integer> subtotal = new ArrayList<>();
             orderRequestDTO.getOrderProduct().forEach(orderProductId -> {
                 OrderProduct orderProduct = orderProductRepo.findById(orderProductId.getOrderProductId()).orElseThrow(() -> new ResourceNotFoundException("not found"));
                 subtotal.add(orderProduct.getSubtotal());
             });
-//            OrderProduct orderProduct = orderProductRepo.findById(orderProductResponseDto.getOrderProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
+
             Integer total = subtotal.stream().mapToInt(map -> map.intValue()).sum();
             Order order = Order.builder()
                     .orderProduct(orderRequestDTO.getOrderProduct())
                     .orderDate(orderRequestDTO.getOrderDate())
                     .ekspedisiId(orderRequestDTO.getEkspedisiId())
                     .total(total.intValue())
-                    .userId(orderRequestDTO.getUserId())
+                    .userId(users.get())
                     .build();
-//            order.setTotal(total);
-//            Order newOrder = orderService.saveOrder(order);
+
             orderService.saveOrder(order);
 
             OrderResponsePOST orderResponsePOST = order.convertToResponsePOST();
@@ -179,12 +189,27 @@ public class OrderController {
      *throws ResourceNotFoundException jika data tidak ditemukan
      * membuat RequestDTO
      * */
-    @PutMapping("/update/order/{orderId}")
+    @PutMapping("/update/order")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> updateOrder(@PathVariable Long orderId, @RequestBody OrderRequestDTO orderRequest){
+    public ResponseEntity<Object> updateOrder( @RequestBody OrderRequestDTO orderRequestDTO){
         try {
-            Order order = orderRequest.convertToEntity();
-            order.setOrderId(orderId);
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional <Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
+
+            List<Integer> subtotal = new ArrayList<>();
+            orderRequestDTO.getOrderProduct().forEach(orderProductId -> {
+                OrderProduct orderProduct = orderProductRepo.findById(orderProductId.getOrderProductId()).orElseThrow(() -> new ResourceNotFoundException("not found"));
+                subtotal.add(orderProduct.getSubtotal());
+            });
+
+            Integer total = subtotal.stream().mapToInt(map -> map.intValue()).sum();
+            Order order = Order.builder()
+                    .orderProduct(orderRequestDTO.getOrderProduct())
+                    .orderDate(orderRequestDTO.getOrderDate())
+                    .ekspedisiId(orderRequestDTO.getEkspedisiId())
+                    .total(total.intValue())
+                    .userId(users.get())
+                    .build();
             Order responseUpdate = orderService.updateOrder(order);
             OrderResponseDTO responseDTO = responseUpdate.convertToResponse();
             logger.info("==================== Logger Start Update Order Product By ID ====================");

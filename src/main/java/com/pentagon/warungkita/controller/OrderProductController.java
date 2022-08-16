@@ -37,7 +37,7 @@ import java.util.*;
 @AllArgsConstructor
 @Slf4j
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "8.Order Product")
+@Tag(name = "08.Order Product")
 public class OrderProductController {
 
     private static final Logger logger = LogManager.getLogger(OrderProductController.class);

@@ -1,6 +1,7 @@
 package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.dto.*;
+import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Roles;
 import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.UsersRepo;
@@ -35,10 +36,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@Tag(name = "1.Sign Up/Login")
 @OpenAPIDefinition(info = @Info(title = "WarungKita",
         description = "Build by PENTAGON"))
-@Tag(name ="1.Sign Up/Login")
+@Tag(name ="01.Sign Up/Login")
 public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;
@@ -59,8 +59,14 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> authenticateUser(@RequestBody LoginRequest request) {
+
+
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        Optional <Users> user = usersRepo.findByUsername(request.getUsername());
+        if(user.get().isActive() == false){
+            throw new ResourceNotFoundException("Username is not active, please contact admin.");
+        }
         SecurityContextHolder.getContext()
                 .setAuthentication(authentication);
         String token = jwtUtils.generateJwtToken(authentication);
