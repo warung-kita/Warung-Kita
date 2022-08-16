@@ -14,6 +14,5 @@ public interface WishlistService {
     Wishlist getReferenceById (Long Id);
 //    List<ProductList> getWishlistByUserId(String name);
 
-
     List<Wishlist> findByUserUsernameContaining(String userName);
 }
