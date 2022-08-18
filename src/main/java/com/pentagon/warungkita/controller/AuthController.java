@@ -86,8 +86,5 @@ public class AuthController {
     }
 
 
-//    @PostMapping("/signup")
-//    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) throws ResourceAlreadyExistException {
-//        return authServiceImpl.registerUser(signupRequest);
-//    }
+
 }

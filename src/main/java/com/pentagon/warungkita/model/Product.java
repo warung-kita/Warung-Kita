@@ -59,7 +59,6 @@ public class Product {
                 .stok(this.getQuantity())
                 .gambar(this.getProductPicture())
                 .userId(this.users.getUserId())
-//                .namaKategori(this.getCategories(getName()))
                 .build();
     }
 
@@ -74,7 +73,6 @@ public class Product {
                 .harga(this.getRegularPrice())
                 .stok(this.getQuantity())
                 .gambar(this.getProductPicture())
-//                .namaKategori(this.getCategories(getName()))
                 .build();
     }
 

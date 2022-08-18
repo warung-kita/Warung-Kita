@@ -2,20 +2,19 @@ package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.dto.OrderProductRequestDTO;
 import com.pentagon.warungkita.dto.OrderProductResponseDTO;
+
 import com.pentagon.warungkita.dto.OrderProductResponsePOST;
 import com.pentagon.warungkita.dto.OrderResponsePOST;
 import com.pentagon.warungkita.exception.ResourceAlreadyExistException;
+
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.OrderProduct;
 import com.pentagon.warungkita.model.Product;
 import com.pentagon.warungkita.model.ProductStatus;
-import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.OrderProductRepo;
 import com.pentagon.warungkita.repository.ProductRepo;
 import com.pentagon.warungkita.repository.ProductStatusRepo;
-import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
-import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.OrderProductService;
 import com.pentagon.warungkita.service.ProductStatusService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -27,8 +26,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -43,11 +40,9 @@ public class OrderProductController {
 
     private static final Logger logger = LogManager.getLogger(OrderProductController.class);
     private OrderProductService orderProductService;
-//    private UsersRepo usersRepo;
     private ProductRepo productRepo;
     private OrderProductRepo orderProductRepo;
     private ProductStatusService productStatusService;
-    private ProductStatusRepo productStatusRepo;
 
     /*
      * Get all Data Order products table
@@ -65,16 +60,8 @@ public class OrderProductController {
                 Map<String, Object> order = new HashMap<>();
                 order.put("OrderProductID       : ", dataOrder.getOrderProductId());
                 order.put("ProductID : ", dataOrder.getOrderProductId());
-//                order.put("SKU    : ", dataOrder.getSku());
-//                order.put("ProductName    : ", dataOrder.getProductName());
-//                order.put("Description : ", dataOrder.getDescription());
-//                order.put("Price : ", dataOrder.getPrice());
                 logger.info("OrderProductID       : " + dataOrder.getOrderProductId());
                 logger.info("ProductID : " + dataOrder.getProductId());
-//                logger.info("SKU    : " + dataOrder.getSku());
-//                logger.info("ProductName    : " + dataOrder.getProductName());
-//                logger.info("Description : " + dataOrder.getDescription());
-//                logger.info("Price : " + dataOrder.getPrice());
                 OrderProductResponseDTO orderResponseDTO = dataOrder.convertToResponse();
                 orderMaps.add(orderResponseDTO);
             }

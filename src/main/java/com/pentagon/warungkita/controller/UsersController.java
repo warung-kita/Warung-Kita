@@ -33,7 +33,6 @@ public class UsersController {
     private static final Logger logger = LogManager.getLogger(UsersController.class);
     private final UsersServiceImpl usersServiceImpl;
     private final UsersRepo usersRepo;
-
     @GetMapping("/users")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity <Object> getAll() {
@@ -127,9 +126,6 @@ public class UsersController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> updateUser(@PathVariable Long users_Id, @RequestBody UsersRequestDTO usersRequestDTO){
         try {
-//            if(usersRequestDTO.getUserId() == null){
-//                throw new ResourceNotFoundException("User not exist");
-//            }
             Users users = usersRequestDTO.convertToEntity();
             users.setUserId(users_Id);
             Users updateUsers = usersServiceImpl.updateUser(users);

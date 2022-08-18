@@ -12,7 +12,5 @@ public interface WishlistService {
     void deleteProductListById(Long Id);
     Wishlist updateProductList(Wishlist wishlist);
     Wishlist getReferenceById (Long Id);
-//    List<ProductList> getWishlistByUserId(String name);
-
     List<Wishlist> findByUserUsernameContaining(String userName);
 }
