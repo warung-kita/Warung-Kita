@@ -30,13 +30,10 @@ public class Wishlist {
 
     public WishlistResponseDTO convertToResponse(){
        return WishlistResponseDTO.builder()
-               .product(this.getProduct())
-               .namaUser(this.getUser().getFullName())
-               .alamat(this.getUser().getAddress())
-               .nomorHandphone(this.getUser().getPhoneNum())
+               .product(this.product.convertToResponse())
+               .user(this.user.convertToResponsePOST())
                .build();
     }
-
     public WishlistResponsePOST convertToResponsePost(){
         return WishlistResponsePOST.builder()
                 .user_id(this.getUser().getUserId())

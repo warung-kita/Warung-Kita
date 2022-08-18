@@ -3,6 +3,7 @@ package com.pentagon.warungkita.model;
 import com.pentagon.warungkita.dto.OrderResponseDTO;
 import com.pentagon.warungkita.dto.OrderResponsePOST;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @CreationTimestamp
     private Date orderDate;
     @ManyToOne
     @JoinColumn(name = "ekspedisi_id")

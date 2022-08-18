@@ -11,18 +11,24 @@ import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.ProductService;
+import com.pentagon.warungkita.service.ReportService;
+import com.pentagon.warungkita.service.UsersService;
 import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,9 +42,12 @@ public class ProductController {
     private final ProductService productService;
     private final ProductRepo productRepo;
 
-    private final UsersServiceImpl usersServiceImpl;
+    private final UsersService usersService;
 
     private static final Logger logger = LogManager.getLogger(ProductController.class);
+    private ReportService reportService;
+    @Autowired
+    private HttpServletResponse response;
     /**
      * Get All Product
      * @return
@@ -116,7 +125,7 @@ public class ProductController {
         try{
 
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Optional <Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
+            Optional <Users> users = usersService.getUserById(userDetails.getUserId());
 
 
             /**
@@ -199,7 +208,7 @@ public class ProductController {
                                                             productId, @RequestBody ProductRequestDTO productRequestDTO){
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Optional <Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
+            Optional <Users> users = usersService.getUserById(userDetails.getUserId());
 
             if(productRequestDTO.getProductName().isEmpty() && productRequestDTO.getCategories().isEmpty() && productRequestDTO.getQuantity() != null
                     && productRequestDTO.getSku().isEmpty() && productRequestDTO.getProductStatusId() != null && productRequestDTO.getRegularPrice() != null){
@@ -291,4 +300,13 @@ public class ProductController {
         List<Product> products = productService.findByUsersUsernameContaining(username);
         return ResponseHandler.generateResponse("product",HttpStatus.OK, products);
     }
+
+    @GetMapping("/product/product_reports")
+    public void getReservasiReportA() throws Exception {
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Dispositin", "attachment; filname=\"product_list.pdf\"");
+        JasperPrint jasperPrint = reportService.generateJasperPrintProductList();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+    }
+
 }
