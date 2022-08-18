@@ -31,13 +31,6 @@ public class Wishlist {
     public WishlistResponseDTO convertToResponse(){
        return WishlistResponseDTO.builder()
                .product(this.getProduct())
-//               .sku(this.getProduct().getSku())
-//               .nama(this.getProduct().getProductName())
-//               .deskripsi(this.getProduct().getDescription())
-//               .status(this.getProduct().getProductStatusId().getProductStatusId())
-//               .harga(this.getProduct().getRegularPrice())
-//               .jumlah(this.getProduct().getQuantity())
-//               .gambarProduct(this.getProduct().getProductPicture())
                .namaUser(this.getUser().getFullName())
                .alamat(this.getUser().getAddress())
                .nomorHandphone(this.getUser().getPhoneNum())

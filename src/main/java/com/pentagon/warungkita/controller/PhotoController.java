@@ -37,8 +37,6 @@ public class PhotoController {
     private final PhotoService photoService;
     private static final Logger logger = LogManager.getLogger(PhotoController.class);
 
-
-
     @GetMapping("/photos/all")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> findAll() {

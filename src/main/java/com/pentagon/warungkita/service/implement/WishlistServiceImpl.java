@@ -63,22 +63,10 @@ public class WishlistServiceImpl implements WishlistService {
         return null;
     }
 
-
-
     @Override
     public List<Wishlist> findByUserUsernameContaining(String userName) {
         List<Wishlist> wishlists = wishlistRepo.findByUserUsernameContaining(userName);
         return this.wishlistRepo.findByUserUsernameContaining(userName);
     }
 
-
-
-//    @Override
-//    public List<ProductList> getWishlistByUsersId(Long Id) {
-//        List<ProductList> optionalProductList = productListRepo.getWishlistByUserId(Id);
-//        if(optionalProductList.isEmpty()){
-//            throw new ResourceNotFoundException("Wishlist not exist with Users Id " +Id);
-//        }
-//        return this.productListRepo.getWishlistByUserId(Id);
-//    }
 }

@@ -38,11 +38,6 @@ public class ProductController {
 
     private final UsersServiceImpl usersServiceImpl;
 
-
-//    private final Product product;
-//    private final PhotoRepo photoRepo;
-    private final UsersRepo usersRepo;
-
     private static final Logger logger = LogManager.getLogger(ProductController.class);
     /**
      * Get All Product
@@ -288,10 +283,6 @@ public class ProductController {
     @GetMapping("/product/byProductName")
     public ResponseEntity<Object> findByProductName(@RequestParam String productName){
         List<Product> test = productService.findByProductNameContaining(productName);
-//        List<ProductResponseDTO> test2 = test.stream()
-//                .map(Product::convertToResponse)
-//                .collect(Collectors.toList());
-//        logger.info(test2);
         return ResponseHandler.generateResponse("test",HttpStatus.OK,test);
     }
 
