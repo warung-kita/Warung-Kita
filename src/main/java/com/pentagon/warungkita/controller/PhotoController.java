@@ -81,7 +81,7 @@ public class PhotoController {
     @PreAuthorize("hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> createPhoto(@RequestBody PhotoRequestDTO photoRequestDTO){
         try{
-            if(photoRequestDTO.getPhotoName() == null) {
+            if(photoRequestDTO.getPhotoName().isEmpty()) {
                 throw new ResourceNotFoundException("Please Add Photo Name");
             }
             Photo photo = photoRequestDTO.convertToEntity();

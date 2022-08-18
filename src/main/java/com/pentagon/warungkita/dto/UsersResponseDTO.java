@@ -19,7 +19,6 @@ public class UsersResponseDTO {
     private String address;
     private String profilPicture;
     private String phoneNum;
-    private List<Roles> roles;
 
     @Override
     public String toString() {
