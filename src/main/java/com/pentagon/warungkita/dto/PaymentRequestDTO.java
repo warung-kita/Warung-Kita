@@ -5,6 +5,7 @@ import com.pentagon.warungkita.model.Enum.PaymentResponse;
 import com.pentagon.warungkita.model.Order;
 import com.pentagon.warungkita.model.Payment;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,19 +17,20 @@ import java.time.LocalDate;
 @Builder
 public class PaymentRequestDTO {
     private Order order;
-    private LocalDate datePay;
+   @CreatedDate
+    private LocalDate tanggalBayar;
     private BigDecimal amount;
-    private String ccNum;
-    private BankList ccType;
+    private String nomorRekening;
+    private BankList namaBank;
     private PaymentResponse response;
 
     public Payment convertToEntity(){
         return Payment.builder()
                 .order(this.order)
-                .datePay(this.datePay)
+                .datePay(this.tanggalBayar)
                 .amount(this.amount)
-                .ccNum(this.ccNum)
-                .ccType(this.ccType)
+                .ccNum(this.nomorRekening)
+                .ccType(this.namaBank)
                 .response(this.response)
                 .build();
     }

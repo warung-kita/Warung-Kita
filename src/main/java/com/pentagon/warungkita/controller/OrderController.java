@@ -63,7 +63,7 @@ public class OrderController {
 
             for (Order dataOrder : orderList) {
                 Map<String, Object> order = new HashMap<>();
-                order.put("OrederID       : ", dataOrder.getOrderId());
+                order.put("OrderID       : ", dataOrder.getOrderId());
                 order.put("OrderDate : ", dataOrder.getOrderDate());
                 order.put("EkspedisiID    : ", dataOrder.getEkspedisiId());
                 order.put("Total    : ", dataOrder.getTotal());

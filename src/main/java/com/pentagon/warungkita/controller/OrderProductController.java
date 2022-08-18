@@ -124,7 +124,7 @@ public class OrderProductController {
                 }
 
                 this.orderProductRepo.save(orderProduct);
-                return ResponseHandler.generateResponse("Successfully  save Order", HttpStatus.CREATED, totalPrice);
+                return ResponseHandler.generateResponse("Successfully  save Order", HttpStatus.CREATED, orderProduct);
 
         }catch(ResourceNotFoundException e){
                 logger.error("------------------------------------");

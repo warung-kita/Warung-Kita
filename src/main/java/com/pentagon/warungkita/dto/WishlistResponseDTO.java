@@ -1,6 +1,7 @@
 package com.pentagon.warungkita.dto;
 
 import com.pentagon.warungkita.model.Product;
+import com.pentagon.warungkita.model.Users;
 import lombok.*;
 
 @Getter
@@ -9,19 +10,22 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class WishlistResponseDTO {
-    private Product product;
+    private ProductResponseDTO product;
+    private UsersResponsePOST user;
 
-    private String namaUser;
-    private String alamat;
-    private String nomorHandphone;
+    public void setProduct (Product product){
+        ProductResponseDTO productResponseDTO = new ProductResponseDTO();
 
-    @Override
-    public String toString() {
-        return "ProductListResponseDTO{" +
-                "product=" + product +
-                ", namaUser='" + namaUser + '\'' +
-                ", alamat='" + alamat + '\'' +
-                ", nomorHandphone='" + nomorHandphone + '\'' +
-                '}';
+        this.product.setNamaProduk(product.getProductName());
+        this.product.setUserId(product.getUsers().getUserId());
     }
+
+    public void setUser (Users users){
+        UsersResponsePOST usersResponsePOST = new UsersResponsePOST();
+        this.user = usersResponsePOST;
+        this.user.setEmail(users.getEmail());
+        this.user.setUsername(users.getUsername());
+    }
+
+
 }

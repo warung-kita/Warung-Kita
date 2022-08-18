@@ -4,6 +4,8 @@ import com.pentagon.warungkita.model.Enum.BankList;
 import com.pentagon.warungkita.model.Enum.PaymentResponse;
 import com.pentagon.warungkita.dto.PaymentResponseDTO;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -27,8 +29,8 @@ public class Payment {
     private Order order;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @CreationTimestamp
     private LocalDate datePay;
-
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)

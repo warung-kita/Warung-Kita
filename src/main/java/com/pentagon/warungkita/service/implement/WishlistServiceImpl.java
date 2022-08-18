@@ -29,7 +29,7 @@ public class WishlistServiceImpl implements WishlistService {
     public Optional<Wishlist> getProductListById(Long Id) throws ResourceNotFoundException {
         Optional<Wishlist> optionalProductList = wishlistRepo.findById(Id);
         if(optionalProductList.isEmpty()){
-            throw new ResourceNotFoundException("Booking not exist with id " + Id);
+            throw new ResourceNotFoundException("Wishlist not exist with id " + Id);
         }
         return this.wishlistRepo.findById(Id);
     }
@@ -43,7 +43,7 @@ public class WishlistServiceImpl implements WishlistService {
     public void deleteProductListById(Long Id) throws ResourceNotFoundException{
         Optional<Wishlist> optionalProductList = wishlistRepo.findById(Id);
         if(optionalProductList.isEmpty()){
-            throw new ResourceNotFoundException("Product List not exist with id " + Id);
+            throw new ResourceNotFoundException("Wishlist not exist with id " + Id);
         }
         Wishlist wishlist = wishlistRepo.getReferenceById(Id);
         this.wishlistRepo.delete(wishlist);
@@ -53,7 +53,7 @@ public class WishlistServiceImpl implements WishlistService {
     public Wishlist updateProductList(Wishlist wishlist) throws ResourceNotFoundException{
         Optional<Wishlist> optionalProductList = wishlistRepo.findById(wishlist.getWishlistId());
         if(optionalProductList.isEmpty()){
-            throw new ResourceNotFoundException("Booking not exist with id " + wishlist.getWishlistId());
+            throw new ResourceNotFoundException("Wishlist not exist with id " + wishlist.getWishlistId());
         }
         return this.wishlistRepo.save(wishlist);
     }
@@ -66,6 +66,9 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public List<Wishlist> findByUserUsernameContaining(String userName) {
         List<Wishlist> wishlists = wishlistRepo.findByUserUsernameContaining(userName);
+        if(wishlists.isEmpty()){
+            throw new ResourceNotFoundException("User not have Wishlist");
+        }
         return this.wishlistRepo.findByUserUsernameContaining(userName);
     }
 

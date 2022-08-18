@@ -1,6 +1,7 @@
 package com.pentagon.warungkita.service;
 
 import com.pentagon.warungkita.model.Product;
+import net.sf.jasperreports.engine.JasperPrint;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,4 +14,5 @@ public interface ProductService {
     void deleteProduct(Long productId);
     List<Product> findByProductNameContaining(String productName);
     List<Product> findByUsersUsernameContaining(String userName);
+
 }
