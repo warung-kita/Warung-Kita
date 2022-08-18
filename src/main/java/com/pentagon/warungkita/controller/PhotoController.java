@@ -108,39 +108,32 @@ public class PhotoController {
                 .body(resource);
     }
 
-    @PostMapping("/uploadFile")
-    public ResponseEntity<FileUploadResponse> uploadFile(
-            @RequestParam("file") MultipartFile multipartFile)
-            throws IOException {
-
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        long size = multipartFile.getSize();
-
-        String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
-
-        FileUploadResponse response = new FileUploadResponse();
-        response.setFileName(fileName);
-        response.setSize(size);
-        response.setDownloadUri("/downloadFile/" + filecode);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PostMapping("/photo/add")
+    @PostMapping(value = "/photo/add",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('ROLE_SELLER')")
-    public ResponseEntity<Object> createPhoto(@RequestBody PhotoRequestDTO photoRequestDTO){
+    public ResponseEntity<Object> createPhoto(@RequestPart PhotoRequestDTO photoRequestDTO, @RequestParam("file") MultipartFile multipartFile){
         try{
             if(photoRequestDTO.getPhotoName() == null) {
                 throw new ResourceNotFoundException("Please Add Photo Name");
             }
-            Photo photo = photoRequestDTO.convertToEntity();
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            long size = multipartFile.getSize();
+
+            String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
+
+            FileUploadResponse response = new FileUploadResponse();
+            response.setFileName(fileName);
+            response.setSize(size);
+            response.setDownloadUri("/downloadFile/" + filecode);
+
+            Photo photo = Photo.builder().photoName(filecode).build();
             photoService.createPhoto(photo);
             PhotoResponseDTO result = photo.convertToResponse();
             logger.info("==================== Logger Start Add New Photo     ====================");
             logger.info("Foto ID           : " + result.getKodeFoto());
             logger.info("Nama Foto         : " + result.getNamaFoto());
             logger.info("==================== Logger Start Add New Photo     ====================");
-            return ResponseHandler.generateResponse("Successfully Add Photo",HttpStatus.CREATED,result);
+            return ResponseHandler.generateResponse("Successfully Add Photo", HttpStatus.CREATED,result);
         }catch (Exception e){
             logger.error("------------------------------------");
             logger.error(e.getMessage());
