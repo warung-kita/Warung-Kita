@@ -2,6 +2,11 @@ package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.dto.OrderProductRequestDTO;
 import com.pentagon.warungkita.dto.OrderProductResponseDTO;
+
+import com.pentagon.warungkita.dto.OrderProductResponsePOST;
+import com.pentagon.warungkita.dto.OrderResponsePOST;
+import com.pentagon.warungkita.exception.ResourceAlreadyExistException;
+
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.OrderProduct;
 import com.pentagon.warungkita.model.Product;
@@ -124,7 +129,10 @@ public class OrderProductController {
                 }
 
                 this.orderProductRepo.save(orderProduct);
-                return ResponseHandler.generateResponse("Successfully  save Order", HttpStatus.CREATED, orderProduct);
+
+            OrderProductResponsePOST orderProductResponsePOST = orderProduct.convertToResponsePOST();
+                return ResponseHandler.generateResponse("Successfully  save Order", HttpStatus.CREATED, orderProductResponsePOST);
+
 
         }catch(ResourceNotFoundException e){
                 logger.error("------------------------------------");
