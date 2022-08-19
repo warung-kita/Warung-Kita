@@ -80,12 +80,6 @@ public class UsersController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity <Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
         try {
-            if (usersRepo.existsByUsername(usersRequestDTO.getUsername())) {
-                throw new Exception("Username already taken!");
-            }
-            if (usersRepo.existsByEmail(usersRequestDTO.getEmail())) {
-                throw new Exception("Email already in use!");
-            }
             Users users = usersRequestDTO.convertToEntity();
             usersServiceImpl.createUser(users);
             UsersResponsePOST userResult = users.convertToResponsePOST();
