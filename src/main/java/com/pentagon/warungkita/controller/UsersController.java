@@ -107,7 +107,6 @@ public class UsersController {
     public ResponseEntity<Object> getUserById() {
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
             Optional<Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
             Users userResult = users.get();
             UsersResponseDTO result = userResult.convertToResponse();
@@ -164,4 +163,29 @@ public class UsersController {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!" );
         }
     }
+
+
+    @PutMapping("/becomeSeller")
+    @PreAuthorize("hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> becomeSeller(@RequestBody UsersRequestDTO usersRequestDTO) {
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Users users = usersRequestDTO.convertToEntity();
+            users.setUserId(userDetails.getUserId());
+            Users userResult = usersServiceImpl.updateUser(users);
+            users.setActive(true);
+            UsersResponseDTO result = userResult.convertToResponse();
+            logger.info("==================== Logger Start Update User By ID ====================");
+            logger.info(result);
+            logger.info("==================== Logger End Update User By ID =================");
+            return ResponseHandler.generateResponse("Successfully Open Shop", HttpStatus.CREATED, result);
+        }catch (Exception e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
+        }
+
+    }
+
 }
