@@ -27,7 +27,7 @@ public class EkspedisiController {
 
     private static final Logger logger = LogManager.getLogger(EkspedisiController.class);
     private final EkspedisiService ekspedisiService;
-    private final EkspedisiRepo ekspedisiRepo;
+
 
     @GetMapping("/ekspedisi/all")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -109,12 +109,12 @@ public class EkspedisiController {
             Ekspedisi ekspedisi = ekspedisiService.getEkspedisiById(Id)
                     .orElseThrow(() -> new ResourceNotFoundException("Ekspedisi not exist withId :" + Id));
             ekspedisi.setName(ekspedisiDetails.getName());
-             Ekspedisi updatedEkspedisi = ekspedisiRepo.save(ekspedisi);
+             Ekspedisi updatedEkspedisi = ekspedisiService.createEkspedisi(ekspedisi);
             logger.info("==================== Logger Start  ====================");
             logger.info("Code   :"+ekspedisi.getEkspedisiId() );
             logger.info("Status :"+ekspedisi.getName() );
             logger.info("==================== Logger End =================");
-            return ResponseHandler.generateResponse("Successfully Updated Ekspedisi!",HttpStatus.OK, ekspedisi);
+            return ResponseHandler.generateResponse("Successfully Updated Ekspedisi!",HttpStatus.OK, updatedEkspedisi);
         }catch(Exception e){
             logger.error("------------------------------------");
             logger.error(e.getMessage());

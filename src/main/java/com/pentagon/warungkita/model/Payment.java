@@ -1,15 +1,13 @@
 package com.pentagon.warungkita.model;
 
+import com.pentagon.warungkita.dto.PaymentResponseDTO;
 import com.pentagon.warungkita.model.Enum.BankList;
 import com.pentagon.warungkita.model.Enum.PaymentResponse;
-import com.pentagon.warungkita.dto.PaymentResponseDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -31,7 +29,7 @@ public class Payment {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreationTimestamp
     private LocalDate datePay;
-    private BigDecimal amount;
+    private Integer amount;
 
     @Enumerated(EnumType.STRING)
     private BankList ccType;

@@ -1,16 +1,18 @@
 package com.pentagon.warungkita.service;
 
+import com.pentagon.warungkita.dto.PaymentRequestDTO;
 import com.pentagon.warungkita.model.Payment;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface PaymentService {
     List<Payment> getAllPayment();
-    Optional<Payment> getPaymentById(Long Id);
-    Payment createPayment(Payment payment);
-    void deletePaymentById(Long Id);
-    Payment updatePayment(Payment payment);
+    ResponseEntity<Object> getPaymentById(Long Id);
+    ResponseEntity<Object> createPayment(PaymentRequestDTO paymentRequestDTO);
+    ResponseEntity<Object> deletePaymentById(Long Id);
+    ResponseEntity<Object> updatePayment(Long id, PaymentRequestDTO paymentRequestDTO);
     Payment getReferenceById (Long Id);
-    List<Payment> findByOrderUserIdUsernameContaining(String userName);
+    ResponseEntity<Object>  findByOrderUserIdUsernameContaining();
 }

@@ -4,7 +4,9 @@ import com.pentagon.warungkita.dto.UsersRequestDTO;
 import com.pentagon.warungkita.dto.UsersResponseDTO;
 import com.pentagon.warungkita.dto.UsersResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
+import com.pentagon.warungkita.model.Roles;
 import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.repository.RolesRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
@@ -33,6 +35,7 @@ public class UsersController {
     private static final Logger logger = LogManager.getLogger(UsersController.class);
     private final UsersServiceImpl usersServiceImpl;
     private final UsersRepo usersRepo;
+    private final RolesRepo rolesRepo;
     @GetMapping("/users")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity <Object> getAll() {
@@ -123,11 +126,11 @@ public class UsersController {
 
     @PutMapping("/users/{users_Id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> updateUser(@PathVariable Long users_Id, @RequestBody UsersRequestDTO usersRequestDTO){
+    public ResponseEntity<Object> updateUser(@RequestBody UsersRequestDTO usersRequestDTO){
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Users users = usersRequestDTO.convertToEntity();
-            users.setUserId(users_Id);
+            users.setUserId(userDetails.getUserId());
             Users updateUsers = usersServiceImpl.updateUser(users);
             UsersResponseDTO result = updateUsers.convertToResponse();
             logger.info("==================== Logger Start Update User By ID ====================");
@@ -164,14 +167,20 @@ public class UsersController {
 
     @PutMapping("/becomeSeller")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> becomeSeller(@RequestBody UsersRequestDTO usersRequestDTO) {
+    public ResponseEntity<Object> becomeSeller() {
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Users users = usersRequestDTO.convertToEntity();
+            Users users = usersServiceImpl.findById(userDetails.getUserId());
             users.setUserId(userDetails.getUserId());
-            Users userResult = usersServiceImpl.updateUser(users);
+            Roles role1 = rolesRepo.findByName("ROLE_SELLER");
+            Roles role2 = rolesRepo.findByName("ROLE_BUYER");
+            List<Roles> roles = new ArrayList<>();
+            roles.add(role1);
+            roles.add(role2);
+            users.setRoles(roles);
             users.setActive(true);
-            UsersResponseDTO result = userResult.convertToResponse();
+            Users updateUsers = usersServiceImpl.updateUser(users);
+            UsersResponseDTO result = updateUsers.convertToResponse();
             logger.info("==================== Logger Start Update User By ID ====================");
             logger.info(result);
             logger.info("==================== Logger End Update User By ID =================");
