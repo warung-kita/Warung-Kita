@@ -37,7 +37,7 @@ public class WishlistController {
 
 
     @GetMapping("/wishlist/all")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> findAllWishlist(){
         try{
             List<Wishlist> wishlists = wishlistService.getAllProductList();
@@ -50,6 +50,11 @@ public class WishlistController {
                 logger.info("User :"+dataresult.getUser() );
                 logger.info("Product :"+dataresult.getProduct() );
                 logger.info("------------------------------------");
+                WishlistResponseDTO wishlistResponseDTO1 = WishlistResponseDTO.builder()
+                        .product(dataresult.convertToResponse().getProduct())
+                        .build();
+                wishlistResponseDTO1.setProduct(dataresult.getProduct());
+                wishlistResponseDTO1.setUser(dataresult.getUser());
             }
             logger.info("==================== Logger End  ====================");
             return ResponseHandler.generateResponse("Succes Get All", HttpStatus.OK,productListmaps);
@@ -68,8 +73,8 @@ public class WishlistController {
             Wishlist productListget = productList.get();
             WishlistResponseDTO result = productListget.convertToResponse();
             logger.info("======== Logger Start Find Product List with ID "+id+ "  ========");
-            logger.info("User :"+result.getNamaUser() );
-            logger.info("Product :"+result.getProduct().getProductName());
+//            logger.info("User :"+result.getNamaUser() );
+//            logger.info("Product :"+result.getProduct().getProductName());
             logger.info("==================== Logger End =================");
             return ResponseHandler.generateResponse("Success Get By Id",HttpStatus.OK,result);
         }catch(ResourceNotFoundException e){
@@ -85,8 +90,8 @@ public class WishlistController {
         try{
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Optional <Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
-            if(wishlistRequestDTO.getProduct() == null ){
-                throw new ResourceNotFoundException("Product List must have product id");
+            if(wishlistRequestDTO.getProduct().getProductId() == null ){
+                throw new ResourceNotFoundException("Wishlist must have product id");
             }
             Wishlist wishlist = Wishlist.builder()
                     .user(users.get())
@@ -118,8 +123,8 @@ public class WishlistController {
             Wishlist updateList = wishlistService.updateProductList(wishlist);
             WishlistResponseDTO results = updateList.convertToResponse();
             logger.info("======== Logger Start   ========");
-            logger.info("User :"+results.getNamaUser());
-            logger.info("Product :"+results.getProduct().getProductName());
+//            logger.info("User :"+results.getNamaUser());
+//            logger.info("Product :"+results.getProduct().getProductName());
             logger.info("==================== Logger End =================");
             return ResponseHandler.generateResponse("Success Update Product List",HttpStatus.CREATED,results);
         }catch (Exception e){
@@ -152,10 +157,30 @@ public class WishlistController {
     @GetMapping("/wishlist")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> findWishlistByUserName(){
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            List<Wishlist> test = wishlistService.findByUserUsernameContaining(userDetails.getUsername());
+            List<WishlistResponseDTO> productListmaps = new ArrayList<>();
+            for (Wishlist dataresult : test) {
+                WishlistResponseDTO wishlistResponseDTO = dataresult.convertToResponse();
+                productListmaps.add(wishlistResponseDTO);
+                logger.info("code :" + dataresult.getWishlistId());
+                logger.info("User :" + dataresult.getUser());
+                logger.info("Product :" + dataresult.getProduct());
+                logger.info("------------------------------------");
+                WishlistResponseDTO wishlistResponseDTO1 = WishlistResponseDTO.builder()
+                        .product(dataresult.convertToResponse().getProduct())
+                        .build();
+                wishlistResponseDTO1.setProduct(dataresult.getProduct());
+                wishlistResponseDTO1.setUser(dataresult.getUser());
+            }
+            return ResponseHandler.generateResponse("Succes Get All Wishlist", HttpStatus.OK, productListmaps);
 
-        List<Wishlist> test = wishlistService.findByUserUsernameContaining(userDetails.getUsername());
-
-        return ResponseHandler.generateResponse("test",HttpStatus.OK,test);
+        }catch (ResourceNotFoundException e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Table has no value");
+        }
     }
 }

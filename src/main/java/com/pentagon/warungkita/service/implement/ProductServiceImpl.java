@@ -5,6 +5,7 @@ import com.pentagon.warungkita.model.Product;
 import com.pentagon.warungkita.repository.ProductRepo;
 import com.pentagon.warungkita.service.ProductService;
 import lombok.AllArgsConstructor;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -70,4 +71,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepo.findByUsersUsernameContaining(userName);
         return this.productRepo.findByUsersUsernameContaining(userName);
     }
+
+
+
 }

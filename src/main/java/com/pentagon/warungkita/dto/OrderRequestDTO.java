@@ -24,7 +24,6 @@ public class OrderRequestDTO {
 
     public Order convertToEntity(){
         return Order.builder()
-//                .orderId(this.orderId)
                 .orderProduct(this.orderProduct)
                 .orderDate(this.orderDate)
                 .ekspedisiId(this.ekspedisiId)

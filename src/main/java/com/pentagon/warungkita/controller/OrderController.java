@@ -1,32 +1,19 @@
 package com.pentagon.warungkita.controller;
 
 
-import com.pentagon.warungkita.dto.OrderProductRequestDTO;
-
-import com.pentagon.warungkita.dto.OrderProductResponseDTO;
-
 import com.pentagon.warungkita.dto.OrderRequestDTO;
 import com.pentagon.warungkita.dto.OrderResponseDTO;
 import com.pentagon.warungkita.dto.OrderResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Order;
 import com.pentagon.warungkita.model.OrderProduct;
-
 import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.OrderProductRepo;
 import com.pentagon.warungkita.repository.OrderRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
-
-import com.pentagon.warungkita.model.Product;
-import com.pentagon.warungkita.model.Users;
-import com.pentagon.warungkita.repository.OrderProductRepo;
-import com.pentagon.warungkita.repository.OrderRepo;
-
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
-
 import com.pentagon.warungkita.service.OrderProductService;
-
 import com.pentagon.warungkita.service.OrderService;
 import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -40,14 +27,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import org.springframework.security.core.userdetails.User;
 import org.springframework.transaction.annotation.Transactional;
-
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 @RequestMapping("/pentagon/warung-kita")
@@ -67,14 +50,6 @@ public class OrderController {
     private UsersServiceImpl usersServiceImpl;
 
 
-
-    private OrderProductService orderProductService;
-    private UsersRepo usersRepo;
-    private OrderRepo orderRepo;
-
-
-
-
     /*Get All Data dari Order Table
      * Untuk Penampilan Data Bisa Menggunakan ResponseDTO
      * */
@@ -88,7 +63,7 @@ public class OrderController {
 
             for (Order dataOrder : orderList) {
                 Map<String, Object> order = new HashMap<>();
-                order.put("OrederID       : ", dataOrder.getOrderId());
+                order.put("OrderID       : ", dataOrder.getOrderId());
                 order.put("OrderDate : ", dataOrder.getOrderDate());
                 order.put("EkspedisiID    : ", dataOrder.getEkspedisiId());
                 order.put("Total    : ", dataOrder.getTotal());

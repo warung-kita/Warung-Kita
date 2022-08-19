@@ -5,6 +5,7 @@ import com.pentagon.warungkita.dto.PaymentResponseDTO;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Payment;
 import com.pentagon.warungkita.response.ResponseHandler;
+import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.PaymentService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -28,13 +30,18 @@ public class PaymentController {
     private static final Logger logger = LogManager.getLogger(PaymentController.class);
     private PaymentService paymentService;
 
-    @GetMapping("/payment/histori/username")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> findByUsername(@RequestParam String username) {
-        List<Payment> payments = paymentService.findByOrderUserIdUsernameContaining(username);
-        return ResponseHandler.generateResponse("payment",HttpStatus.OK, payments);
+    @GetMapping("/payment/histori")
+    @PreAuthorize("hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> findByUsername() {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Payment> payments = paymentService.findByOrderUserIdUsernameContaining(userDetails.getUsername());
+        List<PaymentResponseDTO> paymentsList = new ArrayList<>();
+       for(Payment dataresult:payments){
+            PaymentResponseDTO paymentResponseDTO = dataresult.convertToResponse();
+            paymentsList.add(paymentResponseDTO);
+            }
+        return ResponseHandler.generateResponse("payment",HttpStatus.OK, paymentsList);
     }
-
 
     @GetMapping("/payment/all")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
@@ -59,9 +66,9 @@ public class PaymentController {
             logger.error(e.getMessage());
             logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Table has no value");
-
         }
     }
+
     @GetMapping("/payment/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> getPaymentById(@PathVariable Long id){

@@ -17,19 +17,14 @@ import java.util.List;
 public class OrderResponseDTO {
     private Long orderId;
     private List<OrderProductResponseDTO> orderProductId;
-    //    private List<Long> orderProductId;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date orderDate;
     private String ekspedisiName;
 
     private Number total;
     private UsersResponsePOST user;
-    //    private String fullName;
-//    private String email;
-//    private String userName;
-//    private String address;
-//    private String phoneNum;
-//    private String profilPicture;
+
     public void setOrderProductId (List<OrderProduct> orderProduct) {
         List<OrderProductResponseDTO> responseDTOs = new ArrayList<>();
         this.orderProductId = responseDTOs;
