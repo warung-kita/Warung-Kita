@@ -1,10 +1,13 @@
 package com.pentagon.warungkita.service.implement;
 
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
+import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.model.Wishlist;
 import com.pentagon.warungkita.repository.WishlistRepo;
+import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.WishlistService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,6 +39,8 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public Wishlist createProductList(Wishlist wishlist) {
+//        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        Optional<Wishlist> wishlistOptional = wishlistRepo.findById(userDetails.getUserId());
         return this.wishlistRepo.save(wishlist);
     }
 

@@ -125,6 +125,7 @@ public class UsersController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> updateUser(@PathVariable Long users_Id, @RequestBody UsersRequestDTO usersRequestDTO){
         try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Users users = usersRequestDTO.convertToEntity();
             users.setUserId(users_Id);
             Users updateUsers = usersServiceImpl.updateUser(users);

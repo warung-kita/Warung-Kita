@@ -5,11 +5,13 @@ import com.pentagon.warungkita.dto.WishlistRequestDTO;
 import com.pentagon.warungkita.dto.WishlistResponseDTO;
 import com.pentagon.warungkita.dto.WishlistResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
+import com.pentagon.warungkita.model.Product;
 import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.model.Wishlist;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.WishlistService;
+import com.pentagon.warungkita.service.implement.ProductServiceImpl;
 import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,6 +36,7 @@ public class WishlistController {
     private static final Logger logger = LogManager.getLogger(WishlistController.class);
     private WishlistService wishlistService;
     private final UsersServiceImpl usersServiceImpl;
+    private final ProductServiceImpl productServiceImpl;
 
 
     @GetMapping("/wishlist/all")
@@ -88,17 +91,21 @@ public class WishlistController {
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> wishlistCreate(@RequestBody WishlistRequestDTO wishlistRequestDTO){
         try{
-            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Optional <Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
             if(wishlistRequestDTO.getProduct().getProductId() == null ){
                 throw new ResourceNotFoundException("Wishlist must have product id");
+            }
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional <Users> users = usersServiceImpl.getUserById(userDetails.getUserId());
+            Optional <Product> product = productServiceImpl.getProductById(wishlistRequestDTO.getProduct().getProductId());
+            if(product.get().getUsers().getUserId().equals(userDetails.getUserId()) ){
+                throw new ResourceNotFoundException("Can't add your own product");
             }
             Wishlist wishlist = Wishlist.builder()
                     .user(users.get())
                     .product(wishlistRequestDTO.getProduct())
                     .build();
-            wishlistService.createProductList(wishlist);
             WishlistResponsePOST result = wishlist.convertToResponsePost();
+            wishlistService.createProductList(wishlist);
             logger.info("======== Logger Start   ========");
             logger.info("User :"+ wishlist.getUser() );
             logger.info("Product :"+ wishlist.getProduct());
