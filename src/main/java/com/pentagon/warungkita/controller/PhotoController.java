@@ -111,9 +111,9 @@ public class PhotoController {
     @PreAuthorize("hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> createPhoto(@RequestPart PhotoRequestDTO photoRequestDTO, @RequestParam("file") MultipartFile multipartFile){
         try{
-            if(photoRequestDTO.getPhotoName().isEmpty()) {
-                throw new ResourceNotFoundException("Please Add Photo Name");
-            }
+//            if(photoRequestDTO.getPhotoName().isEmpty()) {
+//                throw new ResourceNotFoundException("Please Add Photo Name");
+//            }
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
             long size = multipartFile.getSize();
 

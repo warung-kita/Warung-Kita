@@ -67,12 +67,13 @@ public class Product {
                 .kodeProduk(this.getProductId())
                 .sku(this.getSku())
                 .namaProduk(this.getProductName())
-                .kategori(this.getCategories())
+//                .kategori(this.getCategories())
                 .deskripsi(this.getDescription())
-                .status(this.getProductStatusId())
+                .status(this.productStatusId.getProductStatusId())
                 .harga(this.getRegularPrice())
                 .stok(this.getQuantity())
-                .gambar(this.getProductPicture())
+                .userId(this.users.getUserId())
+//                .gambar(this.getProductPicture())
                 .build();
     }
 
