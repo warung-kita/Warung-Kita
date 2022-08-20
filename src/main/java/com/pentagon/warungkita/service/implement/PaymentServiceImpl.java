@@ -9,6 +9,7 @@ import com.pentagon.warungkita.repository.OrderRepo;
 import com.pentagon.warungkita.repository.PaymentRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
+import com.pentagon.warungkita.service.OrderService;
 import com.pentagon.warungkita.service.PaymentService;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -35,24 +36,31 @@ public class PaymentServiceImpl implements PaymentService {
     private static final Logger logger = LogManager.getLogger(PaymentServiceImpl.class);
 
     @Override
-    public List<Payment> getAllPayment() {
-        List<Payment> payments = paymentRepo.findAll();
-        if(payments.isEmpty()){
-            throw new ResourceNotFoundException("Data is Empty");
-        }
+    public ResponseEntity<Object> getAllPayment() {
+        try {
+            List<Payment> payments = paymentRepo.findAll();
+            if (payments.isEmpty()) {
+                throw new ResourceNotFoundException("Data is Empty");
+            }
             List<PaymentResponseDTO> paymentsList = new ArrayList<>();
             logger.info("==================== Logger Start Get All Payment ====================");
-            for(Payment dataresult:payments){
+            for (Payment dataresult : payments) {
                 PaymentResponseDTO paymentResponseDTO = dataresult.convertToResponse();
                 paymentsList.add(paymentResponseDTO);
-                logger.info("code     :"+dataresult.getPaymentId());
-                logger.info("Order Id :"+dataresult.getOrder().getOrderId() );
-                logger.info("Amount   :"+dataresult.getAmount() );
-                logger.info("Date     :"+dataresult.getDatePay() );
+                logger.info("code     :" + dataresult.getPaymentId());
+                logger.info("Order Id :" + dataresult.getOrder().getOrderId());
+                logger.info("Amount   :" + dataresult.getAmount());
+                logger.info("Date     :" + dataresult.getDatePay());
                 logger.info("------------------------------------");
             }
             logger.info("==================== Logger End  ====================");
-        return this.paymentRepo.findAll();
+            return ResponseHandler.generateResponse("Success Get By Id", HttpStatus.OK, payments);
+        }catch(ResourceNotFoundException e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
+        }
     }
 
     @Override
@@ -85,31 +93,39 @@ public class PaymentServiceImpl implements PaymentService {
         try{
             if(paymentRequestDTO.getOrder() == null ){
                 throw new ResourceNotFoundException("Payment must have order id");
-            }
+                }
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Payment payment = paymentRequestDTO.convertToEntity();
             Optional <Order> order = orderRepo.findById(paymentRequestDTO.getOrder().getOrderId());
+
+            if(order.get().getUserId().getUserId() != userDetails.getUserId()){
+                throw new ResourceNotFoundException("You just can pay your order");
+                }
+
             Integer amount = paymentRequestDTO.getAmount();
             if(paymentRequestDTO.getNamaBank() == BANK_SYARIAH_INDONESIA){
                 payment.setCcNum("023143213");
-            } else if (paymentRequestDTO.getNamaBank()==BANK_BRI){
-                payment.setCcNum("12342342");
-            } else if (paymentRequestDTO.getNamaBank() == BANK_BNI){
-                payment.setCcNum("45234234");
-            }else if (paymentRequestDTO.getNamaBank()==BANK_PERMATA){
-                payment.setCcNum("3423124143");
-            }else if (paymentRequestDTO.getNamaBank()==BANK_BCA){
-                payment.setCcNum("67547645456");
-            }else {
-                payment.setCcNum("8568568568");
-            }
+                } else if (paymentRequestDTO.getNamaBank()==BANK_BRI){
+                    payment.setCcNum("12342342");
+                        } else if (paymentRequestDTO.getNamaBank() == BANK_BNI){
+                            payment.setCcNum("45234234");
+                            }else if (paymentRequestDTO.getNamaBank()==BANK_PERMATA){
+                                payment.setCcNum("3423124143");
+                                }else if (paymentRequestDTO.getNamaBank()==BANK_BCA){
+                                    payment.setCcNum("67547645456");
+                                    }else {
+                                        payment.setCcNum("8568568568");
+                                    }
+
             if(order.get().getTotal().equals(amount)){
                 payment.setResponse(PAYMENT_SUCCES);
-            } else {
-                payment.setResponse(WAITING);
-                paymentRepo.save(payment);
-                PaymentResponseDTO result = payment.convertToResponse();
-                return ResponseHandler.generateResponse("Your Amount is not enough", HttpStatus.BAD_GATEWAY,result);
-            }
+                } else {
+                    payment.setResponse(WAITING);
+                    paymentRepo.save(payment);
+                    PaymentResponseDTO result = payment.convertToResponse();
+                    return ResponseHandler.generateResponse("Your Amount is not enough", HttpStatus.BAD_GATEWAY,result);
+                }
+
             paymentRepo.save(payment);
             PaymentResponseDTO result = payment.convertToResponse();
             logger.info("======== Logger Start   ========");
@@ -153,16 +169,38 @@ public class PaymentServiceImpl implements PaymentService {
     public ResponseEntity<Object> updatePayment(Long id, PaymentRequestDTO paymentRequestDTO)throws ResourceNotFoundException {
         Optional<Payment> optionalPayment = paymentRepo.findById(id);
         if(optionalPayment.isEmpty()){
-            throw new ResourceNotFoundException("Booking not exist with id " + id);
+            throw new ResourceNotFoundException("Payment not exist with id " + id);
         }
         try {
             if(paymentRequestDTO.getOrder() == null ){
                 throw new ResourceNotFoundException("Payment must have order id");
             }
             Payment payment = paymentRequestDTO.convertToEntity();
-            payment.setPaymentId(id);
-            Payment updatePayment = paymentRepo.save(payment);
-            PaymentResponseDTO results = updatePayment.convertToResponse();
+            Optional <Order> order = orderRepo.findById(paymentRequestDTO.getOrder().getOrderId());
+            Integer amount = paymentRequestDTO.getAmount();
+            if(paymentRequestDTO.getNamaBank() == BANK_SYARIAH_INDONESIA){
+                payment.setCcNum("023143213");
+            } else if (paymentRequestDTO.getNamaBank()==BANK_BRI){
+                payment.setCcNum("12342342");
+            } else if (paymentRequestDTO.getNamaBank() == BANK_BNI){
+                payment.setCcNum("45234234");
+            }else if (paymentRequestDTO.getNamaBank()==BANK_PERMATA){
+                payment.setCcNum("3423124143");
+            }else if (paymentRequestDTO.getNamaBank()==BANK_BCA){
+                payment.setCcNum("67547645456");
+            }else {
+                payment.setCcNum("8568568568");
+            }
+            if(order.get().getTotal().equals(amount)){
+                payment.setResponse(PAYMENT_SUCCES);
+            } else {
+                payment.setResponse(WAITING);
+                paymentRepo.save(payment);
+                PaymentResponseDTO result = payment.convertToResponse();
+                return ResponseHandler.generateResponse("Your Amount is not enough", HttpStatus.BAD_GATEWAY,result);
+            }
+            paymentRepo.save(payment);
+            PaymentResponseDTO results = payment.convertToResponse();
             logger.info("======== Logger Start   ========");
             logger.info("code     :"+payment.getPaymentId());
             logger.info("Order Id :"+payment.getOrder().getOrderId() );
@@ -185,17 +223,23 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public ResponseEntity<Object>  findByOrderUserIdUsernameContaining() {
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<Payment> payments = paymentRepo.findByOrderUserIdUsernameContaining(userDetails.getUsername());
-        if(payments.isEmpty()){
-            throw new ResourceNotFoundException("User not have Histori Transaksi ");
+        try{
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            List<Payment> payments = paymentRepo.findByOrderUserIdUsernameContaining(userDetails.getUsername());
+            if(payments.isEmpty()){
+                throw new ResourceNotFoundException("User not have Histori Transaksi ");
+            }
+            List<PaymentResponseDTO> paymentsList = new ArrayList<>();
+            for(Payment dataresult:payments){
+                PaymentResponseDTO paymentResponseDTO = dataresult.convertToResponse();
+                paymentsList.add(paymentResponseDTO);
+            }
+            return ResponseHandler.generateResponse("payment",HttpStatus.OK, paymentsList);
+        }catch(ResourceNotFoundException e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
-        List<PaymentResponseDTO> paymentsList = new ArrayList<>();
-        for(Payment dataresult:payments){
-            PaymentResponseDTO paymentResponseDTO = dataresult.convertToResponse();
-            paymentsList.add(paymentResponseDTO);
-        }
-        return ResponseHandler.generateResponse("payment",HttpStatus.OK, paymentsList);
     }
 }

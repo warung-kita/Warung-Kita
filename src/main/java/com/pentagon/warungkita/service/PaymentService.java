@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PaymentService {
-    List<Payment> getAllPayment();
+    ResponseEntity<Object> getAllPayment();
     ResponseEntity<Object> getPaymentById(Long Id);
     ResponseEntity<Object> createPayment(PaymentRequestDTO paymentRequestDTO);
     ResponseEntity<Object> deletePaymentById(Long Id);

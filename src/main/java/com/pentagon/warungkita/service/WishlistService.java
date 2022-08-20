@@ -1,16 +1,17 @@
 package com.pentagon.warungkita.service;
 
+import com.pentagon.warungkita.dto.WishlistRequestDTO;
 import com.pentagon.warungkita.model.Wishlist;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface WishlistService {
-    List<Wishlist> getAllProductList();
-    Optional<Wishlist> getProductListById(Long Id);
-    Wishlist createProductList(Wishlist wishlist);
-    void deleteProductListById(Long Id);
-    Wishlist updateProductList(Wishlist wishlist);
+    ResponseEntity<Object> getAllWishlist();
+    ResponseEntity<Object> getWishlistById(Long id);
+    ResponseEntity<Object> createWishlist(WishlistRequestDTO wishlistRequestDTO);
+    ResponseEntity<Object> deleteProductListById(Long id);
     Wishlist getReferenceById (Long Id);
-    List<Wishlist> findByUserUsernameContaining(String userName);
+    ResponseEntity<Object> findByUserUsernameContaining();
 }
