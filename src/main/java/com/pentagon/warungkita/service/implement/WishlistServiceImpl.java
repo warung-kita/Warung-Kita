@@ -1,25 +1,17 @@
 package com.pentagon.warungkita.service.implement;
 
 import com.pentagon.warungkita.controller.WishlistController;
-import com.pentagon.warungkita.dto.WishlistRequestDTO;
-import com.pentagon.warungkita.dto.WishlistResponseDTO;
-import com.pentagon.warungkita.dto.WishlistResponsePOST;
+import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Product;
-import com.pentagon.warungkita.model.Users;
-import com.pentagon.warungkita.model.Wishlist;
+import com.pentagon.warungkita.model.*;
 import com.pentagon.warungkita.repository.WishlistRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
-import com.pentagon.warungkita.service.ProductService;
-import com.pentagon.warungkita.service.UsersService;
-import com.pentagon.warungkita.service.WishlistService;
+import com.pentagon.warungkita.service.*;
 import lombok.AllArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 

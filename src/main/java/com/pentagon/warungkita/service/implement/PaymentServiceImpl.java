@@ -3,17 +3,13 @@ package com.pentagon.warungkita.service.implement;
 import com.pentagon.warungkita.dto.PaymentRequestDTO;
 import com.pentagon.warungkita.dto.PaymentResponseDTO;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Order;
-import com.pentagon.warungkita.model.Payment;
-import com.pentagon.warungkita.repository.OrderRepo;
-import com.pentagon.warungkita.repository.PaymentRepo;
+import com.pentagon.warungkita.model.*;
+import com.pentagon.warungkita.repository.*;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
-import com.pentagon.warungkita.service.OrderService;
 import com.pentagon.warungkita.service.PaymentService;
 import lombok.AllArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 import static com.pentagon.warungkita.model.Enum.BankList.*;
-import static com.pentagon.warungkita.model.Enum.PaymentResponse.PAYMENT_SUCCES;
-import static com.pentagon.warungkita.model.Enum.PaymentResponse.WAITING;
+import static com.pentagon.warungkita.model.Enum.PaymentResponse.*;
 
 @Service
 @AllArgsConstructor
