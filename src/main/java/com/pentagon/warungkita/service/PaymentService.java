@@ -13,4 +13,5 @@ public interface PaymentService {
     Payment getReferenceById (Long Id);
     ResponseEntity<Object>  findByOrderUserIdUsernameContaining();
     ResponseEntity<Object> cancelPaymnet(Long Id);
+    ResponseEntity<Object>  historiSeller();
 }

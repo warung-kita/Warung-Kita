@@ -224,7 +224,7 @@ public class PaymentServiceImpl implements PaymentService {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             List<Payment> payments = paymentRepo.findByOrderUserIdUsernameContaining(userDetails.getUsername());
             if(payments.isEmpty()){
-                throw new ResourceNotFoundException("User not have Histori Transaksi ");
+                throw new ResourceNotFoundException("Buyer not have Histori Transaksi ");
             }
             List<PaymentResponseDTO> paymentsList = new ArrayList<>();
             for(Payment dataresult:payments){
@@ -263,5 +263,28 @@ public class PaymentServiceImpl implements PaymentService {
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
 
+    }
+
+    @Override
+    public ResponseEntity<Object> historiSeller() {
+        try{
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().
+                    getPrincipal();
+            List<Payment> payments = paymentRepo.findByOrderOrderProductProductIdUsersUsernameContaining(userDetails.getUsername());
+            if(payments.isEmpty()){
+                throw new ResourceNotFoundException("Seller not have Histori Transaksi ");
+            }
+            List<PaymentResponseDTO> paymentsList = new ArrayList<>();
+            for(Payment dataresult:payments){
+                PaymentResponseDTO paymentResponseDTO = dataresult.convertToResponse();
+                paymentsList.add(paymentResponseDTO);
+            }
+            return ResponseHandler.generateResponse("payment",HttpStatus.OK, paymentsList);
+        }catch(ResourceNotFoundException e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
+        }
     }
 }

@@ -19,10 +19,16 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @GetMapping("/payment/buyer_histori")
-    @PreAuthorize("hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> findByUsername() {
+    @PreAuthorize("hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> buyerHistoriPayment() {
         return paymentService.findByOrderUserIdUsernameContaining();
         }
+
+    @GetMapping("/payment/seller_histori")
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
+    public ResponseEntity<Object> sellerHistoriPayment() {
+        return paymentService.historiSeller();
+    }
 
     @GetMapping("/payment/all")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
