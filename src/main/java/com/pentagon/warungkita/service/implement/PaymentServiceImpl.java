@@ -116,6 +116,7 @@ public class PaymentServiceImpl implements PaymentService {
                 payment.setResponse(PAYMENT_SUCCES);
                 } else {
                     payment.setResponse(WAITING);
+                    payment.setActive(true);
                     paymentRepo.save(payment);
                     PaymentResponseDTO result = payment.convertToResponse();
                     return ResponseHandler.generateResponse("Your Amount is not enough", HttpStatus.BAD_GATEWAY,result);
@@ -190,6 +191,7 @@ public class PaymentServiceImpl implements PaymentService {
                 payment.setResponse(PAYMENT_SUCCES);
             } else {
                 payment.setResponse(WAITING);
+                payment.setActive(true);
                 paymentRepo.save(payment);
                 PaymentResponseDTO result = payment.convertToResponse();
                 return ResponseHandler.generateResponse("Your Amount is not enough", HttpStatus.BAD_GATEWAY,result);
@@ -236,5 +238,30 @@ public class PaymentServiceImpl implements PaymentService {
             logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
+    }
+
+    @Override
+    public ResponseEntity<Object> cancelPaymnet(Long Id) {
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Payment payment = paymentRepo.findById(Id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Payment not exist with Id :" + Id));
+            if (payment.getOrder().getUserId().getUserId() != userDetails.getUserId()) {
+                throw new ResourceNotFoundException("Only your payment can cancel");
+            }
+            if (payment.isActive() == false) {
+                throw new ResourceNotFoundException("Payment is cancelled");
+            }
+            payment.setActive(false);
+            payment.setResponse(CANCELLED);
+            paymentRepo.save(payment);
+            return ResponseHandler.generateResponse("Payment cancelled",HttpStatus.OK, payment.getResponse());
+        }catch (ResourceNotFoundException e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
+        }
+
     }
 }

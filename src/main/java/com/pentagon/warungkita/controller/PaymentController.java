@@ -18,14 +18,14 @@ public class PaymentController {
 
     private PaymentService paymentService;
 
-    @GetMapping("/payment/histori")
+    @GetMapping("/payment/buyer_histori")
     @PreAuthorize("hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> findByUsername() {
         return paymentService.findByOrderUserIdUsernameContaining();
         }
 
     @GetMapping("/payment/all")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> findAll(){
        return paymentService.getAllPayment();
         }
@@ -49,8 +49,14 @@ public class PaymentController {
         }
 
     @DeleteMapping("payment/delete/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> deletePayment(@PathVariable Long id){
         return paymentService.deletePaymentById(id);
         }
+
+    @DeleteMapping("payment/cancel/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> cancelPayment(@PathVariable Long id){
+        return paymentService.cancelPaymnet(id);
+    }
 }

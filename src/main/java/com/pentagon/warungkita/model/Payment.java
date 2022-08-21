@@ -39,6 +39,8 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentResponse response;
 
+    private boolean active;
+
     public PaymentResponseDTO convertToResponse(){
         return PaymentResponseDTO.builder().id_pembayaran(this.getPaymentId())
                 .id_order(this.getOrder().getOrderId())

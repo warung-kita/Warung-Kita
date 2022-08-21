@@ -12,4 +12,5 @@ public interface PaymentService {
     ResponseEntity<Object> updatePayment(Long id, PaymentRequestDTO paymentRequestDTO);
     Payment getReferenceById (Long Id);
     ResponseEntity<Object>  findByOrderUserIdUsernameContaining();
+    ResponseEntity<Object> cancelPaymnet(Long Id);
 }
