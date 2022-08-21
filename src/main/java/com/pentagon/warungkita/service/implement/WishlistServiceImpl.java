@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service
@@ -103,7 +102,7 @@ public class WishlistServiceImpl implements WishlistService {
             logger.info("User :"+ wishlist.getUser() );
             logger.info("Product :"+ wishlist.getProduct());
             logger.info("==================== Logger End =================");
-            return ResponseHandler.generateResponse("Success Create Product List",HttpStatus.CREATED,result);
+            return ResponseHandler.generateResponse("Success Create Wishlist",HttpStatus.CREATED,result);
         }catch (Exception e){
             logger.error("------------------------------------");
             logger.error(e.getMessage());
@@ -163,7 +162,7 @@ public class WishlistServiceImpl implements WishlistService {
                 wishlistResponseDTO1.setProduct(dataresult.getProduct());
                 wishlistResponseDTO1.setUser(dataresult.getUser());
             }
-            return ResponseHandler.generateResponse("Succes Get All Wishlist", HttpStatus.OK, productListmaps);
+            return ResponseHandler.generateResponse("Succes Get Your Wishlist", HttpStatus.OK, productListmaps);
 
         }catch (ResourceNotFoundException e){
             logger.error("------------------------------------");

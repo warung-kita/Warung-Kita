@@ -4,9 +4,6 @@ import com.pentagon.warungkita.dto.WishlistRequestDTO;
 import com.pentagon.warungkita.model.Wishlist;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface WishlistService {
     ResponseEntity<Object> getAllWishlist();
     ResponseEntity<Object> getWishlistById(Long id);

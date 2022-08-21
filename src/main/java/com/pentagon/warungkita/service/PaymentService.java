@@ -4,9 +4,6 @@ import com.pentagon.warungkita.dto.PaymentRequestDTO;
 import com.pentagon.warungkita.model.Payment;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface PaymentService {
     ResponseEntity<Object> getAllPayment();
     ResponseEntity<Object> getPaymentById(Long Id);

@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+import static org.aspectj.runtime.internal.Conversions.longValue;
+
 @RequestMapping("/pentagon/warung-kita")
 @RestController
 @AllArgsConstructor
@@ -43,6 +45,7 @@ public class OrderProductController {
     private ProductRepo productRepo;
     private OrderProductRepo orderProductRepo;
     private ProductStatusService productStatusService;
+    private ProductStatusRepo productStatusRepo;
 
     /*
      * Get all Data Order products table
@@ -124,7 +127,7 @@ public class OrderProductController {
                  * Update if qty product 0 set to Sold Out
                  * */
                 if(newQty==0){
-                    ProductStatus psSoldOut = productStatusService.getProductStatusById(2L).get();
+                    ProductStatus psSoldOut = productStatusRepo.findById(2L).get();
                     product.setProductStatusId(psSoldOut);
                 }
 
