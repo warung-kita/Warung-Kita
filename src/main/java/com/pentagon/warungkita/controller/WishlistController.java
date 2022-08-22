@@ -38,7 +38,6 @@ public class WishlistController {
        return this.wishlistService.createWishlist(wishlistRequestDTO);
     }
 
-
     @DeleteMapping("wishlist/delete/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> deletewishlist(@PathVariable Long id){

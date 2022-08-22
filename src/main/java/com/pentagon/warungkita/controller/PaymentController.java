@@ -46,13 +46,13 @@ public class PaymentController {
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> paymentCreate(@RequestBody PaymentRequestDTO paymentRequestDTO){
         return paymentService.createPayment(paymentRequestDTO);
-        }
+    }
 
     @PutMapping("/payment/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> paymentUpdate(@PathVariable Long id, @RequestBody PaymentRequestDTO paymentRequestDTO){
        return this.paymentService.updatePayment(id, paymentRequestDTO);
-        }
+    }
 
     @DeleteMapping("payment/delete/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")

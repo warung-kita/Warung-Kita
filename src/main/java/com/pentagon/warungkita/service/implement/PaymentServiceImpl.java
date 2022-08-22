@@ -176,17 +176,17 @@ public class PaymentServiceImpl implements PaymentService {
             Integer amount = paymentRequestDTO.getAmount();
             if(paymentRequestDTO.getNamaBank() == BANK_SYARIAH_INDONESIA){
                 payment.setCcNum("023143213");
-            } else if (paymentRequestDTO.getNamaBank()==BANK_BRI){
-                payment.setCcNum("12342342");
-            } else if (paymentRequestDTO.getNamaBank() == BANK_BNI){
-                payment.setCcNum("45234234");
-            }else if (paymentRequestDTO.getNamaBank()==BANK_PERMATA){
-                payment.setCcNum("3423124143");
-            }else if (paymentRequestDTO.getNamaBank()==BANK_BCA){
-                payment.setCcNum("67547645456");
-            }else {
-                payment.setCcNum("8568568568");
-            }
+                } else if (paymentRequestDTO.getNamaBank()==BANK_BRI){
+                    payment.setCcNum("12342342");
+                    } else if (paymentRequestDTO.getNamaBank() == BANK_BNI){
+                        payment.setCcNum("45234234");
+                        }else if (paymentRequestDTO.getNamaBank()==BANK_PERMATA){
+                            payment.setCcNum("3423124143");
+                            }else if (paymentRequestDTO.getNamaBank()==BANK_BCA){
+                                payment.setCcNum("67547645456");
+                                }else {
+                                    payment.setCcNum("8568568568");
+                                }
             if(order.get().getTotal().equals(amount)){
                 payment.setResponse(PAYMENT_SUCCES);
             } else {
