@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,6 +36,7 @@ public class UsersController {
 
     private static final Logger logger = LogManager.getLogger(UsersController.class);
     private final UsersServiceImpl usersServiceImpl;
+    @Autowired
     private final UsersService usersService;
     private final UsersRepo usersRepo;
     private final RolesRepo rolesRepo;
@@ -197,8 +199,8 @@ public class UsersController {
     }
     @PostMapping("/users")
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity <?> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
-        return usersService.createUser(usersRequestDTO);
+    public ResponseEntity<Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
+        return this.usersService.createUser(usersRequestDTO);
     }
 
 }

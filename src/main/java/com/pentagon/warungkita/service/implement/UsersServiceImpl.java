@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,11 +29,11 @@ import java.util.Optional;
 @Slf4j
 public class UsersServiceImpl implements UsersService {
 
+    @Autowired
     private final UsersRepo usersRepo;
     private final RolesRepo rolesRepo;
     private final PasswordEncoder passwordEncoder;
     private static final Logger logger = LogManager.getLogger(UsersController.class);
-    private final UsersService usersServiceImpl;
 
     @Override
     public Users findById(Long users_Id) {
@@ -103,7 +104,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public ResponseEntity<?> createUser(UsersRequestDTO usersRequestDTO) {
+    public ResponseEntity<Object> createUser(UsersRequestDTO usersRequestDTO) {
         try {
             if (usersRepo.existsByUsername(usersRequestDTO.getUsername())) {
                 throw new Exception("Username already taken!");
@@ -116,11 +117,11 @@ public class UsersServiceImpl implements UsersService {
                 List<Roles> roles = new ArrayList<>();
                 roles.add(role);
                 usersRequestDTO.setRoles(roles);
-//                usersRequestDTO.(true);
+                usersRequestDTO.setActive(true);
             }
             usersRequestDTO.setPassword(passwordEncoder.encode(usersRequestDTO.getPassword()));
             Users users = usersRequestDTO.convertToEntity();
-            usersServiceImpl.createUser(users);
+            usersRepo.save(users);
             UsersResponsePOST userResult = users.convertToResponsePOST();
             logger.info("==================== Logger Start Create New User ====================");
             logger.info(userResult);

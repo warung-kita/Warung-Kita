@@ -18,5 +18,5 @@ public interface UsersService {
 
     Optional<Users> findByUsername(String username);
 
-    ResponseEntity<?> createUser(UsersRequestDTO usersRequestDTO);
+    ResponseEntity<Object> createUser(UsersRequestDTO usersRequestDTO);
 }
