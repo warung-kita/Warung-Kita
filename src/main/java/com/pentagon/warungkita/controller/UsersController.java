@@ -10,6 +10,7 @@ import com.pentagon.warungkita.repository.RolesRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
+import com.pentagon.warungkita.service.UsersService;
 import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,6 +35,7 @@ public class UsersController {
 
     private static final Logger logger = LogManager.getLogger(UsersController.class);
     private final UsersServiceImpl usersServiceImpl;
+    private final UsersService usersService;
     private final UsersRepo usersRepo;
     private final RolesRepo rolesRepo;
     @GetMapping("/users")
@@ -79,30 +81,30 @@ public class UsersController {
         }
     }
 
-    @PostMapping("/users")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity <Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
-        try {
-            if (usersRepo.existsByUsername(usersRequestDTO.getUsername())) {
-                throw new Exception("Username already taken!");
-            }
-            if (usersRepo.existsByEmail(usersRequestDTO.getEmail())) {
-                throw new Exception("Email already in use!");
-            }
-            Users users = usersRequestDTO.convertToEntity();
-            usersServiceImpl.createUser(users);
-            UsersResponsePOST userResult = users.convertToResponsePOST();
-            logger.info("==================== Logger Start Create New User ====================");
-            logger.info(userResult);
-            logger.info("==================== Logger End Create New User =================");
-            return ResponseHandler.generateResponse("Successfully Created User!", HttpStatus.CREATED, userResult);
-        } catch (Exception e) {
-            logger.error("------------------------------------");
-            logger.error(e.getMessage());
-            logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
-        }
-    }
+//    @PostMapping("/users")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    public ResponseEntity <Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
+//        try {
+//            if (usersRepo.existsByUsername(usersRequestDTO.getUsername())) {
+//                throw new Exception("Username already taken!");
+//            }
+//            if (usersRepo.existsByEmail(usersRequestDTO.getEmail())) {
+//                throw new Exception("Email already in use!");
+//            }
+//            Users users = usersRequestDTO.convertToEntity();
+//            usersServiceImpl.createUser(users);
+//            UsersResponsePOST userResult = users.convertToResponsePOST();
+//            logger.info("==================== Logger Start Create New User ====================");
+//            logger.info(userResult);
+//            logger.info("==================== Logger End Create New User =================");
+//            return ResponseHandler.generateResponse("Successfully Created User!", HttpStatus.CREATED, userResult);
+//        } catch (Exception e) {
+//            logger.error("------------------------------------");
+//            logger.error(e.getMessage());
+//            logger.error("------------------------------------");
+//            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
+//        }
+//    }
 
     @GetMapping("/users/user_details")
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -192,6 +194,11 @@ public class UsersController {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
         }
 
+    }
+    @PostMapping("/users")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity <?> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
+        return usersService.createUser(usersRequestDTO);
     }
 
 }
