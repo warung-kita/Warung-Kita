@@ -20,8 +20,8 @@ public class UsersRequestDTO {
     private String password;
     private String phoneNum;
     private String profilPicture;
-
-    private List<Roles> role;
+    private boolean active;
+    private List<Roles> roles;
 
 
     public Users convertToEntity(){
@@ -33,7 +33,8 @@ public class UsersRequestDTO {
                 .password(this.password)
                 .phoneNum(this.phoneNum)
                 .profilPicture(this.profilPicture)
-                .roles(this.role)
+                .active(this.active)
+                .roles(this.roles)
                 .build();
     }
 }
