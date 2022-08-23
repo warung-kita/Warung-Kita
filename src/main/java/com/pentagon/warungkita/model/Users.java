@@ -26,7 +26,9 @@ public class Users {
     private String username;
     private String password;
     private String address;
-    private String profilPicture;
+    @OneToOne
+    @JoinColumn(name="photo_id")
+    private Photo profilPicture;
     private String phoneNum;
     private boolean active;
 

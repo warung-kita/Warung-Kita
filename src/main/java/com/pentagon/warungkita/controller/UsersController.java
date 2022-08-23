@@ -1,8 +1,6 @@
 package com.pentagon.warungkita.controller;
 
-import com.pentagon.warungkita.dto.UsersRequestDTO;
-import com.pentagon.warungkita.dto.UsersResponseDTO;
-import com.pentagon.warungkita.dto.UsersResponsePOST;
+import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Roles;
 import com.pentagon.warungkita.model.Users;
@@ -22,7 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -40,6 +43,9 @@ public class UsersController {
     private final UsersService usersService;
     private final UsersRepo usersRepo;
     private final RolesRepo rolesRepo;
+    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    AuthenticationManager authenticationManager;
     @GetMapping("/users")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity <Object> getAll() {
@@ -109,8 +115,15 @@ public class UsersController {
     public ResponseEntity<Object> updateUser(@RequestBody UsersRequestDTO usersRequestDTO){
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional<Users> user1 = usersRepo.findById(userDetails.getUserId());
             Users users = usersRequestDTO.convertToEntity();
             users.setUserId(userDetails.getUserId());
+            users.setEmail(userDetails.getEmail());
+            users.setPassword(userDetails.getPassword());
+            users.setUsername(userDetails.getUsername());
+            users.setFullName(user1.get().getFullName());
+            users.setRoles(user1.get().getRoles());
+
             Users updateUsers = usersServiceImpl.updateUser(users);
             UsersResponseDTO result = updateUsers.convertToResponse();
             logger.info("==================== Logger Start Update User By ID ====================");
@@ -178,5 +191,38 @@ public class UsersController {
     public ResponseEntity<Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
         return this.usersService.createUser(usersRequestDTO);
     }
+    @PutMapping("/users/change_password")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> changePassword(@RequestBody PassworRequest request){
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Users user1 = usersServiceImpl.findById(userDetails.getUserId());
 
+//            Users users = new Users();
+//            request.setOldPassword((passwordEncoder.encode(request.getOldPassword())));
+//            request.setPassword((passwordEncoder.encode(request.getPassword())));
+//            request.setConfirmPassword((passwordEncoder.encode(request.getConfirmPassword())));
+            if (!Objects.equals(request.getUsername(), userDetails.getUsername())){
+                throw new ResourceNotFoundException("Username is wrong");
+            }
+            if (userDetails.getPassword().equals(request.getPassword())){
+                throw new ResourceNotFoundException("Password is same");
+            }
+            if (!Objects.equals(request.getPassword(), request.getConfirmPassword())){
+                throw new ResourceNotFoundException("Password is not match, try again");
+            }
+            user1.setPassword((passwordEncoder.encode(request.getPassword())));
+            Users updateUsers = usersServiceImpl.updateUser(user1);
+            UsersResponseDTO result = updateUsers.convertToResponse();
+            logger.info("==================== Logger Start Update User By ID ====================");
+            logger.info(result);
+            logger.info("==================== Logger End Update User By ID =================");
+            return ResponseHandler.generateResponse("Successfully Updated Password!",HttpStatus.OK, result);
+        }catch(Exception e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Bad Request!!");
+        }
+    }
 }

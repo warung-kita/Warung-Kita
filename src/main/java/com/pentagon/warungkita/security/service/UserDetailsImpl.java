@@ -28,6 +28,9 @@ public class UserDetailsImpl implements UserDetails {
      @JsonIgnore
     private String password;
 
+    @JsonIgnore
+    private String email;
+
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(Users user) {
@@ -35,7 +38,7 @@ public class UserDetailsImpl implements UserDetails {
         user.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
         });
-        return new UserDetailsImpl(user.getUserId(), user.getUsername(), user.getPassword(), authorities);
+        return new UserDetailsImpl(user.getUserId(), user.getUsername(), user.getPassword(), user.getEmail(), authorities);
     }
 
     @Override

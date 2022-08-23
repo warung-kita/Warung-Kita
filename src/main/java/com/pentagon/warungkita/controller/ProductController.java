@@ -133,4 +133,9 @@ public class ProductController {
         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
     }
 
+    @GetMapping("/product/byCategories")
+    public ResponseEntity<Object> findByCategories(@RequestParam String name){
+        return productService.findByCategories(name);
+    }
+
 }

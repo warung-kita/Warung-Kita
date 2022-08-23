@@ -292,9 +292,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findByUsersUserId(Long userId) {
-        List<Product> products = productRepo.findByUsersUserId(userId);
-        return products;
+    public ResponseEntity<Object> findByCategories(String name) {
+        try {
+            List<Product> products = productRepo.findByCategoriesName(name);
+            List<ProductResponseDTO> productList = new ArrayList<>();
+            for(Product dataResult:products) {
+                ProductResponseDTO productResponseDTO = dataResult.convertToResponse();
+                productList.add(productResponseDTO);
+            }
+            return ResponseHandler.generateResponse("Data Successfully Retrieved",HttpStatus.OK, productList);
+        }catch (ResourceNotFoundException e){
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
+        }
     }
 
 

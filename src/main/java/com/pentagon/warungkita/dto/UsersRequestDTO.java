@@ -1,9 +1,12 @@
 package com.pentagon.warungkita.dto;
 
+import com.pentagon.warungkita.model.Photo;
 import com.pentagon.warungkita.model.Roles;
 import com.pentagon.warungkita.model.Users;
 import lombok.*;
 
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import java.util.List;
 
 @Getter
@@ -19,7 +22,8 @@ public class UsersRequestDTO {
     private String address;
     private String password;
     private String phoneNum;
-    private String profilPicture;
+
+    private Photo profilPicture;
     private boolean active;
     private List<Roles> roles;
 
