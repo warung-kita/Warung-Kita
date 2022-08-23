@@ -83,30 +83,6 @@ public class UsersController {
         }
     }
 
-//    @PostMapping("/users")
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-//    public ResponseEntity <Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
-//        try {
-//            if (usersRepo.existsByUsername(usersRequestDTO.getUsername())) {
-//                throw new Exception("Username already taken!");
-//            }
-//            if (usersRepo.existsByEmail(usersRequestDTO.getEmail())) {
-//                throw new Exception("Email already in use!");
-//            }
-//            Users users = usersRequestDTO.convertToEntity();
-//            usersServiceImpl.createUser(users);
-//            UsersResponsePOST userResult = users.convertToResponsePOST();
-//            logger.info("==================== Logger Start Create New User ====================");
-//            logger.info(userResult);
-//            logger.info("==================== Logger End Create New User =================");
-//            return ResponseHandler.generateResponse("Successfully Created User!", HttpStatus.CREATED, userResult);
-//        } catch (Exception e) {
-//            logger.error("------------------------------------");
-//            logger.error(e.getMessage());
-//            logger.error("------------------------------------");
-//            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
-//        }
-//    }
 
     @GetMapping("/users/user_details")
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")

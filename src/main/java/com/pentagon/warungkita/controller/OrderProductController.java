@@ -47,6 +47,7 @@ public class OrderProductController {
     private ProductStatusService productStatusService;
     private ProductStatusRepo productStatusRepo;
 
+
     /*
      * Get all Data Order products table
      * Menggunakan ResponseDTO
@@ -100,50 +101,9 @@ public class OrderProductController {
     @PostMapping("/list/order-products")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> saveOrderProduct(@RequestBody OrderProductRequestDTO orderProductRequestDTO) {
-        try {
-                /**
-                * Logic subtotal on Order Product
-                * */
-                Product product = productRepo.findById(orderProductRequestDTO.getProduct().getProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
-                OrderProduct orderProduct = OrderProduct.builder()
-                        .productId(orderProductRequestDTO.getProduct())
-                        .quantity(orderProductRequestDTO.getQuantity())
-                        .build();
-                Integer totalPrice = product.getRegularPrice() * orderProductRequestDTO.getQuantity();
-                orderProduct.setSubtotal(totalPrice);
+        return orderProductService.saveOrderProduct(orderProductRequestDTO);
+    }
 
-                /**
-                 * Logic if Qty of Product less then Qty of Order Product
-                * */
-                if(product.getQuantity() < orderProduct.getQuantity()){
-                    throw new ResourceNotFoundException("stok kurang");
-                }
-                /**
-                 * Update Qty Product
-                 * */
-                Integer newQty = product.getQuantity() - orderProductRequestDTO.getQuantity();
-                product.setQuantity(newQty);
-                 /**
-                 * Update if qty product 0 set to Sold Out
-                 * */
-                if(newQty==0){
-                    ProductStatus psSoldOut = productStatusRepo.findById(2L).get();
-                    product.setProductStatusId(psSoldOut);
-                }
-
-                this.orderProductRepo.save(orderProduct);
-
-            OrderProductResponsePOST orderProductResponsePOST = orderProduct.convertToResponsePOST();
-                return ResponseHandler.generateResponse("Successfully  save Order", HttpStatus.CREATED, orderProductResponsePOST);
-
-
-        }catch(ResourceNotFoundException e){
-                logger.error("------------------------------------");
-                logger.error(e.getMessage());
-                logger.error("------------------------------------");
-                return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
-            }
-        }
 
 
 
