@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface PaymentRepo extends JpaRepository<Payment, Long> {
-    public List<Payment> findByOrderUserIdUsernameContaining(String userName);
-
+    List<Payment> findByOrderUserIdUsernameContaining(String userName);
+    List<Payment> findByOrderOrderProductProductIdUsersUsernameContaining(String userName);
 }

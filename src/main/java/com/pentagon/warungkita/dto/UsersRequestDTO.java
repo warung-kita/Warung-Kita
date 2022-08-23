@@ -20,7 +20,7 @@ public class UsersRequestDTO {
     private String password;
     private String phoneNum;
     private String profilPicture;
-
+    private boolean active;
     private List<Roles> roles;
 
 
@@ -33,6 +33,7 @@ public class UsersRequestDTO {
                 .password(this.password)
                 .phoneNum(this.phoneNum)
                 .profilPicture(this.profilPicture)
+                .active(this.active)
                 .roles(this.roles)
                 .build();
     }
