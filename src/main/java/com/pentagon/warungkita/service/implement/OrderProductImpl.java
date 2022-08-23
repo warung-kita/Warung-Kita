@@ -7,17 +7,21 @@ import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.OrderProduct;
 import com.pentagon.warungkita.model.Product;
 import com.pentagon.warungkita.model.ProductStatus;
+import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.OrderProductRepo;
 import com.pentagon.warungkita.repository.ProductRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
+import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.OrderProductService;
 import com.pentagon.warungkita.service.ProductStatusService;
+import com.pentagon.warungkita.service.UsersService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -32,6 +36,7 @@ public class OrderProductImpl implements OrderProductService {
     private OrderProductRepo orderProductRepo;
     private ProductRepo productRepo;
     private ProductStatusService productStatusService;
+    UsersService usersService;
     private static final Logger logger = LogManager.getLogger(OrderProductController.class);
 
     @Override
@@ -62,9 +67,22 @@ public class OrderProductImpl implements OrderProductService {
     @Override
     public ResponseEntity<Object> saveOrderProduct(@RequestBody OrderProductRequestDTO orderProductRequestDTO) {
         try {
+
+
             /**
              * Logic subtotal on Order Product
              * */
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            Optional <Product> product1 = productRepo.findById(orderProductRequestDTO.getProduct().getProductId());
+            if(product1.get().getUsers().getUserId().equals(userDetails.getUserId()) ){
+                throw new ResourceNotFoundException("Can't add your own product");
+            }
+            if(orderProductRequestDTO.getQuantity()==0){
+                throw new ResourceNotFoundException("Quantity can't 0");
+            }
+
+
             Product product = productRepo.findById(orderProductRequestDTO.getProduct().getProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
             OrderProduct orderProduct = OrderProduct.builder()
                     .productId(orderProductRequestDTO.getProduct())

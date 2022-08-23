@@ -61,7 +61,7 @@ public class Order {
                 .orderDate(this.orderDate)
                 .ekspedisiId(this.ekspedisiId.getEkspedisiId())
                 .total(this.total)
-                .userId(this.userId.getUserId())
+                .buyer(this.userId.getUsername())
                 .build();
     }
 

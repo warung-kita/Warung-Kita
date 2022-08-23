@@ -108,12 +108,7 @@ public class ProductController {
      */
     @GetMapping("/product/byProductName")
     public ResponseEntity<Object> findByProductName(@RequestParam String productName){
-        try {
-            List<Product> test = productService.findByProductNameContaining(productName);
-            return ResponseHandler.generateResponse("test",HttpStatus.OK,test);
-        }catch (ResourceNotFoundException e){
-            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
-        }
+       return productService.findByProductNameContaining(productName);
     }
 
     /**
@@ -123,12 +118,7 @@ public class ProductController {
      */
     @GetMapping("/product/byUsername")
     public ResponseEntity<Object> findBySellerUsername(@RequestParam String username){
-        try {
-            List<Product> products = productService.findByUsersUsernameContaining(username);
-            return ResponseHandler.generateResponse("Data Successfully Retrieved",HttpStatus.OK, products);
-        }catch (ResourceNotFoundException e){
-            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
-        }
+        return productService.findByUsersUsernameContaining(username);
     }
 
     /**

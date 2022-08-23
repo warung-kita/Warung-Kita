@@ -4,6 +4,7 @@ import com.pentagon.warungkita.controller.WishlistController;
 import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.*;
+import com.pentagon.warungkita.repository.ProductRepo;
 import com.pentagon.warungkita.repository.WishlistRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
@@ -26,6 +27,7 @@ public class WishlistServiceImpl implements WishlistService {
     UsersService usersService;
     @Autowired
     ProductService productService;
+    ProductRepo productRepo;
 
     @Override
     public ResponseEntity<Object> getAllWishlist() {
@@ -88,7 +90,7 @@ public class WishlistServiceImpl implements WishlistService {
             }
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Optional <Users> users = usersService.getUserById(userDetails.getUserId());
-            Optional <Product> product = productService.getProductById(wishlistRequestDTO.getProduct().getProductId());
+            Optional <Product> product = productRepo.findById(wishlistRequestDTO.getProduct().getProductId());
             if(product.get().getUsers().getUserId().equals(userDetails.getUserId()) ){
                 throw new ResourceNotFoundException("Can't add your own product");
             }

@@ -62,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
                 logger.info("----------------------------------------------------------");
             }
             logger.info("==================== Logger Start Get All Product     ====================");
-            return ResponseHandler.generateResponse("Successfully Get All Product", HttpStatus.OK, products);
+            return ResponseHandler.generateResponse("Successfully Get All Product", HttpStatus.OK, productList);
         }catch(ResourceNotFoundException e){
             logger.error("------------------------------------");
             logger.error(e.getMessage());
@@ -261,16 +261,34 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findByProductNameContaining(String productName) {
-        List<Product> products = productRepo.findByProductNameContaining(productName);
+    public ResponseEntity<Object> findByProductNameContaining(String productName) {
+        try {
+            List<Product> products = productRepo.findByProductNameContaining(productName);
+            List<ProductResponseDTO> productList = new ArrayList<>();
+            for(Product dataResult:products) {
+                ProductResponseDTO productResponseDTO = dataResult.convertToResponse();
+                productList.add(productResponseDTO);
+            }
+            return ResponseHandler.generateResponse("test",HttpStatus.OK,productList);
+        }catch (ResourceNotFoundException e){
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
+        }
 
-        return this.productRepo.findByProductNameContaining(productName);
-    }
+      }
 
     @Override
-    public List<Product> findByUsersUsernameContaining(String userName) {
-        List<Product> products = productRepo.findByUsersUsernameContaining(userName);
-        return this.productRepo.findByUsersUsernameContaining(userName);
+    public ResponseEntity<Object> findByUsersUsernameContaining(String username) {
+        try {
+            List<Product> products = productRepo.findByUsersUsernameContaining(username);
+            List<ProductResponseDTO> productList = new ArrayList<>();
+            for(Product dataResult:products) {
+                ProductResponseDTO productResponseDTO = dataResult.convertToResponse();
+                productList.add(productResponseDTO);
+            }
+            return ResponseHandler.generateResponse("Data Successfully Retrieved",HttpStatus.OK, productList);
+        }catch (ResourceNotFoundException e){
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
+        }
     }
 
     @Override

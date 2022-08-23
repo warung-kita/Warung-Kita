@@ -58,7 +58,7 @@ public class Product {
                 .harga(this.getRegularPrice())
                 .stok(this.getQuantity())
                 .gambar(this.getProductPicture())
-                .userId(this.users.getUserId())
+                .sellerName(this.users.getUsername())
                 .build();
     }
 

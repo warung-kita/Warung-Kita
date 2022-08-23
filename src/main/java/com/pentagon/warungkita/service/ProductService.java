@@ -14,8 +14,8 @@ public interface ProductService {
     ResponseEntity<Object> createProduct(ProductRequestDTO productRequestDTO);
     ResponseEntity<Object> updateProduct(Long productId, ProductRequestDTO productRequestDTO);
     ResponseEntity<Object> deleteProduct(Long productId);
-    List<Product> findByProductNameContaining(String productName);
-    List<Product> findByUsersUsernameContaining(String userName);
+    ResponseEntity<Object> findByProductNameContaining(String productName);
+    ResponseEntity<Object> findByUsersUsernameContaining(String username);
 
     List<Product> findByUsersUserId(Long userId);
 }

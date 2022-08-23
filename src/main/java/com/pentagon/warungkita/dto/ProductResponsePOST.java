@@ -32,7 +32,7 @@ public class ProductResponsePOST {
                 "Kode Produk =" + kodeProduk +
                 ", SKU ='" + sku + '\'' +
                 ", Nama Produk ='" + namaProduk + '\'' +
-                ", Kategori =" + kategori +
+
                 ", Deskripsi ='" + deskripsi + '\'' +
                 ", Status =" + status +
                 ", Harga =" + harga +
