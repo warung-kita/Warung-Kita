@@ -20,20 +20,26 @@ public class ProductResponsePOST {
     private Long status;
     private Integer harga;
     private Integer stok;
-//    private List<Photo> gambar;
+
+    private List<Photo> gambar;
+
     private Long userId;
 
     @Override
     public String toString() {
         return "ProductResponsePOST{" +
-                "kodeProduk=" + kodeProduk +
-                ", sku='" + sku + '\'' +
-                ", namaProduk='" + namaProduk + '\'' +
-                ", deskripsi='" + deskripsi + '\'' +
-                ", status=" + status +
-                ", harga=" + harga +
-                ", stok=" + stok +
-                ", userId=" + userId +
+
+                "Kode Produk =" + kodeProduk +
+                ", SKU ='" + sku + '\'' +
+                ", Nama Produk ='" + namaProduk + '\'' +
+                ", Kategori =" + kategori +
+                ", Deskripsi ='" + deskripsi + '\'' +
+                ", Status =" + status +
+                ", Harga =" + harga +
+                ", Stok =" + stok +
+                ", Gambar =" + gambar +
+                ", ID User =" + userId +
+
                 '}';
     }
 }

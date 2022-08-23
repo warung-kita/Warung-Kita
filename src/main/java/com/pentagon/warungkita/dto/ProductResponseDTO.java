@@ -26,16 +26,16 @@ public class ProductResponseDTO {
     @Override
     public String toString() {
         return "ProductResponseDTO{" +
-                "kodeProduk=" + kodeProduk +
-                ", sku='" + sku + '\'' +
-                ", namaProduk='" + namaProduk + '\'' +
-                ", kategori=" + kategori +
-                ", deskripsi='" + deskripsi + '\'' +
-                ", status=" + status +
-                ", harga=" + harga +
-                ", stok=" + stok +
-                ", gambar=" + gambar +
-                ", userId=" + userId +
+                "Kode Produk =" + kodeProduk +
+                ", SKU ='" + sku + '\'' +
+                ", Nama Produk ='" + namaProduk + '\'' +
+                ", Kategori =" + kategori +
+                ", Deskripsi ='" + deskripsi + '\'' +
+                ", Status =" + status +
+                ", Harga =" + harga +
+                ", Stok =" + stok +
+                ", Gambar =" + gambar +
+                ", ID User =" + userId +
                 '}';
     }
 }

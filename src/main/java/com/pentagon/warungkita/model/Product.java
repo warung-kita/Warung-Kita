@@ -72,8 +72,8 @@ public class Product {
                 .status(this.productStatusId.getProductStatusId())
                 .harga(this.getRegularPrice())
                 .stok(this.getQuantity())
+                .gambar(this.getProductPicture())
                 .userId(this.users.getUserId())
-//                .gambar(this.getProductPicture())
                 .build();
     }
 
@@ -85,10 +85,11 @@ public class Product {
                 ", productName='" + productName + '\'' +
                 ", categories=" + categories +
                 ", description='" + description + '\'' +
+                ", users=" + users +
                 ", productStatusId=" + productStatusId +
                 ", regularPrice=" + regularPrice +
                 ", quantity=" + quantity +
-                ", productPicture='" + productPicture + '\'' +
+                ", productPicture=" + productPicture +
                 '}';
     }
 }
