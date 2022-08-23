@@ -31,9 +31,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
-    private final ProductService productService;
     private final UsersService usersService;
-    private final UsersRepo usersRepo;
     private static final Logger logger = LogManager.getLogger(ProductServiceImpl.class);
 
     /**
@@ -136,7 +134,7 @@ public class ProductServiceImpl implements ProductService {
                     .build();
 
 
-            List<Product> products = productService.findByUsersUserId(userDetails.getUserId());
+            List<Product> products = productRepo.findByUsersUserId(userDetails.getUserId());
             List<Photo> photos = productRequestDTO.getProductPicture();
             List<Categories> categories = productRequestDTO.getCategories();
             Integer countProduct = products.size();
@@ -248,7 +246,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseEntity<Object> deleteProduct(Long productId) throws ResourceNotFoundException{
         try {
-            productService.deleteProduct(productId);
+            productRepo.deleteById(productId);
             Boolean result = Boolean.TRUE;
             logger.info("==================== Logger Start Get Deleted Product     ====================");
             logger.info(result);
