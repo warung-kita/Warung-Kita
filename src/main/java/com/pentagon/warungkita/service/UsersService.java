@@ -1,5 +1,6 @@
 package com.pentagon.warungkita.service;
 
+import com.pentagon.warungkita.dto.PassworRequest;
 import com.pentagon.warungkita.dto.UsersRequestDTO;
 import com.pentagon.warungkita.model.Users;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,9 @@ public interface UsersService {
     Users findById(Long users_Id);
     Users updateUser(Users users) throws Exception;
     Users deleteUserById(Long users_Id);
-
     Optional<Users> findByUsername(String username);
-
     ResponseEntity<Object> createUser(UsersRequestDTO usersRequestDTO);
+    ResponseEntity<Object> changePassword(PassworRequest request);
+    ResponseEntity<Object> completeUsers(UsersRequestDTO usersRequestDTO);
+    ResponseEntity<Object> becameSeller();
 }

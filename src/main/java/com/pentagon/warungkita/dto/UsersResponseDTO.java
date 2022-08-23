@@ -1,6 +1,7 @@
 package com.pentagon.warungkita.dto;
 
 import com.pentagon.warungkita.model.Photo;
+import com.pentagon.warungkita.model.PhotoProfile;
 import com.pentagon.warungkita.model.Roles;
 import lombok.*;
 
@@ -18,7 +19,9 @@ public class UsersResponseDTO {
     private String email;
     private String username;
     private String address;
-    private Photo profilPicture;
+
+    private PhotoProfile profilPicture;
+
     private String phoneNum;
 
     @Override

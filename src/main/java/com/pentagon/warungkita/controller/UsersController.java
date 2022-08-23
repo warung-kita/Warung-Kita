@@ -1,6 +1,11 @@
 package com.pentagon.warungkita.controller;
 
+
 import com.pentagon.warungkita.dto.*;
+
+import com.pentagon.warungkita.dto.PhotoRequestDTO;
+import com.pentagon.warungkita.dto.UsersRequestDTO;
+import com.pentagon.warungkita.dto.UsersResponseDTO;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Roles;
 import com.pentagon.warungkita.model.Users;
@@ -8,6 +13,7 @@ import com.pentagon.warungkita.repository.RolesRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
+import com.pentagon.warungkita.service.PhotoProfileService;
 import com.pentagon.warungkita.service.UsersService;
 import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -18,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +34,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 @RestController
@@ -43,14 +51,27 @@ public class UsersController {
     private final UsersService usersService;
     private final UsersRepo usersRepo;
     private final RolesRepo rolesRepo;
+
     private final PasswordEncoder passwordEncoder;
     @Autowired
     AuthenticationManager authenticationManager;
+
+    private final PhotoProfileService photoProfileService;
+
+    @PostMapping(value = "/photo/add/profile",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> createPhoto(@RequestPart PhotoRequestDTO photoRequestDTO, @RequestParam("file") MultipartFile multipartFile){
+
+        return this.photoProfileService.createPhoto(photoRequestDTO, multipartFile);
+
+    }
+
+
     @GetMapping("/users")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity <Object> getAll() {
         try {
-
             List<Users> result = usersServiceImpl.getAll();
             List<UsersResponseDTO> usersResponseDTOList = new ArrayList<>();
             logger.info("==================== Logger Start Get All User ====================");
@@ -110,32 +131,10 @@ public class UsersController {
         }
     }
 
-    @PutMapping("/users/{users_Id}")
+    @PutMapping("/users/completeProfile")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> updateUser(@RequestBody UsersRequestDTO usersRequestDTO){
-        try {
-            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Optional<Users> user1 = usersRepo.findById(userDetails.getUserId());
-            Users users = usersRequestDTO.convertToEntity();
-            users.setUserId(userDetails.getUserId());
-            users.setEmail(userDetails.getEmail());
-            users.setPassword(userDetails.getPassword());
-            users.setUsername(userDetails.getUsername());
-            users.setFullName(user1.get().getFullName());
-            users.setRoles(user1.get().getRoles());
-
-            Users updateUsers = usersServiceImpl.updateUser(users);
-            UsersResponseDTO result = updateUsers.convertToResponse();
-            logger.info("==================== Logger Start Update User By ID ====================");
-            logger.info(result);
-            logger.info("==================== Logger End Update User By ID =================");
-            return ResponseHandler.generateResponse("Successfully Updated User!",HttpStatus.OK, result);
-        }catch(Exception e){
-            logger.error("------------------------------------");
-            logger.error(e.getMessage());
-            logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Bad Request!!");
-        }
+    public ResponseEntity<Object> completeProfile(@RequestBody UsersRequestDTO usersRequestDTO){
+        return usersService.completeUsers(usersRequestDTO);
     }
 
     @DeleteMapping("/users/deactive_user/{users_Id}")
@@ -156,73 +155,40 @@ public class UsersController {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!" );
         }
     }
-
-
-    @PutMapping("/becomeSeller")
-    @PreAuthorize("hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> becomeSeller() {
+    @PutMapping("/users/{users_Id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> updateUser(@RequestBody UsersRequestDTO usersRequestDTO){
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Users users = usersServiceImpl.findById(userDetails.getUserId());
+            Users users = usersRequestDTO.convertToEntity();
             users.setUserId(userDetails.getUserId());
-            Roles role1 = rolesRepo.findByName("ROLE_SELLER");
-            Roles role2 = rolesRepo.findByName("ROLE_BUYER");
-            List<Roles> roles = new ArrayList<>();
-            roles.add(role1);
-            roles.add(role2);
-            users.setRoles(roles);
-            users.setActive(true);
             Users updateUsers = usersServiceImpl.updateUser(users);
             UsersResponseDTO result = updateUsers.convertToResponse();
             logger.info("==================== Logger Start Update User By ID ====================");
             logger.info(result);
             logger.info("==================== Logger End Update User By ID =================");
-            return ResponseHandler.generateResponse("Successfully Open Shop", HttpStatus.CREATED, result);
-        }catch (Exception e){
-            logger.error("------------------------------------");
-            logger.error(e.getMessage());
-            logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
-        }
-
-    }
-    @PostMapping("/users")
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
-        return this.usersService.createUser(usersRequestDTO);
-    }
-    @PutMapping("/users/change_password")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> changePassword(@RequestBody PassworRequest request){
-        try {
-            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Users user1 = usersServiceImpl.findById(userDetails.getUserId());
-
-//            Users users = new Users();
-//            request.setOldPassword((passwordEncoder.encode(request.getOldPassword())));
-//            request.setPassword((passwordEncoder.encode(request.getPassword())));
-//            request.setConfirmPassword((passwordEncoder.encode(request.getConfirmPassword())));
-            if (!Objects.equals(request.getUsername(), userDetails.getUsername())){
-                throw new ResourceNotFoundException("Username is wrong");
-            }
-            if (userDetails.getPassword().equals(request.getPassword())){
-                throw new ResourceNotFoundException("Password is same");
-            }
-            if (!Objects.equals(request.getPassword(), request.getConfirmPassword())){
-                throw new ResourceNotFoundException("Password is not match, try again");
-            }
-            user1.setPassword((passwordEncoder.encode(request.getPassword())));
-            Users updateUsers = usersServiceImpl.updateUser(user1);
-            UsersResponseDTO result = updateUsers.convertToResponse();
-            logger.info("==================== Logger Start Update User By ID ====================");
-            logger.info(result);
-            logger.info("==================== Logger End Update User By ID =================");
-            return ResponseHandler.generateResponse("Successfully Updated Password!",HttpStatus.OK, result);
+            return ResponseHandler.generateResponse("Successfully Updated User!",HttpStatus.OK, result);
         }catch(Exception e){
             logger.error("------------------------------------");
             logger.error(e.getMessage());
             logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Bad Request!!");
         }
+    }
+
+    @PutMapping("/becomeSeller")
+    @PreAuthorize("hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> becomeSeller() {
+        return usersService.becameSeller();
+    }
+    @PostMapping("/users")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
+        return this.usersService.createUser(usersRequestDTO);
+    }
+    @PutMapping("/users/change_password")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> changePassword(@RequestBody PassworRequest request){
+        return usersService.changePassword(request);
     }
 }

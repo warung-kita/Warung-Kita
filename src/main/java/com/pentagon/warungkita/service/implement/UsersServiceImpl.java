@@ -1,7 +1,9 @@
 package com.pentagon.warungkita.service.implement;
 
 import com.pentagon.warungkita.controller.UsersController;
+import com.pentagon.warungkita.dto.PassworRequest;
 import com.pentagon.warungkita.dto.UsersRequestDTO;
+import com.pentagon.warungkita.dto.UsersResponseDTO;
 import com.pentagon.warungkita.dto.UsersResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Roles;
@@ -9,6 +11,7 @@ import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.RolesRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
+import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.UsersService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,11 +20,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -133,5 +138,89 @@ public class UsersServiceImpl implements UsersService {
             logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
         }
+    }
+
+    @Override
+    public ResponseEntity<Object> changePassword(PassworRequest request) {
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Users user1 = this.findById(userDetails.getUserId());
+            if (!Objects.equals(request.getConfirmUsername(), userDetails.getUsername())){
+                throw new ResourceNotFoundException("Username is wrong");
+            }
+            if (userDetails.getPassword().equals(request.getPassword())){
+                throw new ResourceNotFoundException("Password is same");
+            }
+            if (!Objects.equals(request.getPassword(), request.getConfirmPassword())){
+                throw new ResourceNotFoundException("Password is not match, try again");
+            }
+            user1.setPassword((passwordEncoder.encode(request.getPassword())));
+            Users updateUsers = this.updateUser(user1);
+            UsersResponseDTO result = updateUsers.convertToResponse();
+            logger.info("==================== Logger Start Update User By ID ====================");
+            logger.info(result);
+            logger.info("==================== Logger End Update User By ID =================");
+            return ResponseHandler.generateResponse("Successfully Updated Password!",HttpStatus.OK, result);
+        }catch(Exception e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Bad Request!!");
+        }
+    }
+
+    @Override
+    public ResponseEntity<Object> completeUsers(UsersRequestDTO usersRequestDTO) {
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional<Users> user1 = usersRepo.findById(userDetails.getUserId());
+            Users users = usersRequestDTO.convertToEntity();
+            users.setUserId(userDetails.getUserId());
+            users.setEmail(userDetails.getEmail());
+            users.setPassword(userDetails.getPassword());
+            users.setUsername(userDetails.getUsername());
+            users.setFullName(user1.get().getFullName());
+            users.setRoles(user1.get().getRoles());
+
+            Users updateUsers = this.updateUser(users);
+            UsersResponseDTO result = updateUsers.convertToResponse();
+            logger.info("==================== Logger Start Update User By ID ====================");
+            logger.info(result);
+            logger.info("==================== Logger End Update User By ID =================");
+            return ResponseHandler.generateResponse("Successfully Updated User!",HttpStatus.OK, result);
+        }catch(Exception e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Bad Request!!");
+        }
+    }
+
+    @Override
+    public ResponseEntity<Object> becameSeller() {
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Users users = this.findById(userDetails.getUserId());
+            users.setUserId(userDetails.getUserId());
+            Roles role1 = rolesRepo.findByName("ROLE_SELLER");
+            Roles role2 = rolesRepo.findByName("ROLE_BUYER");
+            List<Roles> roles = new ArrayList<>();
+            roles.add(role1);
+            roles.add(role2);
+            users.setRoles(roles);
+            users.setActive(true);
+            Users updateUsers = this.updateUser(users);
+            UsersResponseDTO result = updateUsers.convertToResponse();
+            logger.info("==================== Logger Start Update User By ID ====================");
+            logger.info(result);
+            logger.info("==================== Logger End Update User By ID =================");
+            return ResponseHandler.generateResponse("Successfully Open Shop", HttpStatus.CREATED, result);
+        }catch (Exception e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
+        }
+
     }
 }

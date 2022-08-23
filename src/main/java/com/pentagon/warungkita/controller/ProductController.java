@@ -1,15 +1,7 @@
 package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.dto.ProductRequestDTO;
-import com.pentagon.warungkita.dto.ProductResponseDTO;
-import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Categories;
-import com.pentagon.warungkita.model.Photo;
-import com.pentagon.warungkita.model.Product;
-import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.ProductRepo;
-import com.pentagon.warungkita.response.ResponseHandler;
-import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.ProductService;
 import com.pentagon.warungkita.service.ReportService;
 import com.pentagon.warungkita.service.UsersService;
@@ -21,16 +13,11 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/pentagon/warung-kita")
@@ -120,7 +107,6 @@ public class ProductController {
     public ResponseEntity<Object> findBySellerUsername(@RequestParam String username){
         return productService.findByUsersUsernameContaining(username);
     }
-
     /**
      * Reports For All Existing Product
      * @throws Exception

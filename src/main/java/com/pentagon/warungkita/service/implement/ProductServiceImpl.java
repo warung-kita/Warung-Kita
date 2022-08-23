@@ -1,21 +1,20 @@
 package com.pentagon.warungkita.service.implement;
 
-import com.pentagon.warungkita.controller.ProductController;
 import com.pentagon.warungkita.dto.ProductRequestDTO;
 import com.pentagon.warungkita.dto.ProductResponseDTO;
+import com.pentagon.warungkita.dto.ProductResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Categories;
 import com.pentagon.warungkita.model.Photo;
 import com.pentagon.warungkita.model.Product;
 import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.repository.CategoriesRepo;
 import com.pentagon.warungkita.repository.ProductRepo;
-import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.ProductService;
 import com.pentagon.warungkita.service.UsersService;
 import lombok.AllArgsConstructor;
-import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -31,6 +30,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
+    private final CategoriesRepo categoriesRepo;
     private final UsersService usersService;
     private static final Logger logger = LogManager.getLogger(ProductServiceImpl.class);
 
@@ -160,7 +160,7 @@ public class ProductServiceImpl implements ProductService {
             }
             productRepo.save(product);
 
-            ProductResponseDTO result = product.convertToResponse();
+            ProductResponsePOST result = product.convertToResponsePost();
             logger.info("==================== Logger Start Get New Add Product     ====================");
             logger.info("Produk ID     : " + product.getProductId());
             logger.info("SKU           : " + product.getSku());
@@ -292,7 +292,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+
     public ResponseEntity<Object> findByCategories(String name) {
+
         try {
             List<Product> products = productRepo.findByCategoriesName(name);
             List<ProductResponseDTO> productList = new ArrayList<>();
@@ -305,6 +307,4 @@ public class ProductServiceImpl implements ProductService {
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
     }
-
-
 }

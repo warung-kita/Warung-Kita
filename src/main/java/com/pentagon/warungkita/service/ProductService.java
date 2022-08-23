@@ -16,6 +16,5 @@ public interface ProductService {
     ResponseEntity<Object> deleteProduct(Long productId);
     ResponseEntity<Object> findByProductNameContaining(String productName);
     ResponseEntity<Object> findByUsersUsernameContaining(String username);
-
     ResponseEntity<Object> findByCategories(String name);
 }

@@ -27,10 +27,13 @@ public class Users {
     private String password;
     private String address;
     @OneToOne
-    @JoinColumn(name="photo_id")
-    private Photo profilPicture;
+
+    @JoinColumn(name = "photo_id")
+    private PhotoProfile profilPicture;
+
     private String phoneNum;
     private boolean active;
+
 
     @JsonIgnore
     @ManyToMany
@@ -58,7 +61,7 @@ public class Users {
                 .email(this.email)
                 .address(this.address)
                 .phoneNum(this.phoneNum)
-                .profilPicture(this.profilPicture)
+                .profilPicture(this.getProfilPicture())
                 .build();
     }
 
