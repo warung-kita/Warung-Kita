@@ -161,6 +161,7 @@ create table payment (
    cc_num varchar(255),
    cc_type varchar(255),
    response text,
+   active bool default true,
     inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    constraint pk_payment primary key (payment_id),
