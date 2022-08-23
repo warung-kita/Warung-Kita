@@ -1,25 +1,15 @@
 package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.dto.CategoriesRequestDTO;
-import com.pentagon.warungkita.dto.CategoriesResponseDTO;
-import com.pentagon.warungkita.dto.CategoriesResponsePOST;
-import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Categories;
-import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.CategoriesService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/pentagon/warung-kita")

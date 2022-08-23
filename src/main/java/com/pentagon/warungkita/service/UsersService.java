@@ -10,15 +10,18 @@ import java.util.Optional;
 
 public interface UsersService {
 
-    List<Users> getAll();
+    ResponseEntity<Object> getAll();
     Users createUser(Users users);
     Optional<Users> getUserById(Long users_Id);
     Users findById(Long users_Id);
     Users updateUser(Users users) throws Exception;
-    Users deleteUserById(Long users_Id);
+    ResponseEntity<Object> deleteUserById(Long users_Id);
     Optional<Users> findByUsername(String username);
     ResponseEntity<Object> createUser(UsersRequestDTO usersRequestDTO);
     ResponseEntity<Object> changePassword(PassworRequest request);
     ResponseEntity<Object> completeUsers(UsersRequestDTO usersRequestDTO);
     ResponseEntity<Object> becameSeller();
+    ResponseEntity<Object> userDetail();
+
+    ResponseEntity<Object> update(UsersRequestDTO requestDTO);
 }

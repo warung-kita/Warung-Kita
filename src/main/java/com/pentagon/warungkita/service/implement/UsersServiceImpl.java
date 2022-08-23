@@ -24,10 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -48,12 +45,48 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public List<Users> getAll() {
+    public ResponseEntity<Object> getAll() {
         List<Users> users = usersRepo.findAll();
         if(users.isEmpty()){
             throw new ResourceNotFoundException("User not exist with id :");
         }
-        return this.usersRepo.findAll();
+        try {
+            List<Users> result = usersRepo.findAll();
+            List<UsersResponseDTO> usersResponseDTOList = new ArrayList<>();
+            logger.info("==================== Logger Start Get All User ====================");
+            for (Users dataresult:result){
+                Map<String, Object> order = new HashMap<>();
+                order.put("role            : ", dataresult.getRoles());
+                order.put("id_akun         : ", dataresult.getUserId());
+                order.put("nama_lengkap    : ", dataresult.getFullName());
+                order.put("nama            : ", dataresult.getUsername());
+                order.put("email           : ", dataresult.getEmail());
+                order.put("alamat          : ", dataresult.getAddress());
+                order.put("sandi           : ", dataresult.getPassword());
+                order.put("nomor_tlp       : ", dataresult.getPhoneNum());
+                order.put("foto            : ", dataresult.getProfilPicture());
+
+                logger.info("role          : " + dataresult.getRoles());
+                logger.info("id_akun       : " + dataresult.getUserId());
+                logger.info("nama_lengkap  : " + dataresult.getFullName());
+                logger.info("nama          : " + dataresult.getUsername());
+                logger.info("email         : " + dataresult.getEmail());
+                logger.info("alamat        : " + dataresult.getAddress());
+                logger.info("sandi         : " + dataresult.getPassword());
+                logger.info("nomor_tlp     : " + dataresult.getPhoneNum());
+                logger.info("foto          : " + dataresult.getProfilPicture());
+                UsersResponseDTO usersResponseDTO = dataresult.convertToResponse();
+                usersResponseDTOList.add(usersResponseDTO);
+
+                logger.info("==================== Logger End Get All User ====================");
+            }
+            return ResponseHandler.generateResponse("Successfully Get All User!", HttpStatus.OK, usersResponseDTOList);
+        } catch (Exception e) {
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.MULTI_STATUS, "Bad Request!!");
+        }
     }
 
     @Override
@@ -92,14 +125,27 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public Users deleteUserById(Long users_Id) {
-        Optional<Users> optionalUser = usersRepo.findById(users_Id);
-        if(optionalUser.isEmpty()){
-            throw new ResourceNotFoundException("User not exist with id :" + users_Id);
+    public ResponseEntity<Object> deleteUserById(Long users_Id) {
+        try {
+            Optional<Users> optionalUser = usersRepo.findById(users_Id);
+            if(optionalUser.isEmpty()){
+                throw new ResourceNotFoundException("User not exist with id :" + users_Id);
+            }
+            Users users = usersRepo.getReferenceById(users_Id);
+            users.setActive(false);
+            Map<String, Boolean> response = new HashMap<>();
+            usersRepo.save(users);
+            response.put("Delete Status", Boolean.TRUE);
+            logger.info("==================== Logger Start Hard Delete User By ID ====================");
+            logger.info(response);
+            logger.info("==================== Logger End Hard Delete User By ID =================");
+            return ResponseHandler.generateResponse("Successfully Delete User! ", HttpStatus.OK, response);
+        } catch (ResourceNotFoundException e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!" );
         }
-        Users users = usersRepo.getReferenceById(users_Id);
-        users.setActive(false);
-        return this.usersRepo.save(users);
     }
 
     @Override
@@ -222,5 +268,44 @@ public class UsersServiceImpl implements UsersService {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
         }
 
+    }
+
+    @Override
+    public ResponseEntity<Object> userDetail() {
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional<Users> users = this.getUserById(userDetails.getUserId());
+            Users userResult = users.get();
+            UsersResponseDTO result = userResult.convertToResponse();
+            logger.info("==================== Logger Start Get User By ID ====================");
+            logger.info(result);
+            logger.info("==================== Logger End Get User By ID =================");
+            return ResponseHandler.generateResponse("Successfully Get User By ID!", HttpStatus.OK, result);
+        } catch (Exception e) {
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!" );
+        }
+    }
+
+    @Override
+    public ResponseEntity<Object> update(UsersRequestDTO requestDTO) {
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Users users = requestDTO.convertToEntity();
+            users.setUserId(userDetails.getUserId());
+            Users updateUsers = this.updateUser(users);
+            UsersResponseDTO result = updateUsers.convertToResponse();
+            logger.info("==================== Logger Start Update User By ID ====================");
+            logger.info(result);
+            logger.info("==================== Logger End Update User By ID =================");
+            return ResponseHandler.generateResponse("Successfully Updated User!",HttpStatus.OK, result);
+        }catch(Exception e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Bad Request!!");
+        }
     }
 }

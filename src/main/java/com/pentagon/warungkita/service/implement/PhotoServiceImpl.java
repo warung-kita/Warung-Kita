@@ -2,6 +2,8 @@ package com.pentagon.warungkita.service.implement;
 
 import com.pentagon.warungkita.controller.PhotoController;
 import com.pentagon.warungkita.dto.*;
+import com.pentagon.warungkita.dto.PhotoRequestDTO;
+import com.pentagon.warungkita.dto.FileUploadResponse;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Photo;
 import com.pentagon.warungkita.repository.PhotoRepo;
@@ -74,7 +76,7 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public ResponseEntity<Object> createPhoto(PhotoRequestDTO photoRequestDTO,MultipartFile multipartFile ) {
+    public ResponseEntity<Object> createPhoto(PhotoRequestDTO photoRequestDTO, MultipartFile multipartFile ) {
 
         try{
             if(photoRequestDTO.getPhotoName().isEmpty()) {

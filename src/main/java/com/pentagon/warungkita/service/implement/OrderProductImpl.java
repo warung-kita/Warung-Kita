@@ -7,7 +7,6 @@ import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.OrderProduct;
 import com.pentagon.warungkita.model.Product;
 import com.pentagon.warungkita.model.ProductStatus;
-import com.pentagon.warungkita.model.Users;
 import com.pentagon.warungkita.repository.OrderProductRepo;
 import com.pentagon.warungkita.repository.ProductRepo;
 import com.pentagon.warungkita.response.ResponseHandler;

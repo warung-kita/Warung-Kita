@@ -5,7 +5,6 @@ import com.pentagon.warungkita.dto.FileUploadResponse;
 import com.pentagon.warungkita.dto.PhotoRequestDTO;
 import com.pentagon.warungkita.dto.PhotoResponseDTO;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Photo;
 import com.pentagon.warungkita.model.PhotoProfile;
 import com.pentagon.warungkita.repository.PhotoProfileRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
