@@ -13,4 +13,5 @@ public interface CategoriesService {
     ResponseEntity<Object> createCategories(CategoriesRequestDTO categoriesRequestDTO);
     ResponseEntity<Object> updateCategories(Long categoriesId, CategoriesRequestDTO categoriesRequestDTO);
     ResponseEntity<Object> deleteCategories(Long categoriesId);
+
 }

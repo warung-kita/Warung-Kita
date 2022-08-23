@@ -121,6 +121,11 @@ public class ProductController {
         return productService.findByUsersUsernameContaining(username);
     }
 
+    @GetMapping("/product/byCategoriesName")
+    public ResponseEntity<Object> findByCategories(@RequestParam String name){
+        return productService.findByCategories(name);
+    }
+
     /**
      * Reports For All Existing Product
      * @throws Exception

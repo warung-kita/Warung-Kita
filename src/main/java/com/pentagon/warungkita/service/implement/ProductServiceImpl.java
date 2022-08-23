@@ -3,11 +3,13 @@ package com.pentagon.warungkita.service.implement;
 import com.pentagon.warungkita.controller.ProductController;
 import com.pentagon.warungkita.dto.ProductRequestDTO;
 import com.pentagon.warungkita.dto.ProductResponseDTO;
+import com.pentagon.warungkita.dto.ProductResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Categories;
 import com.pentagon.warungkita.model.Photo;
 import com.pentagon.warungkita.model.Product;
 import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.repository.CategoriesRepo;
 import com.pentagon.warungkita.repository.ProductRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
@@ -31,6 +33,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
+    private final CategoriesRepo categoriesRepo;
     private final UsersService usersService;
     private static final Logger logger = LogManager.getLogger(ProductServiceImpl.class);
 
@@ -160,7 +163,7 @@ public class ProductServiceImpl implements ProductService {
             }
             productRepo.save(product);
 
-            ProductResponseDTO result = product.convertToResponse();
+            ProductResponsePOST result = product.convertToResponsePost();
             logger.info("==================== Logger Start Get New Add Product     ====================");
             logger.info("Produk ID     : " + product.getProductId());
             logger.info("SKU           : " + product.getSku());
@@ -287,6 +290,21 @@ public class ProductServiceImpl implements ProductService {
             }
             return ResponseHandler.generateResponse("Data Successfully Retrieved",HttpStatus.OK, productList);
         }catch (ResourceNotFoundException e){
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
+        }
+    }
+
+    @Override
+    public ResponseEntity<Object> findByCategories(String name){
+        try {
+            List<Product> products = productRepo.findByCategoriesName(name);
+            List<ProductResponseDTO> productList = new ArrayList<>();
+            for(Product dataResult:products) {
+                ProductResponseDTO productResponseDTO = dataResult.convertToResponse();
+                productList.add(productResponseDTO);
+            }
+            return ResponseHandler.generateResponse("Data Successfully Retrieved", HttpStatus.OK, productList);
+        } catch (ResourceNotFoundException e){
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
     }
