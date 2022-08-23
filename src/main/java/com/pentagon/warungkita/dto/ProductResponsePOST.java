@@ -15,17 +15,20 @@ public class ProductResponsePOST {
     private Long kodeProduk;
     private String sku;
     private String namaProduk;
-    private List<Categories> kategori;
+//    private List<Categories> kategori;
     private String deskripsi;
-    private ProductStatus status;
+    private Long status;
     private Integer harga;
     private Integer stok;
+
     private List<Photo> gambar;
+
     private Long userId;
 
     @Override
     public String toString() {
         return "ProductResponsePOST{" +
+
                 "Kode Produk =" + kodeProduk +
                 ", SKU ='" + sku + '\'' +
                 ", Nama Produk ='" + namaProduk + '\'' +
@@ -36,6 +39,7 @@ public class ProductResponsePOST {
                 ", Stok =" + stok +
                 ", Gambar =" + gambar +
                 ", ID User =" + userId +
+
                 '}';
     }
 }

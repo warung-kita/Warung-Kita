@@ -16,7 +16,7 @@ public class PaymentResponseDTO {
     private Long id_pembayaran;
     private Long id_order;
     private LocalDate tanggal_bayar;
-    private BigDecimal total;
+    private Integer total;
     private String nomor_kartu;
     private BankList tipe_kartu;
     private PaymentResponse status;

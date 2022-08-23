@@ -19,7 +19,7 @@ public class PaymentRequestDTO {
     private Order order;
    @CreatedDate
     private LocalDate tanggalBayar;
-    private BigDecimal amount;
+    private Integer amount;
     private String nomorRekening;
     private BankList namaBank;
     private PaymentResponse response;

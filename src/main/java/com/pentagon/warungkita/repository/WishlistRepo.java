@@ -11,4 +11,6 @@ public interface WishlistRepo extends JpaRepository<Wishlist, Long> {
 
         List<Wishlist> findByUserUsernameContaining(String userName);
 
+
+
 }
