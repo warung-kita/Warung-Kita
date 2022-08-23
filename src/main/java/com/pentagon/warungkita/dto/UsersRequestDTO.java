@@ -21,7 +21,7 @@ public class UsersRequestDTO {
     private String phoneNum;
     private String profilPicture;
 
-    private List<Roles> roles;
+    private List<Roles> role;
 
 
     public Users convertToEntity(){
@@ -33,7 +33,7 @@ public class UsersRequestDTO {
                 .password(this.password)
                 .phoneNum(this.phoneNum)
                 .profilPicture(this.profilPicture)
-                .roles(this.roles)
+                .roles(this.role)
                 .build();
     }
 }

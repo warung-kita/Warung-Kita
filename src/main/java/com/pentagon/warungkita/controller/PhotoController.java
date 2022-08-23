@@ -41,7 +41,9 @@ public class PhotoController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> createPhoto(@RequestPart PhotoRequestDTO photoRequestDTO, @RequestParam("file") MultipartFile multipartFile){
+
         return this.photoService.createPhoto(photoRequestDTO, multipartFile);
+
     }
 
     @PutMapping("/photo/update/{photoId}")
