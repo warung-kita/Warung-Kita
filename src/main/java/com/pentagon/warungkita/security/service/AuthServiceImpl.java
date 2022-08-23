@@ -1,10 +1,9 @@
 package com.pentagon.warungkita.security.service;
 
 import com.pentagon.warungkita.controller.AuthController;
-import com.pentagon.warungkita.dto.SignupRequest;
-import com.pentagon.warungkita.dto.UsersResponsePOST;
-import com.pentagon.warungkita.model.Users;
-import com.pentagon.warungkita.repository.RolesRepo;
+import com.pentagon.warungkita.dto.*;
+import com.pentagon.warungkita.exception.ResourceNotFoundException;
+import com.pentagon.warungkita.model.*;
 import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.jwt.JwtUtils;
@@ -15,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -30,12 +29,7 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     UsersRepo usersRepo;
     @Autowired
-    UsersService usersService;;
-    @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
-    RolesRepo roleRepository;
-
+    UsersService usersService;
     @Autowired
     JwtUtils jwtUtils;
 
@@ -57,6 +51,7 @@ public class AuthServiceImpl implements AuthService {
             users.setEmail(request.getEmail());
             users.setPassword(request.getPassword());
             users.setFullName(request.getFullName());
+            users.setActive(true);
             usersService.createUser(users);
             UsersResponsePOST userResult = users.convertToResponsePOST();
             logger.info("------------------------------------");
@@ -69,5 +64,27 @@ public class AuthServiceImpl implements AuthService {
             logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "User Already Exist!");
         }
+    }
+
+    @Override
+    public ResponseEntity<JwtResponse> authenticateUser(LoginRequest request) {
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        Optional<Users> user = usersRepo.findByUsername(request.getUsername());
+        if(user.get().isActive() == false){
+            throw new ResourceNotFoundException("Username is not active, please contact admin.");
+        }
+        SecurityContextHolder.getContext()
+                .setAuthentication(authentication);
+        String token = jwtUtils.generateJwtToken(authentication);
+        UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
+        Optional<Users> users = usersService.findByUsername(principal.getUsername());
+        List<Roles> roles = users.get().getRoles();
+        List<String> stringsrole = new ArrayList<>();
+        roles.forEach(roles1 -> {
+            stringsrole.add(roles1.getName());
+        });
+        return ResponseEntity.ok().body(new JwtResponse(token, principal.getUsername(), principal.getPassword(), stringsrole));
+
     }
 }

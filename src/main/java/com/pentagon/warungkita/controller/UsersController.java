@@ -4,10 +4,13 @@ import com.pentagon.warungkita.dto.UsersRequestDTO;
 import com.pentagon.warungkita.dto.UsersResponseDTO;
 import com.pentagon.warungkita.dto.UsersResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
+import com.pentagon.warungkita.model.Roles;
 import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.repository.RolesRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
+import com.pentagon.warungkita.service.UsersService;
 import com.pentagon.warungkita.service.implement.UsersServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,7 +36,10 @@ public class UsersController {
 
     private static final Logger logger = LogManager.getLogger(UsersController.class);
     private final UsersServiceImpl usersServiceImpl;
+    @Autowired
+    private final UsersService usersService;
     private final UsersRepo usersRepo;
+    private final RolesRepo rolesRepo;
     @GetMapping("/users")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity <Object> getAll() {
@@ -76,24 +83,6 @@ public class UsersController {
         }
     }
 
-    @PostMapping("/users")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity <Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
-        try {
-            Users users = usersRequestDTO.convertToEntity();
-            usersServiceImpl.createUser(users);
-            UsersResponsePOST userResult = users.convertToResponsePOST();
-            logger.info("==================== Logger Start Create New User ====================");
-            logger.info(userResult);
-            logger.info("==================== Logger End Create New User =================");
-            return ResponseHandler.generateResponse("Successfully Created User!", HttpStatus.CREATED, userResult);
-        } catch (Exception e) {
-            logger.error("------------------------------------");
-            logger.error(e.getMessage());
-            logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
-        }
-    }
 
     @GetMapping("/users/user_details")
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -117,10 +106,11 @@ public class UsersController {
 
     @PutMapping("/users/{users_Id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> updateUser(@PathVariable Long users_Id, @RequestBody UsersRequestDTO usersRequestDTO){
+    public ResponseEntity<Object> updateUser(@RequestBody UsersRequestDTO usersRequestDTO){
         try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Users users = usersRequestDTO.convertToEntity();
-            users.setUserId(users_Id);
+            users.setUserId(userDetails.getUserId());
             Users updateUsers = usersServiceImpl.updateUser(users);
             UsersResponseDTO result = updateUsers.convertToResponse();
             logger.info("==================== Logger Start Update User By ID ====================");
@@ -157,14 +147,20 @@ public class UsersController {
 
     @PutMapping("/becomeSeller")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> becomeSeller(@RequestBody UsersRequestDTO usersRequestDTO) {
+    public ResponseEntity<Object> becomeSeller() {
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Users users = usersRequestDTO.convertToEntity();
+            Users users = usersServiceImpl.findById(userDetails.getUserId());
             users.setUserId(userDetails.getUserId());
-            Users userResult = usersServiceImpl.updateUser(users);
+            Roles role1 = rolesRepo.findByName("ROLE_SELLER");
+            Roles role2 = rolesRepo.findByName("ROLE_BUYER");
+            List<Roles> roles = new ArrayList<>();
+            roles.add(role1);
+            roles.add(role2);
+            users.setRoles(roles);
             users.setActive(true);
-            UsersResponseDTO result = userResult.convertToResponse();
+            Users updateUsers = usersServiceImpl.updateUser(users);
+            UsersResponseDTO result = updateUsers.convertToResponse();
             logger.info("==================== Logger Start Update User By ID ====================");
             logger.info(result);
             logger.info("==================== Logger End Update User By ID =================");
@@ -176,6 +172,11 @@ public class UsersController {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Bad Request!!");
         }
 
+    }
+    @PostMapping("/users")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
+        return this.usersService.createUser(usersRequestDTO);
     }
 
 }

@@ -17,7 +17,7 @@ public class WishlistResponseDTO {
         ProductResponseDTO productResponseDTO = new ProductResponseDTO();
 
         this.product.setNamaProduk(product.getProductName());
-        this.product.setUserId(product.getUsers().getUserId());
+        this.product.setSellerName(product.getUsers().getUsername());
     }
 
     public void setUser (Users users){

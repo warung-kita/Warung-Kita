@@ -43,10 +43,8 @@ public class OrderController {
 
     private static final Logger logger = LogManager.getLogger(OrderController.class);
     private OrderService orderService;
-
     @Autowired
     private OrderProductRepo orderProductRepo;
-
     private UsersServiceImpl usersServiceImpl;
 
 

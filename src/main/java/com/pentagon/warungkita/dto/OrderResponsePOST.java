@@ -16,7 +16,7 @@ public class OrderResponsePOST {
     private Date orderDate;
     private Long ekspedisiId;
     private Number total;
-    private Long userId;
+    private String buyer;
 
     @Override
     public String toString() {
@@ -24,7 +24,7 @@ public class OrderResponsePOST {
                 "orderDate=" + orderDate +
                 ", ekspedisiId=" + ekspedisiId +
                 ", total=" + total +
-                ", userId=" + userId +
+                ", buyer='" + buyer + '\'' +
                 '}';
     }
 }
