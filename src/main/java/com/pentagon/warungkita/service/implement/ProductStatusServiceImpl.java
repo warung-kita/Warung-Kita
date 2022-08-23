@@ -77,6 +77,7 @@ public class ProductStatusServiceImpl implements ProductStatusService {
 
     @Override
     public ResponseEntity<Object>getProductStatusById(Long Id) {
+
            try {
                 ProductStatus productStatus = productStatusRepo.findById(Id)
                         .orElseThrow(() -> new ResourceNotFoundException("Product Status not exist with Id :" + Id));
@@ -141,5 +142,13 @@ public class ProductStatusServiceImpl implements ProductStatusService {
                 }
             }
 
+        @Override
+        public Optional<ProductStatus> getProductStatusBy(Long Id) {
+        Optional<ProductStatus> optionalUser = productStatusRepo.findById(Id);
+        if (optionalUser.isEmpty()) {
+            throw new ResourceNotFoundException("Product Status not exist with id :" + Id);
+        }
+        return this.productStatusRepo.findById(Id);
+    }
 
 }

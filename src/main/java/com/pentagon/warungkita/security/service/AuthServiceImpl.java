@@ -52,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
             users.setPassword(request.getPassword());
             users.setFullName(request.getFullName());
             users.setActive(true);
-            usersRepo.save(users);
+            usersService.createUser(users);
             UsersResponsePOST userResult = users.convertToResponsePOST();
             logger.info("------------------------------------");
             logger.info("User created: " + userResult);

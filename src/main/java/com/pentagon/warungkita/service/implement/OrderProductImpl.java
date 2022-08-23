@@ -88,7 +88,7 @@ public class OrderProductImpl implements OrderProductService {
              * Update if qty product 0 set to Sold Out
              * */
             if(newQty==0){
-                ProductStatus psSoldOut = productStatusService.getProductStatusById(2L).get();
+                ProductStatus psSoldOut = productStatusService.getProductStatusBy(2L).get();
                 product.setProductStatusId(psSoldOut);
             }
 
