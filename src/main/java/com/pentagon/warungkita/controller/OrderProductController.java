@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+import static org.aspectj.runtime.internal.Conversions.longValue;
+
 @RequestMapping("/pentagon/warung-kita")
 @RestController
 @AllArgsConstructor
@@ -42,6 +44,9 @@ public class OrderProductController {
     private OrderProductService orderProductService;
     private ProductRepo productRepo;
     private OrderProductRepo orderProductRepo;
+    private ProductStatusService productStatusService;
+    private ProductStatusRepo productStatusRepo;
+
 
     /*
      * Get all Data Order products table
@@ -98,6 +103,7 @@ public class OrderProductController {
     public ResponseEntity<Object> saveOrderProduct(@RequestBody OrderProductRequestDTO orderProductRequestDTO) {
         return orderProductService.saveOrderProduct(orderProductRequestDTO);
     }
+
 
 
 

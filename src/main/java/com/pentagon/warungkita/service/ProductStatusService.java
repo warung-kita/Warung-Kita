@@ -1,14 +1,12 @@
 package com.pentagon.warungkita.service;
 
 import com.pentagon.warungkita.model.ProductStatus;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.http.ResponseEntity;
 
 public interface ProductStatusService {
-    List<ProductStatus> getAll();
-    ProductStatus createProductStatus(ProductStatus productStatus);
-    Optional<ProductStatus> getProductStatusById(Long Id);
-    void deleteProductStatusById(Long Id);
-    ProductStatus updateProductStatus(ProductStatus productStatus);
+    ResponseEntity<Object> getAll();
+    ResponseEntity<Object> createProductStatus( ProductStatus productStatusDetails);
+    ResponseEntity<Object> getProductStatusById(Long Id);
+    ResponseEntity<Object> deleteProductStatusById(Long Id);
+    ResponseEntity<Object> updateProductStatus(Long Id, ProductStatus productStatus);
 }
