@@ -37,9 +37,6 @@ public class OrderProductController {
     private OrderProductService orderProductService;
     private ProductRepo productRepo;
     private OrderProductRepo orderProductRepo;
-    private ProductStatusService productStatusService;
-    private ProductStatusRepo productStatusRepo;
-
 
     /*
      * Get all Data Order products table
@@ -96,9 +93,6 @@ public class OrderProductController {
     public ResponseEntity<Object> saveOrderProduct(@RequestBody OrderProductRequestDTO orderProductRequestDTO) {
         return orderProductService.saveOrderProduct(orderProductRequestDTO);
     }
-
-
-
 
     @PutMapping("/update/order-products/{orderProductId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")

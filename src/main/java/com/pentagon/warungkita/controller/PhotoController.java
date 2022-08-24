@@ -33,6 +33,7 @@ public class PhotoController {
     }
 
     @GetMapping("/downloadFile/{fileCode}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
     public ResponseEntity<?> downloadFile(@PathVariable("fileCode") String fileCode) {
        return this.photoService.downloadFile(fileCode);
     }

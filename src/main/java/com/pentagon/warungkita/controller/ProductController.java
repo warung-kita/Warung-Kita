@@ -94,6 +94,7 @@ public class ProductController {
      * @return Message, HTTPStatus, And Data
      */
     @GetMapping("/product/byProductName")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> findByProductName(@RequestParam String productName){
        return productService.findByProductNameContaining(productName);
     }
@@ -103,7 +104,8 @@ public class ProductController {
      * @param username is Seller Name/Shop Name
      * @return Message, HTTPStatus, And Data
      */
-    @GetMapping("/product/byUsername")
+    @GetMapping("/product/bySeller")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> findBySellerUsername(@RequestParam String username){
         return productService.findByUsersUsernameContaining(username);
     }
@@ -112,6 +114,7 @@ public class ProductController {
      * @throws Exception
      */
     @GetMapping("/product/product_reports")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void getReservasiReportA() throws Exception {
         response.setContentType("application/pdf");
         response.setHeader("Content-Dispositin", "attachment; filname=\"product_list.pdf\"");

@@ -48,7 +48,7 @@ public class UsersController {
     }
 
     @PutMapping("/users/completeProfile")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
+    @PreAuthorize("hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> completeProfile(@RequestBody UsersRequestDTO usersRequestDTO){
         return usersService.completeUsers(usersRequestDTO);
     }

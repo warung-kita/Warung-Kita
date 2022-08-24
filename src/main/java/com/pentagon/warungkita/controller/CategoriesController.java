@@ -24,7 +24,7 @@ public class CategoriesController {
      * @return
      */
     @GetMapping("/categories/all")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> findAll() {
         return categoriesService.getAll();
     }

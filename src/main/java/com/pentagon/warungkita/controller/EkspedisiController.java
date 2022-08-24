@@ -22,7 +22,7 @@ public class EkspedisiController {
     EkspedisiService ekspedisiService;
 
     @GetMapping("/ekspedisi/all")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> getAllEkspedisi() {
        return this.ekspedisiService.getAll();
     }
