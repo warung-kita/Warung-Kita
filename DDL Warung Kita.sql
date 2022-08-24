@@ -161,6 +161,7 @@ create table payment (
    cc_num varchar(255),
    cc_type varchar(255),
    response text,
+   active bool default true,
     inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    constraint pk_payment primary key (payment_id),
@@ -229,3 +230,21 @@ CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON order_order_products
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
+
+create table photos_profile (
+   photo_id serial not null,
+   photo_name  varchar(255) not null,
+   inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   constraint pk_photos_profile primary key (photo_id)
+)   ;
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON photos_profile
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+alter table users drop column profil_picture;
+alter table users add column profil_picture integer NULL;
+alter table users add constraint fk_users_photos_profile
+    foreign key (profil_picture)
+    references photos_profile (photo_id);
