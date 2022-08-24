@@ -2,6 +2,7 @@ package com.pentagon.warungkita.service.implement;
 
 import com.pentagon.warungkita.controller.OrderProductController;
 import com.pentagon.warungkita.dto.OrderProductRequestDTO;
+import com.pentagon.warungkita.dto.OrderProductResponseDTO;
 import com.pentagon.warungkita.dto.OrderProductResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.OrderProduct;
@@ -22,10 +23,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -39,23 +40,46 @@ public class OrderProductImpl implements OrderProductService {
     private static final Logger logger = LogManager.getLogger(OrderProductController.class);
 
     @Override
-    public List<OrderProduct> getAll() {
-        List<OrderProduct> orderProductList = this.orderProductRepo.findAll();
-        if (orderProductList.isEmpty()) {
-            log.error("No order found");
-            throw new ResourceNotFoundException("No order found");
+    public ResponseEntity<Object> orderProductList() {
+        try {
+            List<OrderProduct> orderList = orderProductRepo.findAll();
+            List<OrderProductResponseDTO> orderMaps = new ArrayList<>();
+            logger.info("==================== Logger Start Get All Order Product     ====================");
+            for (OrderProduct dataOrder : orderList) {
+                Map<String, Object> order = new HashMap<>();
+                order.put("OrderProductID       : ", dataOrder.getOrderProductId());
+                order.put("ProductID : ", dataOrder.getOrderProductId());
+                logger.info("OrderProductID       : " + dataOrder.getOrderProductId());
+                logger.info("ProductID : " + dataOrder.getProductId());
+                OrderProductResponseDTO orderResponseDTO = dataOrder.convertToResponse();
+                orderMaps.add(orderResponseDTO);
+            }
+            logger.info("==================== Logger Start Get All Order Product     ====================");
+            return ResponseHandler.generateResponse("Successfully  getAll data!", HttpStatus.OK, orderMaps);
+        } catch (ResourceNotFoundException e) {
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Table not found");
         }
-        return this.orderProductRepo.findAll();
     }
 
     @Override
-    public Optional<OrderProduct> getOrderProductById(Long id) throws ResourceNotFoundException {
-        Optional<OrderProduct> optionalOrderProduct = this.orderProductRepo.findById(id);
-        if (optionalOrderProduct.isEmpty()) {
-            log.error("No order found");
-            throw new ResourceNotFoundException("Order not found with id " + id);
+    public ResponseEntity<Object> OrderListById(@PathVariable Long orderProductId) {
+        try {
+            Optional<OrderProduct> orderList = orderProductRepo.findById(orderProductId);
+            OrderProduct orderProduct = orderList.get();
+            OrderProductResponseDTO orderResponseDTO = orderProduct.convertToResponse();
+            logger.info("==================== Logger Start Get Order Product By ID ====================");
+            logger.info(orderResponseDTO);
+            logger.info("==================== Logger End Get Order Product By ID =================");
+            return ResponseHandler.generateResponse("Success Get By Id", HttpStatus.OK, orderResponseDTO);
+        } catch (ResourceNotFoundException e) {
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "ID not found");
         }
-        return this.orderProductRepo.findById(id);
     }
 
 //    @Override
@@ -124,21 +148,46 @@ public class OrderProductImpl implements OrderProductService {
     }
 
     @Override
-    public OrderProduct updateOrderProduct(OrderProduct orderProduct) {
-        Optional<OrderProduct> updatedOrder = this.orderProductRepo.findById(orderProduct.getOrderProductId());
-        if (updatedOrder.isEmpty()) {
-            throw new ResourceNotFoundException("Order not found with id " + orderProduct.getOrderProductId());
+    public ResponseEntity<Object> updateOrderProduct(@PathVariable Long orderProductId, @RequestBody OrderProductRequestDTO orderProductRequestDTO) {
+        try {
+            Product product = productRepo.findById(orderProductRequestDTO.getProduct().getProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
+            OrderProduct orderProduct = OrderProduct.builder()
+                    .productId(orderProductRequestDTO.getProduct())
+                    .quantity(orderProductRequestDTO.getQuantity())
+                    .build();
+            Integer totalPrice = product.getRegularPrice() * orderProductRequestDTO.getQuantity();
+            orderProduct.setSubtotal(totalPrice);
+
+            orderProduct.setOrderProductId(orderProductId);
+//            OrderProduct responseUpdate = orderProductRepo.updateOrderProduct(orderProduct);
+            OrderProductResponseDTO responseDTO = orderProduct.convertToResponse();
+            logger.info("==================== Logger Start Update Order Product By ID ====================");
+            logger.info(responseDTO);
+            logger.info("==================== Logger End Update Order Product By ID =================");
+            this.orderProductRepo.save(orderProduct);
+            return ResponseHandler.generateResponse("Data Updated!", HttpStatus.CREATED, responseDTO);
+        } catch (ResourceNotFoundException e) {
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Bad Request");
         }
-        return this.orderProductRepo.save(orderProduct);
     }
 
     @Override
-    public void deleteOrderProductById(Long id) {
-        Optional<OrderProduct> updatedOrder = this.orderProductRepo.findById(id);
-        if (updatedOrder.isEmpty()) {
-            throw new ResourceNotFoundException("Order not found with id " + id);
+    public ResponseEntity<Object> deleteOrderProduct(@PathVariable Long orderProductId){
+        try {
+            orderProductRepo.deleteById(orderProductId);
+            Boolean result = Boolean.TRUE;
+            logger.info("==================== Logger Start Delete Order Product By ID ====================");
+            logger.info(result);
+            logger.info("==================== Logger End Delete Order Product By ID =================");
+            return ResponseHandler.generateResponse("Success Delete Booking by ID", HttpStatus.OK, result);
+        } catch (ResourceNotFoundException e) {
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!");
         }
-        OrderProduct orderProduct = orderProductRepo.getReferenceById(id);
-        this.orderProductRepo.delete(orderProduct);
     }
 }
