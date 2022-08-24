@@ -201,6 +201,7 @@ public class UsersServiceImpl implements UsersService {
                 throw new ResourceNotFoundException("Password is not match, try again");
             }
             user1.setPassword((passwordEncoder.encode(request.getPassword())));
+            user1.setActive(true);
             Users updateUsers = this.updateUser(user1);
             UsersResponseDTO result = updateUsers.convertToResponse();
             logger.info("==================== Logger Start Update User By ID ====================");
