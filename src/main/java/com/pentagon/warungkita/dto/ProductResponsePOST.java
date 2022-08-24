@@ -15,13 +15,11 @@ public class ProductResponsePOST {
     private Long kodeProduk;
     private String sku;
     private String namaProduk;
-//    private List<Categories> kategori;
     private String deskripsi;
     private Long status;
     private Integer harga;
     private Integer stok;
 
-    private List<Photo> gambar;
 
     private Long userId;
 
@@ -37,7 +35,6 @@ public class ProductResponsePOST {
                 ", Status =" + status +
                 ", Harga =" + harga +
                 ", Stok =" + stok +
-                ", Gambar =" + gambar +
                 ", ID User =" + userId +
 
                 '}';

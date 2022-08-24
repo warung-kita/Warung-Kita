@@ -10,7 +10,7 @@ public interface ProductRepo extends JpaRepository<Product, Long> {
     public List<Product> findByProductNameContaining(String productName);
     public List<Product> findByUsersUsernameContaining(String userName);
     public List<Product> findByUsersUserId(Long userId);
-    public List<Product> findByCategoriesCategoriesId(Long categoriesId);
+    public List<Product> findByCategoriesName(String name);
 
 
 }

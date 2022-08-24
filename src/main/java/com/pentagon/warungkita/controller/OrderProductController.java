@@ -3,14 +3,9 @@ package com.pentagon.warungkita.controller;
 import com.pentagon.warungkita.dto.OrderProductRequestDTO;
 import com.pentagon.warungkita.dto.OrderProductResponseDTO;
 
-import com.pentagon.warungkita.dto.OrderProductResponsePOST;
-import com.pentagon.warungkita.dto.OrderResponsePOST;
-import com.pentagon.warungkita.exception.ResourceAlreadyExistException;
-
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.OrderProduct;
 import com.pentagon.warungkita.model.Product;
-import com.pentagon.warungkita.model.ProductStatus;
 import com.pentagon.warungkita.repository.OrderProductRepo;
 import com.pentagon.warungkita.repository.ProductRepo;
 import com.pentagon.warungkita.repository.ProductStatusRepo;
@@ -29,8 +24,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-
-import static org.aspectj.runtime.internal.Conversions.longValue;
 
 @RequestMapping("/pentagon/warung-kita")
 @RestController
