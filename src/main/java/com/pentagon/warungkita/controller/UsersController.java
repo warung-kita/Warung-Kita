@@ -35,7 +35,7 @@ public class UsersController {
         return this.photoProfileService.createPhoto(photoRequestDTO, multipartFile);
     }
 
-    @GetMapping("/users")
+    @GetMapping("/users/all")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity <Object> getAll() {
         return usersService.getAll();
@@ -47,7 +47,7 @@ public class UsersController {
         return usersService.userDetail();
     }
 
-    @PutMapping("/users/completeProfile")
+    @PutMapping("/users/complete_profile")
     @PreAuthorize("hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> completeProfile(@RequestBody UsersRequestDTO usersRequestDTO){
         return usersService.completeUsers(usersRequestDTO);
@@ -64,7 +64,7 @@ public class UsersController {
         return usersService.update(usersRequestDTO);
     }
 
-    @PutMapping("/becomeSeller")
+    @PutMapping("/become_seller")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> becomeSeller() {
         return usersService.becameSeller();
