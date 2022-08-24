@@ -1,17 +1,13 @@
 package com.pentagon.warungkita.service;
 
 import com.pentagon.warungkita.dto.OrderProductRequestDTO;
-import com.pentagon.warungkita.model.OrderProduct;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 public interface OrderProductService {
-    List<OrderProduct> getAll();
-    Optional<OrderProduct> getOrderProductById(Long id);
-//    OrderProduct saveOrderProduct(OrderProduct orderProduct);
+    ResponseEntity<Object> OrderListById(Long orderProductId);
     ResponseEntity<Object> saveOrderProduct (OrderProductRequestDTO orderProductRequestDTO);
-    OrderProduct updateOrderProduct(OrderProduct orderProduct);
-    void deleteOrderProductById(Long id);
+    ResponseEntity<Object> orderProductList();
+    ResponseEntity<Object> updateOrderProduct(Long orderProductId,OrderProductRequestDTO orderProductRequestDTO);
+    ResponseEntity<Object> deleteOrderProduct(@PathVariable Long orderProductId);
 }
