@@ -26,8 +26,7 @@ public class UsersController {
 
     @Autowired
     UsersService usersService;
-    @Autowired
-    PhotoProfileService photoProfileService;
+    private final PhotoProfileService photoProfileService;
 
     @Operation(summary = "Upload Photo Profile (ADMIN, BUYER, SELLER)")
     @PostMapping(value = "/photo/add/profile",
@@ -37,6 +36,7 @@ public class UsersController {
 
         return this.photoProfileService.createPhoto(photoRequestDTO, multipartFile);
     }
+
     @Operation(summary = "View all User (ADMIN)")
     @GetMapping("/users/all")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -72,19 +72,21 @@ public class UsersController {
         return usersService.update(usersRequestDTO);
     }
 
-    @Operation(summary = "Upadate User Details (ADMIN, BUYER, SELLER)")
+    @Operation(summary = "Update User to Seller (BUYER)")
     @PutMapping("/become_seller")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> becomeSeller() {
         return usersService.becameSeller();
     }
 
+    @Operation(summary = "Create new user (ADMIN)")
     @PostMapping("/users")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
         return this.usersService.createUser(usersRequestDTO);
     }
 
+    @Operation(summary = "Change Password (ADMIN, BUYER, SELLER)")
     @PutMapping("/users/change_password")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> changePassword(@RequestBody PassworRequest request){

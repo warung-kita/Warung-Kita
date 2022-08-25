@@ -250,7 +250,7 @@ public class PaymentServiceImpl implements PaymentService {
                 throw new ResourceNotFoundException("Only your payment can cancel");
             }
             if (payment.isActive() == false) {
-                throw new ResourceNotFoundException("Payment is cancelled");
+                throw new ResourceNotFoundException("Payment can't to cancel");
             }
             payment.setActive(false);
             payment.setResponse(CANCELLED);

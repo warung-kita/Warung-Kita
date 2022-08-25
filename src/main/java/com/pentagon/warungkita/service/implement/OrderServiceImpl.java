@@ -4,10 +4,12 @@ import com.pentagon.warungkita.controller.OrderController;
 import com.pentagon.warungkita.dto.OrderRequestDTO;
 import com.pentagon.warungkita.dto.OrderResponseDTO;
 import com.pentagon.warungkita.dto.OrderResponsePOST;
+import com.pentagon.warungkita.dto.WishlistResponseDTO;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Order;
 import com.pentagon.warungkita.model.OrderProduct;
 import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.model.Wishlist;
 import com.pentagon.warungkita.repository.OrderProductRepo;
 import com.pentagon.warungkita.repository.OrderRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
@@ -137,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseEntity<Object> updateOrder(OrderRequestDTO orderRequestDTO) {
+    public ResponseEntity<Object> updateOrder(OrderRequestDTO orderRequestDTO, Long Id) {
         Optional<Order> updatedOrder = this.orderRepo.findById(orderRequestDTO.getOrderId());
         if (updatedOrder.isEmpty()) {
             throw new ResourceNotFoundException("Order not found with id " + orderRequestDTO.getOrderId());
@@ -200,17 +202,33 @@ public class OrderServiceImpl implements OrderService {
     public ResponseEntity<Object> getBuyerOrder() {
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Optional<Order> orderList = this.orderRepo.findById(userDetails.getUserId());
+            List<Order> orderList = this.orderRepo.findByUserIdUsername(userDetails.getUsername());
             if (orderList.isEmpty()) {
                 log.error("No order found");
                 throw new ResourceNotFoundException("You not have Order ");
             }
-            Order order = orderList.get();
-            OrderResponseDTO orderResponseDTO = order.convertToResponse();
+            List<OrderResponseDTO> productListmaps = new ArrayList<>();
+            for (Order dataresult : orderList) {
+                OrderResponseDTO orderResponseDTO = dataresult.convertToResponse();
+                productListmaps.add(orderResponseDTO);
+
+                OrderResponseDTO orderResponseDTO1 = OrderResponseDTO.builder()
+                        .user(dataresult.convertToResponse().getUser())
+                        .orderDate(dataresult.convertToResponse().getOrderDate())
+                        .ekspedisiName(dataresult.convertToResponse().getEkspedisiName())
+                        .total(dataresult.convertToResponse().getTotal())
+                        .build();
+                orderResponseDTO1.setUser(dataresult.getUserId());
+                orderResponseDTO1.setOrderDate(dataresult.getOrderDate());
+                orderResponseDTO1.setEkspedisiName(dataresult.getEkspedisiId().getName());
+                orderResponseDTO1.setTotal(dataresult.getTotal());
+           }
+
+
             logger.info("==================== Logger Start Get Order Product By ID ====================");
-            logger.info(orderResponseDTO);
+            logger.info(orderList);
             logger.info("==================== Logger End Get Order Product By ID =================");
-            return ResponseHandler.generateResponse("Success Get Your Order",HttpStatus.OK,orderResponseDTO);
+            return ResponseHandler.generateResponse("Success Get Your Order",HttpStatus.OK,productListmaps);
         } catch (ResourceNotFoundException e) {
             logger.error("------------------------------------");
             logger.error(e.getMessage());

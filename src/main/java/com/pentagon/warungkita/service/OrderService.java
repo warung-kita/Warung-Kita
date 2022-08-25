@@ -11,7 +11,7 @@ public interface OrderService {
     ResponseEntity<Object> getAll();
     ResponseEntity<Object> getOrderById(Long id);
     ResponseEntity<Object> saveOrder(OrderRequestDTO orderRequestDTO);
-    ResponseEntity<Object> updateOrder(OrderRequestDTO orderRequestDTO);
+    ResponseEntity<Object> updateOrder(OrderRequestDTO orderRequestDTO, Long Id);
     ResponseEntity<Object> deleteOrderById(Long id);
     ResponseEntity<Object> getBuyerOrder();
 }

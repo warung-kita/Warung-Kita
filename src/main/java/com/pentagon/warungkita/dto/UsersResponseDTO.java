@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public class UsersResponseDTO {
 
-    private List<Roles> role;
+    private List<Roles> roles;
     private String fullName;
     private String email;
     private String username;
@@ -27,7 +27,7 @@ public class UsersResponseDTO {
     @Override
     public String toString() {
         return "UsersResponseDTO{" +
-                "role=" + role +
+                "roles=" + roles +
                 ", fullName='" + fullName + '\'' +
                 ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
