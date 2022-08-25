@@ -135,8 +135,8 @@ public class OrderProductImpl implements OrderProductService {
 
             this.orderProductRepo.save(orderProduct);
 
-            OrderProductResponsePOST orderProductResponsePOST = orderProduct.convertToResponsePOST();
-            return ResponseHandler.generateResponse("Successfully  save Order", HttpStatus.CREATED, orderProductResponsePOST);
+            OrderProductResponseDTO orderProductResponseDTO = orderProduct.convertToResponse();
+            return ResponseHandler.generateResponse("Successfully  save Order", HttpStatus.CREATED, orderProductResponseDTO);
 
 
         }catch(ResourceNotFoundException e){
