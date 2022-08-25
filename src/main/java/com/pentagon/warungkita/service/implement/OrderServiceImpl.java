@@ -207,21 +207,19 @@ public class OrderServiceImpl implements OrderService {
                 log.error("No order found");
                 throw new ResourceNotFoundException("You not have Order ");
             }
+            List<Order> test = this.orderRepo.findByUserIdUsername(userDetails.getUsername());
             List<OrderResponseDTO> productListmaps = new ArrayList<>();
-            for (Order dataresult : orderList) {
-                OrderResponseDTO orderResponseDTO = dataresult.convertToResponse();
-                productListmaps.add(orderResponseDTO);
+            for (Order dataresult : test) {
 
-                OrderResponseDTO orderResponseDTO1 = OrderResponseDTO.builder()
-                        .user(dataresult.convertToResponse().getUser())
-                        .orderDate(dataresult.convertToResponse().getOrderDate())
-                        .ekspedisiName(dataresult.convertToResponse().getEkspedisiName())
-                        .total(dataresult.convertToResponse().getTotal())
+                OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
+                        .orderId(dataresult.getOrderId())
+                        .orderDate(dataresult.getOrderDate())
+                        .ekspedisiName(dataresult.getEkspedisiId().getName())
+                        .total(dataresult.getTotal())
                         .build();
-                orderResponseDTO1.setUser(dataresult.getUserId());
-                orderResponseDTO1.setOrderDate(dataresult.getOrderDate());
-                orderResponseDTO1.setEkspedisiName(dataresult.getEkspedisiId().getName());
-                orderResponseDTO1.setTotal(dataresult.getTotal());
+                orderResponseDTO.setOrderProductId(dataresult.getOrderProduct());
+                orderResponseDTO.setUser(dataresult.getUserId());
+                productListmaps.add(orderResponseDTO);
            }
 
 
