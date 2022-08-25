@@ -2,6 +2,7 @@ package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.dto.CategoriesRequestDTO;
 import com.pentagon.warungkita.service.CategoriesService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -23,8 +24,8 @@ public class CategoriesController {
      * Get All Categories
      * @return
      */
+    @Operation(summary = "View all Categories")
     @GetMapping("/categories/all")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> findAll() {
         return categoriesService.getAll();
     }
@@ -35,6 +36,7 @@ public class CategoriesController {
      * @return
      */
     @GetMapping("/categories/{categoriesId}")
+    @Operation(summary = "View all Categories by ID (ADMIN)")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> getCategoriesById(@PathVariable Long categoriesId){
         return categoriesService.getCategoriesById(categoriesId);
@@ -46,6 +48,7 @@ public class CategoriesController {
      * @return
      */
     @PostMapping("/categories/add")
+    @Operation(summary = "Add new Categories (ADMIN)")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> createCategories(@RequestBody CategoriesRequestDTO categoriesRequestDTO){
         return categoriesService.createCategories(categoriesRequestDTO);
@@ -57,6 +60,7 @@ public class CategoriesController {
      * @param categoriesRequestDTO
      * @return
      */
+    @Operation(summary = "Update Categories (ADMIN)")
     @PutMapping("/categories/update/{categoriesId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> updateCategories(@PathVariable Long categoriesId, @RequestBody CategoriesRequestDTO categoriesRequestDTO){
@@ -68,6 +72,7 @@ public class CategoriesController {
      * @param categoriesId
      * @return
      */
+    @Operation(summary = "Delete Categories by ID (ADMIN)")
     @DeleteMapping("categories/delete/{categoriesId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> deleteCategories(@PathVariable Long categoriesId){

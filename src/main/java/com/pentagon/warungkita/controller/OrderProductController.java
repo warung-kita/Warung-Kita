@@ -2,6 +2,7 @@ package com.pentagon.warungkita.controller;
 
 import com.pentagon.warungkita.dto.OrderProductRequestDTO;
 import com.pentagon.warungkita.service.OrderProductService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -25,30 +26,35 @@ public class OrderProductController {
      * Menggunakan ResponseDTO
      * */
 
+    @Operation(summary = "View all Order Product (ADMIN, BUYER)")
     @GetMapping("/list/order-products")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> orderProductList() {
         return orderProductService.orderProductList();
     }
 
+    @Operation(summary = "View Order Product by Id (ADMIN, BUYER)")
     @GetMapping("/list/order-products/{orderProductId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> OrderListById(@PathVariable Long orderProductId) {
        return orderProductService.OrderListById(orderProductId);
     }
 
+    @Operation(summary = "Create Order Product (BUYER)")
     @PostMapping("/list/order-products")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> saveOrderProduct(@RequestBody OrderProductRequestDTO orderProductRequestDTO) {
         return orderProductService.saveOrderProduct(orderProductRequestDTO);
     }
 
+    @Operation(summary = "Update Order Product by Id (BUYER)")
     @PutMapping("/update/order-products/{orderProductId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> updateOrderProduct(@PathVariable Long orderProductId, @RequestBody OrderProductRequestDTO orderProductRequestDTO) {
         return orderProductService.updateOrderProduct(orderProductId, orderProductRequestDTO);
     }
 
+    @Operation(summary = "Delete Order Product by Id (ADMIN, BUYER)")
     @DeleteMapping("/delete/order-products/{orderProductId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> deleteOrderProduct(@PathVariable Long orderProductId){

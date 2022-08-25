@@ -195,4 +195,27 @@ public class OrderServiceImpl implements OrderService {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!");
         }
     }
+
+    @Override
+    public ResponseEntity<Object> getBuyerOrder() {
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional<Order> orderList = this.orderRepo.findById(userDetails.getUserId());
+            if (orderList.isEmpty()) {
+                log.error("No order found");
+                throw new ResourceNotFoundException("You not have Order ");
+            }
+            Order order = orderList.get();
+            OrderResponseDTO orderResponseDTO = order.convertToResponse();
+            logger.info("==================== Logger Start Get Order Product By ID ====================");
+            logger.info(orderResponseDTO);
+            logger.info("==================== Logger End Get Order Product By ID =================");
+            return ResponseHandler.generateResponse("Success Get Your Order",HttpStatus.OK,orderResponseDTO);
+        } catch (ResourceNotFoundException e) {
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "ID not found");
+        }
+    }
 }

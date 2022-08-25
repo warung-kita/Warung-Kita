@@ -280,6 +280,9 @@ public class ProductServiceImpl implements ProductService {
     public ResponseEntity<Object> findByUsersUsernameContaining(String username) {
         try {
             List<Product> products = productRepo.findByUsersUsernameContaining(username);
+            if(products.isEmpty()){
+                throw new ResourceNotFoundException("Seller haven't product to sell");
+            }
             List<ProductResponseDTO> productList = new ArrayList<>();
             for(Product dataResult:products) {
                 ProductResponseDTO productResponseDTO = dataResult.convertToResponse();

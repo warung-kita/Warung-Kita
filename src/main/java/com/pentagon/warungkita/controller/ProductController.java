@@ -5,6 +5,7 @@ import com.pentagon.warungkita.repository.ProductRepo;
 import com.pentagon.warungkita.service.ProductService;
 import com.pentagon.warungkita.service.ReportService;
 import com.pentagon.warungkita.service.UsersService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -39,6 +40,7 @@ public class ProductController {
      * Get All Product
      * @return
      */
+    @Operation(summary = "View all Product")
     @GetMapping("/product/all")
     public ResponseEntity<Object> findAllProduct() {
         return productService.getAllProduct();
@@ -49,6 +51,7 @@ public class ProductController {
      * @param productId is ID from 1 Product you want to show
      * @return Message, HTTPStatus, And Data
      */
+    @Operation(summary = "View Product by Id (ADMIN, SELLER)")
     @GetMapping("/product/{productId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> getProductById(@PathVariable Long productId){
@@ -60,6 +63,7 @@ public class ProductController {
      * @param productRequestDTO is for input needs
      * @return Message, HTTPStatus, And Data
      */
+    @Operation(summary = "Add Product (SELLER)")
     @PostMapping("/product/add")
     @PreAuthorize("hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> createProduct(@RequestBody ProductRequestDTO productRequestDTO){
@@ -71,6 +75,7 @@ public class ProductController {
      * @param productId
      *
      */
+    @Operation(summary = "Update Product by Id (ADMIN, SELLER)")
     @PutMapping("/product/update/{productId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> updateProduct(@PathVariable Long productId, @RequestBody ProductRequestDTO productRequestDTO){
@@ -82,6 +87,7 @@ public class ProductController {
      * @param productId
      * @return Message, HTTPStatus, And Data
      */
+    @Operation(summary = "Delete Product by Id (ADMIN, SELLER)")
     @DeleteMapping("product/delete/{productId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> deleteProduct(@PathVariable Long productId){
@@ -93,26 +99,28 @@ public class ProductController {
      * @param productName is something you want to show
      * @return Message, HTTPStatus, And Data
      */
+    @Operation(summary = "View Product by Product Name")
     @GetMapping("/product/byProductName")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> findByProductName(@RequestParam String productName){
        return productService.findByProductNameContaining(productName);
     }
 
     /**
      * Search Product By Shop Name/ Seller Name
-     * @param username is Seller Name/Shop Name
+     * @param sellername is Seller Name/Shop Name
      * @return Message, HTTPStatus, And Data
      */
+    @Operation(summary = "View Product by Seller Name")
     @GetMapping("/product/bySeller")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> findBySellerUsername(@RequestParam String username){
-        return productService.findByUsersUsernameContaining(username);
+    public ResponseEntity<Object> findBySellerUsername(@RequestParam String sellername){
+        return productService.findByUsersUsernameContaining(sellername);
     }
+
     /**
      * Reports For All Existing Product
      * @throws Exception
      */
+    @Operation(summary = "Get Product Report (ADMIN)")
     @GetMapping("/product/product_reports")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void getReservasiReportA() throws Exception {
@@ -122,9 +130,10 @@ public class ProductController {
         JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
     }
 
+    @Operation(summary = "View Product by Category")
     @GetMapping("/product/byCategories")
-    public ResponseEntity<Object> findByCategories(@RequestParam String name){
-        return productService.findByCategories(name);
+    public ResponseEntity<Object> findByCategories(@RequestParam String category){
+        return productService.findByCategories(category);
     }
 
 }

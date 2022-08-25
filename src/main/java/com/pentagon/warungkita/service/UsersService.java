@@ -5,7 +5,6 @@ import com.pentagon.warungkita.dto.UsersRequestDTO;
 import com.pentagon.warungkita.model.Users;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface UsersService {
