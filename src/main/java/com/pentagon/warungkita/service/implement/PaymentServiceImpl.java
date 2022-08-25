@@ -92,7 +92,14 @@ public class PaymentServiceImpl implements PaymentService {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Payment payment = paymentRequestDTO.convertToEntity();
             Optional <Order> order = orderRepo.findById(paymentRequestDTO.getOrder().getOrderId());
-
+            Optional<Payment> done = paymentRepo.findByOrderOrderId(paymentRequestDTO.getOrder().getOrderId());
+            Payment paymentdone = paymentRepo.getReferenceById(done.get().getPaymentId());
+            if(paymentdone.isActive()==false){
+                throw new ResourceNotFoundException("Your Order is DONE, please check your payment with payment ID " + done.get().getPaymentId());
+            }
+            if(!done.isEmpty()){
+               throw new ResourceNotFoundException("Your Order is on proses, please update your payment with payment ID " + done.get().getPaymentId());
+            }
             if(order.get().getUserId().getUserId() != userDetails.getUserId()){
                 throw new ResourceNotFoundException("You just can pay your order");
                 }
@@ -163,14 +170,18 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public ResponseEntity<Object> updatePayment(Long id, PaymentRequestDTO paymentRequestDTO)throws ResourceNotFoundException {
-        Optional<Payment> optionalPayment = paymentRepo.findById(id);
-        if(optionalPayment.isEmpty()){
+        Payment optionalPayment = paymentRepo.getReferenceById(id);
+        if(optionalPayment == null){
             throw new ResourceNotFoundException("Payment not exist with id " + id);
         }
         try {
             if(paymentRequestDTO.getOrder() == null ){
                 throw new ResourceNotFoundException("Payment must have order id");
             }
+            if(optionalPayment.isActive() == false){
+                throw new ResourceNotFoundException("Payment is DONE");
+            }
+
             Payment payment = paymentRequestDTO.convertToEntity();
             Optional <Order> order = orderRepo.findById(paymentRequestDTO.getOrder().getOrderId());
             Integer amount = paymentRequestDTO.getAmount();
@@ -187,15 +198,18 @@ public class PaymentServiceImpl implements PaymentService {
                                 }else {
                                     payment.setCcNum("8568568568");
                                 }
+
             if(order.get().getTotal().equals(amount)){
                 payment.setResponse(PAYMENT_SUCCES);
             } else {
                 payment.setResponse(WAITING);
                 payment.setActive(true);
+                payment.setPaymentId(id);
                 paymentRepo.save(payment);
                 PaymentResponseDTO result = payment.convertToResponse();
                 return ResponseHandler.generateResponse("Your Amount is not enough", HttpStatus.BAD_GATEWAY,result);
             }
+            payment.setPaymentId(id);
             paymentRepo.save(payment);
             PaymentResponseDTO results = payment.convertToResponse();
             logger.info("======== Logger Start   ========");
