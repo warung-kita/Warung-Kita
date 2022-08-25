@@ -92,11 +92,13 @@ public class PaymentServiceImpl implements PaymentService {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Payment payment = paymentRequestDTO.convertToEntity();
             Optional <Order> order = orderRepo.findById(paymentRequestDTO.getOrder().getOrderId());
-            Payment done = paymentRepo.findByOrderOrderId(paymentRequestDTO.getOrder().getOrderId());
-            if(done.isActive() == true){
-                throw new ResourceNotFoundException("Your Order is on proses, please update your payment with payment ID " + done.getPaymentId());
-            }else if(done.isActive() == false) {
-                throw new ResourceNotFoundException("Your Order is Paid, please check your order with payment ID " + done.getPaymentId());
+            Optional<Payment> done = paymentRepo.findByOrderOrderId(paymentRequestDTO.getOrder().getOrderId());
+            Payment paymentdone = paymentRepo.getReferenceById(done.get().getPaymentId());
+            if(paymentdone.isActive()==false){
+                throw new ResourceNotFoundException("Your Order is DONE, please check your payment with payment ID " + done.get().getPaymentId());
+            }
+            if(!done.isEmpty()){
+               throw new ResourceNotFoundException("Your Order is on proses, please update your payment with payment ID " + done.get().getPaymentId());
             }
             if(order.get().getUserId().getUserId() != userDetails.getUserId()){
                 throw new ResourceNotFoundException("You just can pay your order");
