@@ -171,6 +171,7 @@ public class PaymentServiceImpl implements PaymentService {
             if(paymentRequestDTO.getOrder() == null ){
                 throw new ResourceNotFoundException("Payment must have order id");
             }
+
             Payment payment = paymentRequestDTO.convertToEntity();
             Optional <Order> order = orderRepo.findById(paymentRequestDTO.getOrder().getOrderId());
             Integer amount = paymentRequestDTO.getAmount();
@@ -187,6 +188,7 @@ public class PaymentServiceImpl implements PaymentService {
                                 }else {
                                     payment.setCcNum("8568568568");
                                 }
+
             if(order.get().getTotal().equals(amount)){
                 payment.setResponse(PAYMENT_SUCCES);
             } else {
