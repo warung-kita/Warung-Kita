@@ -10,4 +10,5 @@ import java.util.List;
 public interface PaymentRepo extends JpaRepository<Payment, Long> {
     List<Payment> findByOrderUserIdUsernameContaining(String userName);
     List<Payment> findByOrderOrderProductProductIdUsersUsernameContaining(String userName);
+    Payment findByOrderOrderId(Long id);
 }

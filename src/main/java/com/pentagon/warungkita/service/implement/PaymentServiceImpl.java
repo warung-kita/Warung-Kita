@@ -92,7 +92,12 @@ public class PaymentServiceImpl implements PaymentService {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Payment payment = paymentRequestDTO.convertToEntity();
             Optional <Order> order = orderRepo.findById(paymentRequestDTO.getOrder().getOrderId());
-
+            Payment done = paymentRepo.findByOrderOrderId(paymentRequestDTO.getOrder().getOrderId());
+            if(done.isActive() == true){
+                throw new ResourceNotFoundException("Your Order is on proses, please update your payment with payment ID " + done.getPaymentId());
+            }else if(done.isActive() == false) {
+                throw new ResourceNotFoundException("Your Order is Paid, please check your order with payment ID " + done.getPaymentId());
+            }
             if(order.get().getUserId().getUserId() != userDetails.getUserId()){
                 throw new ResourceNotFoundException("You just can pay your order");
                 }
@@ -163,13 +168,16 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public ResponseEntity<Object> updatePayment(Long id, PaymentRequestDTO paymentRequestDTO)throws ResourceNotFoundException {
-        Optional<Payment> optionalPayment = paymentRepo.findById(id);
-        if(optionalPayment.isEmpty()){
+        Payment optionalPayment = paymentRepo.getReferenceById(id);
+        if(optionalPayment == null){
             throw new ResourceNotFoundException("Payment not exist with id " + id);
         }
         try {
             if(paymentRequestDTO.getOrder() == null ){
                 throw new ResourceNotFoundException("Payment must have order id");
+            }
+            if(optionalPayment.isActive() == false){
+                throw new ResourceNotFoundException("Payment is DONE");
             }
 
             Payment payment = paymentRequestDTO.convertToEntity();
@@ -194,10 +202,12 @@ public class PaymentServiceImpl implements PaymentService {
             } else {
                 payment.setResponse(WAITING);
                 payment.setActive(true);
+                payment.setPaymentId(id);
                 paymentRepo.save(payment);
                 PaymentResponseDTO result = payment.convertToResponse();
                 return ResponseHandler.generateResponse("Your Amount is not enough", HttpStatus.BAD_GATEWAY,result);
             }
+            payment.setPaymentId(id);
             paymentRepo.save(payment);
             PaymentResponseDTO results = payment.convertToResponse();
             logger.info("======== Logger Start   ========");

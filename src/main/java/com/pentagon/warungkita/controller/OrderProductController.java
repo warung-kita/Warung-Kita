@@ -33,9 +33,9 @@ public class OrderProductController {
         return orderProductService.orderProductList();
     }
 
-    @Operation(summary = "View Order Product by Id (ADMIN, BUYER)")
+    @Operation(summary = "View Order Product by Id (ADMIN)")
     @GetMapping("/list/order-products/{orderProductId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> OrderListById(@PathVariable Long orderProductId) {
        return orderProductService.OrderListById(orderProductId);
     }
