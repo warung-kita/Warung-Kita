@@ -120,7 +120,7 @@ public class UsersServiceImpl implements UsersService {
             throw new ResourceNotFoundException("User not exist with id :" + users.getUserId());
         }
         users.setActive(true);
-        users.setPassword(passwordEncoder.encode(users.getPassword()));
+       users.setPassword(passwordEncoder.encode(users.getPassword()));
         return this.usersRepo.save(users);
     }
 
@@ -228,8 +228,9 @@ public class UsersServiceImpl implements UsersService {
             users.setUsername(userDetails.getUsername());
             users.setFullName(user1.get().getFullName());
             users.setRoles(user1.get().getRoles());
+            users.setActive(true);
 
-            Users updateUsers = this.updateUser(users);
+            Users updateUsers = usersRepo.save(users);
             UsersResponseDTO result = updateUsers.convertToResponse();
             logger.info("==================== Logger Start Update User By ID ====================");
             logger.info(result);
@@ -256,7 +257,7 @@ public class UsersServiceImpl implements UsersService {
             roles.add(role2);
             users.setRoles(roles);
             users.setActive(true);
-            Users updateUsers = this.updateUser(users);
+            Users updateUsers = usersRepo.save(users);
             UsersResponseDTO result = updateUsers.convertToResponse();
             logger.info("==================== Logger Start Update User By ID ====================");
             logger.info(result);

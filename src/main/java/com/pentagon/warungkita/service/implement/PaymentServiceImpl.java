@@ -93,12 +93,8 @@ public class PaymentServiceImpl implements PaymentService {
             Payment payment = paymentRequestDTO.convertToEntity();
             Optional <Order> order = orderRepo.findById(paymentRequestDTO.getOrder().getOrderId());
             Optional<Payment> done = paymentRepo.findByOrderOrderId(paymentRequestDTO.getOrder().getOrderId());
-            Payment paymentdone = paymentRepo.getReferenceById(done.get().getPaymentId());
-            if(paymentdone.isActive()==false){
-                throw new ResourceNotFoundException("Your Order is DONE, please check your payment with payment ID " + done.get().getPaymentId());
-            }
             if(!done.isEmpty()){
-               throw new ResourceNotFoundException("Your Order is on proses, please update your payment with payment ID " + done.get().getPaymentId());
+               throw new ResourceNotFoundException("Your Order is on proses or DONE, please update your payment with payment ID " + done.get().getPaymentId());
             }
             if(order.get().getUserId().getUserId() != userDetails.getUserId()){
                 throw new ResourceNotFoundException("You just can pay your order");
