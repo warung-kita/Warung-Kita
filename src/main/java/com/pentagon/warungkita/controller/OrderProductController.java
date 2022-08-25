@@ -26,7 +26,7 @@ public class OrderProductController {
      * Menggunakan ResponseDTO
      * */
 
-    @Operation(summary = "View all Order Product (ADMIN, BUYER)")
+    @Operation(summary = "View all Order Product (ADMIN)")
     @GetMapping("/list/order-products")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> orderProductList() {

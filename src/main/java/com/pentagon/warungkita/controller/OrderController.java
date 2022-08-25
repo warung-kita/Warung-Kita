@@ -68,8 +68,8 @@ public class OrderController {
     @Operation(summary = "Update Order (BUYER)")
     @PutMapping("/update/order")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
-    public ResponseEntity<Object> updateOrder( @RequestBody OrderRequestDTO orderRequestDTO){
-        return orderService.updateOrder(orderRequestDTO);
+    public ResponseEntity<Object> updateOrder( @PathVariable Long orderId, @RequestBody OrderRequestDTO orderRequestDTO){
+        return orderService.updateOrder(orderRequestDTO, orderId);
     }
     @Operation(summary = "Delete Order by Id (ADMIN, BUYER)")
     @DeleteMapping("/delete/order/{orderId}")

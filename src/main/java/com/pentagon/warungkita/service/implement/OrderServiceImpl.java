@@ -4,10 +4,12 @@ import com.pentagon.warungkita.controller.OrderController;
 import com.pentagon.warungkita.dto.OrderRequestDTO;
 import com.pentagon.warungkita.dto.OrderResponseDTO;
 import com.pentagon.warungkita.dto.OrderResponsePOST;
+import com.pentagon.warungkita.dto.WishlistResponseDTO;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Order;
 import com.pentagon.warungkita.model.OrderProduct;
 import com.pentagon.warungkita.model.Users;
+import com.pentagon.warungkita.model.Wishlist;
 import com.pentagon.warungkita.repository.OrderProductRepo;
 import com.pentagon.warungkita.repository.OrderRepo;
 import com.pentagon.warungkita.repository.UsersRepo;
@@ -137,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseEntity<Object> updateOrder(OrderRequestDTO orderRequestDTO) {
+    public ResponseEntity<Object> updateOrder(OrderRequestDTO orderRequestDTO, Long Id) {
         Optional<Order> updatedOrder = this.orderRepo.findById(orderRequestDTO.getOrderId());
         if (updatedOrder.isEmpty()) {
             throw new ResourceNotFoundException("Order not found with id " + orderRequestDTO.getOrderId());
@@ -200,17 +202,31 @@ public class OrderServiceImpl implements OrderService {
     public ResponseEntity<Object> getBuyerOrder() {
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Optional<Order> orderList = this.orderRepo.findById(userDetails.getUserId());
+            List<Order> orderList = this.orderRepo.findByUserIdUsername(userDetails.getUsername());
             if (orderList.isEmpty()) {
                 log.error("No order found");
                 throw new ResourceNotFoundException("You not have Order ");
             }
-            Order order = orderList.get();
-            OrderResponseDTO orderResponseDTO = order.convertToResponse();
+            List<Order> test = this.orderRepo.findByUserIdUsername(userDetails.getUsername());
+            List<OrderResponseDTO> productListmaps = new ArrayList<>();
+            for (Order dataresult : test) {
+
+                OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
+                        .orderId(dataresult.getOrderId())
+                        .orderDate(dataresult.getOrderDate())
+                        .ekspedisiName(dataresult.getEkspedisiId().getName())
+                        .total(dataresult.getTotal())
+                        .build();
+                orderResponseDTO.setOrderProductId(dataresult.getOrderProduct());
+                orderResponseDTO.setUser(dataresult.getUserId());
+                productListmaps.add(orderResponseDTO);
+           }
+
+
             logger.info("==================== Logger Start Get Order Product By ID ====================");
-            logger.info(orderResponseDTO);
+            logger.info(orderList);
             logger.info("==================== Logger End Get Order Product By ID =================");
-            return ResponseHandler.generateResponse("Success Get Your Order",HttpStatus.OK,orderResponseDTO);
+            return ResponseHandler.generateResponse("Success Get Your Order",HttpStatus.OK,productListmaps);
         } catch (ResourceNotFoundException e) {
             logger.error("------------------------------------");
             logger.error(e.getMessage());

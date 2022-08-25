@@ -55,7 +55,7 @@ public class Users {
 
     public UsersResponseDTO convertToResponse(){
         return UsersResponseDTO.builder()
-                .role(this.roles)
+                .roles(this.roles)
                 .fullName(this.fullName)
                 .username(this.username)
                 .email(this.email)

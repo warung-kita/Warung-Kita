@@ -43,10 +43,11 @@ public class Order {
     public OrderResponseDTO convertToResponse(){
         return OrderResponseDTO.builder()
                 .orderId(this.orderId)
-//                .orderProductId(this.getOrderProduct())
+//                .orderProductId(this.convertToResponse())
                 .orderDate(this.orderDate)
                 .ekspedisiName(this.ekspedisiId.getName())
                 .total(this.total)
+                .user(this.userId.convertToResponsePOST())
 //                .fullName(this.userId.getFullName())
 //                .userName(this.userId.getUsername())
 //                .email(this.userId.getEmail())
