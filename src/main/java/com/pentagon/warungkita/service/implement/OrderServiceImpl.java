@@ -209,13 +209,15 @@ public class OrderServiceImpl implements OrderService {
             }
             List<Order> test = this.orderRepo.findByUserIdUsername(userDetails.getUsername());
             List<OrderResponseDTO> productListmaps = new ArrayList<>();
-            for (Order dataresult : test) {
+            for (Order dataresult : orderList) {
+                OrderResponseDTO orderResponseDTO = dataresult.convertToResponse();
+                productListmaps.add(orderResponseDTO);
 
-                OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
-                        .orderId(dataresult.getOrderId())
-                        .orderDate(dataresult.getOrderDate())
-                        .ekspedisiName(dataresult.getEkspedisiId().getName())
-                        .total(dataresult.getTotal())
+                OrderResponseDTO orderResponseDTO1 = OrderResponseDTO.builder()
+                        .user(dataresult.convertToResponse().getUser())
+                        .orderDate(dataresult.convertToResponse().getOrderDate())
+                        .ekspedisiName(dataresult.convertToResponse().getEkspedisiName())
+                        .total(dataresult.convertToResponse().getTotal())
                         .build();
                 orderResponseDTO.setOrderProductId(dataresult.getOrderProduct());
                 orderResponseDTO.setUser(dataresult.getUserId());
