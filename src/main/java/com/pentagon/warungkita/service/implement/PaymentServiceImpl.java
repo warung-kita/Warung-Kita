@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import static com.pentagon.warungkita.model.Enum.BankList.*;
@@ -205,6 +206,7 @@ public class PaymentServiceImpl implements PaymentService {
                 PaymentResponseDTO result = payment.convertToResponse();
                 return ResponseHandler.generateResponse("Your Amount is not enough", HttpStatus.BAD_GATEWAY,result);
             }
+            payment.setDatePay(LocalDate.now());
             payment.setPaymentId(id);
             paymentRepo.save(payment);
             PaymentResponseDTO results = payment.convertToResponse();
