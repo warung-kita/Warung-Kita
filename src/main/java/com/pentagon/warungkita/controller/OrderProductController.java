@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @Slf4j
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "08.Order Product")
+@Tag(name = "07.Order Product")
 public class OrderProductController {
 
     private OrderProductService orderProductService;
