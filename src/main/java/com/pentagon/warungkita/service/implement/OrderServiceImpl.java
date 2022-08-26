@@ -1,18 +1,9 @@
 package com.pentagon.warungkita.service.implement;
 
-import com.pentagon.warungkita.controller.OrderController;
-import com.pentagon.warungkita.dto.OrderRequestDTO;
-import com.pentagon.warungkita.dto.OrderResponseDTO;
-import com.pentagon.warungkita.dto.OrderResponsePOST;
-import com.pentagon.warungkita.dto.WishlistResponseDTO;
+import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Order;
-import com.pentagon.warungkita.model.OrderProduct;
-import com.pentagon.warungkita.model.Users;
-import com.pentagon.warungkita.model.Wishlist;
-import com.pentagon.warungkita.repository.OrderProductRepo;
-import com.pentagon.warungkita.repository.OrderRepo;
-import com.pentagon.warungkita.repository.UsersRepo;
+import com.pentagon.warungkita.model.*;
+import com.pentagon.warungkita.repository.*;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.OrderService;
@@ -36,7 +27,7 @@ public class OrderServiceImpl implements OrderService {
     OrderRepo orderRepo;
     UsersRepo usersRepo;
     OrderProductRepo orderProductRepo;
-    private static final Logger logger = LogManager.getLogger(OrderController.class);
+    private static final Logger logger = LogManager.getLogger(OrderServiceImpl.class);
 
     @Override
     public ResponseEntity<Object> getAll() {

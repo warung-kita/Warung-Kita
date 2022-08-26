@@ -1,7 +1,6 @@
 package com.pentagon.warungkita.service.implement;
 
-import com.pentagon.warungkita.dto.PaymentRequestDTO;
-import com.pentagon.warungkita.dto.PaymentResponseDTO;
+import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.*;
 import com.pentagon.warungkita.repository.*;
@@ -10,7 +9,6 @@ import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.PaymentService;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,9 +23,9 @@ import static com.pentagon.warungkita.model.Enum.PaymentResponse.*;
 @Service
 @AllArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
-    @Autowired
+
     PaymentRepo paymentRepo;
-    @Autowired
+
     OrderRepo orderRepo;
     private static final Logger logger = LogManager.getLogger(PaymentServiceImpl.class);
 
@@ -87,6 +85,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public ResponseEntity<Object> createPayment(PaymentRequestDTO paymentRequestDTO) {
         try{
+
             if(paymentRequestDTO.getOrder() == null ){
                 throw new ResourceNotFoundException("Payment must have order id");
                 }
@@ -243,7 +242,7 @@ public class PaymentServiceImpl implements PaymentService {
                 PaymentResponseDTO paymentResponseDTO = dataresult.convertToResponse();
                 paymentsList.add(paymentResponseDTO);
             }
-            return ResponseHandler.generateResponse("payment",HttpStatus.OK, paymentsList);
+            return ResponseHandler.generateResponse("Succes get buyer histori",HttpStatus.OK, paymentsList);
         }catch(ResourceNotFoundException e){
             logger.error("------------------------------------");
             logger.error(e.getMessage());
@@ -291,7 +290,7 @@ public class PaymentServiceImpl implements PaymentService {
                 PaymentResponseDTO paymentResponseDTO = dataresult.convertToResponse();
                 paymentsList.add(paymentResponseDTO);
             }
-            return ResponseHandler.generateResponse("payment",HttpStatus.OK, paymentsList);
+            return ResponseHandler.generateResponse("Succes get seller histori",HttpStatus.OK, paymentsList);
         }catch(ResourceNotFoundException e){
             logger.error("------------------------------------");
             logger.error(e.getMessage());

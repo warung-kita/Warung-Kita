@@ -54,7 +54,7 @@ public class PaymentController {
         return paymentService.createPayment(paymentRequestDTO);
     }
 
-    @Operation(summary = "Create Payment (BUYER)")
+    @Operation(summary = "Update Payment (BUYER)")
     @PutMapping("/payment/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> paymentUpdate(@PathVariable Long id, @RequestBody PaymentRequestDTO paymentRequestDTO){

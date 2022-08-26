@@ -86,7 +86,7 @@ public class AuthServiceImpl implements AuthService {
         roles.forEach(roles1 -> {
             stringsrole.add(roles1.getName());
         });
-        return ResponseEntity.ok().body(new JwtResponse(token, principal.getUsername(), principal.getPassword(), stringsrole));
+        return ResponseEntity.ok().body(new JwtResponse(token, principal.getUsername(), principal.getEmail(), stringsrole));
 
     }
 }

@@ -1,6 +1,5 @@
 package com.pentagon.warungkita.service.implement;
 
-import com.pentagon.warungkita.controller.ProductStatusController;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.ProductStatus;
 import com.pentagon.warungkita.repository.ProductStatusRepo;
@@ -9,7 +8,6 @@ import com.pentagon.warungkita.service.ProductStatusService;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,9 +17,9 @@ import java.util.*;
 @Service
 @AllArgsConstructor
 public class ProductStatusServiceImpl implements ProductStatusService {
-    private static final Logger logger = LogManager.getLogger(ProductStatusController.class);
+    private static final Logger logger = LogManager.getLogger(PaymentServiceImpl.class);
 
-    @Autowired
+
     ProductStatusRepo productStatusRepo;
 
     @Override

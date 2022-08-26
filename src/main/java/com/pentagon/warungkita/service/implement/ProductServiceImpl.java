@@ -30,7 +30,6 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
-    private final CategoriesRepo categoriesRepo;
     private final UsersService usersService;
     private static final Logger logger = LogManager.getLogger(ProductServiceImpl.class);
 
@@ -269,7 +268,7 @@ public class ProductServiceImpl implements ProductService {
                 ProductResponseDTO productResponseDTO = dataResult.convertToResponse();
                 productList.add(productResponseDTO);
             }
-            return ResponseHandler.generateResponse("test",HttpStatus.OK,productList);
+            return ResponseHandler.generateResponse("Succes get Product",HttpStatus.OK,productList);
         }catch (ResourceNotFoundException e){
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
@@ -288,7 +287,7 @@ public class ProductServiceImpl implements ProductService {
                 ProductResponseDTO productResponseDTO = dataResult.convertToResponse();
                 productList.add(productResponseDTO);
             }
-            return ResponseHandler.generateResponse("Data Successfully Retrieved",HttpStatus.OK, productList);
+            return ResponseHandler.generateResponse("Succes get Product",HttpStatus.OK, productList);
         }catch (ResourceNotFoundException e){
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
@@ -305,7 +304,7 @@ public class ProductServiceImpl implements ProductService {
                 ProductResponseDTO productResponseDTO = dataResult.convertToResponse();
                 productList.add(productResponseDTO);
             }
-            return ResponseHandler.generateResponse("Data Successfully Retrieved",HttpStatus.OK, productList);
+            return ResponseHandler.generateResponse("Succes get Product",HttpStatus.OK, productList);
         }catch (ResourceNotFoundException e){
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }

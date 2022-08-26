@@ -1,6 +1,5 @@
 package com.pentagon.warungkita.service.implement;
 
-import com.pentagon.warungkita.controller.UsersController;
 import com.pentagon.warungkita.dto.PassworRequest;
 import com.pentagon.warungkita.dto.UsersRequestDTO;
 import com.pentagon.warungkita.dto.UsersResponseDTO;
@@ -35,7 +34,7 @@ public class UsersServiceImpl implements UsersService {
     private final UsersRepo usersRepo;
     private final RolesRepo rolesRepo;
     private final PasswordEncoder passwordEncoder;
-    private static final Logger logger = LogManager.getLogger(UsersController.class);
+    private static final Logger logger = LogManager.getLogger(UsersServiceImpl.class);
 
     @Override
     public Users findById(Long users_Id) {
@@ -120,7 +119,7 @@ public class UsersServiceImpl implements UsersService {
             throw new ResourceNotFoundException("User not exist with id :" + users.getUserId());
         }
         users.setActive(true);
-       users.setPassword(passwordEncoder.encode(users.getPassword()));
+        users.setPassword(passwordEncoder.encode(users.getPassword()));
         return this.usersRepo.save(users);
     }
 
@@ -308,6 +307,27 @@ public class UsersServiceImpl implements UsersService {
             logger.error(e.getMessage());
             logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Bad Request!!");
+        }
+    }
+
+    @Override
+    public ResponseEntity<Object> deactiveUserById() {
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Users users = usersRepo.getReferenceById(userDetails.getUserId());
+            users.setActive(false);
+            Map<String, Boolean> response = new HashMap<>();
+            usersRepo.save(users);
+            response.put("Delete Status", Boolean.TRUE);
+            logger.info("==================== Logger Start Hard Delete User By ID ====================");
+            logger.info(response);
+            logger.info("==================== Logger End Hard Delete User By ID =================");
+            return ResponseHandler.generateResponse("Successfully Delete User! ", HttpStatus.OK, response);
+        } catch (ResourceNotFoundException e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!" );
         }
     }
 }

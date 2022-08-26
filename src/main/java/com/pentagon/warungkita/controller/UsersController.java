@@ -58,9 +58,9 @@ public class UsersController {
         return usersService.completeUsers(usersRequestDTO);
     }
 
-    @Operation(summary = "Deactive Users (ADMIN, BUYER, SELLER)")
-    @DeleteMapping("/users/deactive_user/{users_Id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
+    @Operation(summary = "Deactive Users (ADMIN)")
+    @DeleteMapping("/users/delete_user/{users_Id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> deactiveUser(@PathVariable Long users_Id){
        return usersService.deleteUserById(users_Id);
     }
@@ -91,5 +91,12 @@ public class UsersController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> changePassword(@RequestBody PassworRequest request){
         return usersService.changePassword(request);
+    }
+
+    @Operation(summary = "Deactive Users (ADMIN, BUYER, SELLER)")
+    @DeleteMapping("/users/deactive_user")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> deactiveUserLogin(){
+        return usersService.deactiveUserById();
     }
 }
