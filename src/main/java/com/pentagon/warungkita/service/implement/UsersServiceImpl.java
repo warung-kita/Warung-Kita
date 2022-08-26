@@ -118,8 +118,8 @@ public class UsersServiceImpl implements UsersService {
         if(optionalUser.isEmpty()){
             throw new ResourceNotFoundException("User not exist with id :" + users.getUserId());
         }
-        users.setActive(true);
-        users.setPassword(passwordEncoder.encode(users.getPassword()));
+
+
         return this.usersRepo.save(users);
     }
 
@@ -294,14 +294,18 @@ public class UsersServiceImpl implements UsersService {
     public ResponseEntity<Object> update(UsersRequestDTO requestDTO) {
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional<Users> optionalUser = usersRepo.findById(userDetails.getUserId());
             Users users = requestDTO.convertToEntity();
             users.setUserId(userDetails.getUserId());
-            Users updateUsers = this.updateUser(users);
+            users.setRoles(optionalUser.get().getRoles());
+            users.setPassword(userDetails.getPassword());
+            users.setActive(true);
+            Users updateUsers = usersRepo.save(users);
             UsersResponseDTO result = updateUsers.convertToResponse();
             logger.info("==================== Logger Start Update User By ID ====================");
             logger.info(result);
             logger.info("==================== Logger End Update User By ID =================");
-            return ResponseHandler.generateResponse("Successfully Updated User!",HttpStatus.OK, result);
+            return ResponseHandler.generateResponse("Successfully Updated User. If you change username, please login again.",HttpStatus.OK, result);
         }catch(Exception e){
             logger.error("------------------------------------");
             logger.error(e.getMessage());

@@ -3,7 +3,7 @@ package com.pentagon.warungkita.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -13,7 +13,7 @@ import java.util.Date;
 public class OrderResponsePOST {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date orderDate;
+    private LocalDate orderDate;
     private Long ekspedisiId;
     private Number total;
     private String buyer;

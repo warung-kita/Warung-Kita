@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -130,15 +131,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseEntity<Object> updateOrder(OrderRequestDTO orderRequestDTO, Long Id) {
-        Optional<Order> updatedOrder = this.orderRepo.findById(Id);
-        if (updatedOrder.isEmpty()) {
-            throw new ResourceNotFoundException("Order not found with id " + Id);
-        }
+    public ResponseEntity<Object> updateOrder(OrderRequestDTO orderRequestDTO, Long orderId) {
         try {
+            Optional<Order> updatedOrder = orderRepo.findById(orderId);
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Optional <Users> users = usersRepo.findById(userDetails.getUserId());
-            if(!updatedOrder.get().getUserId().equals(userDetails.getUserId())){
+            if (updatedOrder.isEmpty()) {
+                throw new ResourceNotFoundException("Order not found with id " + orderId);
+            }
+            if(!updatedOrder.get().getUserId().getUsername().equals(userDetails.getUsername())){
                 throw new ResourceNotFoundException("You only can update your order");
             }
             List<Integer> subtotal = new ArrayList<>();
@@ -149,15 +150,17 @@ public class OrderServiceImpl implements OrderService {
 
             Integer total = subtotal.stream().mapToInt(map -> map.intValue()).sum();
             Order order = Order.builder()
-                    .orderId(updatedOrder.get().getOrderId())
+
                     .orderProduct(orderRequestDTO.getOrderProduct())
                     .orderDate(orderRequestDTO.getOrderDate())
                     .ekspedisiId(orderRequestDTO.getEkspedisiId())
                     .total(total.intValue())
                     .userId(users.get())
                     .build();
+            order.setOrderDate(LocalDate.now());
+            order.setOrderId(orderId);
             Order responseUpdate = orderRepo.save(order);
-            OrderResponseDTO responseDTO = responseUpdate.convertToResponse();
+            OrderResponsePOST responseDTO = responseUpdate.convertToResponsePOST();
             logger.info("==================== Logger Start Update Order Product By ID ====================");
             logger.info(responseDTO);
             logger.info("==================== Logger End Update Order Product By ID =================");

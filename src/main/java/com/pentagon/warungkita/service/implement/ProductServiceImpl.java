@@ -25,6 +25,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
 
     UsersRepo usersRepo;
+    ProductStatusRepo productStatusRepo;
     private final UsersService usersService;
     private static final Logger logger = LogManager.getLogger(ProductServiceImpl.class);
 
@@ -106,12 +107,12 @@ public class ProductServiceImpl implements ProductService {
         try{
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Optional <Users> users = usersService.getUserById(userDetails.getUserId());
-
+            Optional<ProductStatus> productStatus = productStatusRepo.findById(1L);
             /*
              * Logic to complete fill all field request
              * */
             if(productRequestDTO.getProductName().isEmpty() && productRequestDTO.getCategories().isEmpty() && productRequestDTO.getQuantity() != null
-                    && productRequestDTO.getSku().isEmpty() && productRequestDTO.getProductStatusId() != null && productRequestDTO.getRegularPrice() != null){
+                    && productRequestDTO.getSku().isEmpty() && productRequestDTO.getRegularPrice() != null){
                 throw new ResourceNotFoundException("Please Input All Field");
             }
 
@@ -122,11 +123,13 @@ public class ProductServiceImpl implements ProductService {
                     .description(productRequestDTO.getDescription())
                     .regularPrice(productRequestDTO.getRegularPrice())
                     .quantity(productRequestDTO.getQuantity())
-                    .productStatusId(productRequestDTO.getProductStatusId())
+
                     .productPicture(productRequestDTO.getProductPicture())
                     .users(users.get())
                     .build();
-
+            if(productRequestDTO.getQuantity()>0){
+                product.setProductStatusId(productStatus.get());
+            }
 
             List<Product> products = productRepo.findByUsersUserId(userDetails.getUserId());
             List<Photo> photos = productRequestDTO.getProductPicture();
@@ -181,12 +184,17 @@ public class ProductServiceImpl implements ProductService {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Optional <Users> users = usersRepo.findById(userDetails.getUserId());
             Optional <Product> product1 = productRepo.findById(productId);
-            if(productRequestDTO.getProductName().isEmpty() && productRequestDTO.getCategories().isEmpty() && productRequestDTO.getQuantity() != null
-                    && productRequestDTO.getSku().isEmpty() && productRequestDTO.getProductStatusId() != null && productRequestDTO.getRegularPrice() != null){
+            Optional<ProductStatus> productStatus = productStatusRepo.findById(1L);
+            if(product1.isEmpty()){
+                throw new ResourceNotFoundException("You only can update your product");
+            }
+
+            if(productRequestDTO.getProductName().isEmpty() || productRequestDTO.getCategories().isEmpty() || productRequestDTO.getQuantity() == null
+                    || productRequestDTO.getSku().isEmpty() || productRequestDTO.getRegularPrice() == null){
                 throw new ResourceNotFoundException("Please Input All Field");
             }
-            if(!product1.get().getUsers().equals(userDetails.getUserId())){
-                throw new ResourceNotFoundException("You only update your product");
+            if(!product1.get().getUsers().getUserId().equals(userDetails.getUserId())){
+                throw new ResourceNotFoundException("You only can update your product");
             }
 
 
@@ -197,11 +205,14 @@ public class ProductServiceImpl implements ProductService {
                     .description(productRequestDTO.getDescription())
                     .regularPrice(productRequestDTO.getRegularPrice())
                     .quantity(productRequestDTO.getQuantity())
-                    .productStatusId(productRequestDTO.getProductStatusId())
                     .productPicture(productRequestDTO.getProductPicture())
                     .users(users.get())
                     .build();
-
+            if(productRequestDTO.getQuantity()==0){
+                throw new ResourceNotFoundException("Quantity can't be 0");
+            }else if(productRequestDTO.getQuantity()>0){
+                product.setProductStatusId(productStatus.get());
+            }
 
             List<Product> products = productRepo.findByUsersUserId(userDetails.getUserId());
             List<Photo> photos = productRequestDTO.getProductPicture();

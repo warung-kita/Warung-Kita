@@ -15,7 +15,7 @@ public class ProductRequestDTO {
     private String productName;
     private List<Categories> categories;
     private String description;
-    private ProductStatus productStatusId;
+
     private Integer regularPrice;
     private Integer quantity;
     private List<Photo> productPicture;
@@ -27,7 +27,7 @@ public class ProductRequestDTO {
                 .productName(this.productName)
                 .categories(this.categories)
                 .description(this.description)
-                .productStatusId(this.productStatusId)
+
                 .regularPrice(this.regularPrice)
                 .quantity(this.quantity)
                 .productPicture(this.productPicture)
