@@ -19,7 +19,6 @@ import java.util.*;
 public class ProductStatusServiceImpl implements ProductStatusService {
     private static final Logger logger = LogManager.getLogger(PaymentServiceImpl.class);
 
-
     ProductStatusRepo productStatusRepo;
 
     @Override
@@ -106,7 +105,7 @@ public class ProductStatusServiceImpl implements ProductStatusService {
                 try {
                     productStatusRepo.delete(productStatus);
                     Map<String, Boolean> response = new HashMap<>();
-                    response.put("deleted", Boolean.TRUE);;
+                    response.put("deleted", Boolean.TRUE);
                     logger.info("======== Logger Start   ========");
                     logger.info("Payment deleted " + response);
                     logger.info("======== Logger End   ==========");

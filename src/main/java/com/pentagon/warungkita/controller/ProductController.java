@@ -75,9 +75,9 @@ public class ProductController {
      * @param productId
      *
      */
-    @Operation(summary = "Update Product by Id (ADMIN, SELLER)")
+    @Operation(summary = "Update Product by Id (SELLER)")
     @PutMapping("/product/update/{productId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')")
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
     public ResponseEntity<Object> updateProduct(@PathVariable Long productId, @RequestBody ProductRequestDTO productRequestDTO){
         return this.productService.updateProduct(productId, productRequestDTO);
     }

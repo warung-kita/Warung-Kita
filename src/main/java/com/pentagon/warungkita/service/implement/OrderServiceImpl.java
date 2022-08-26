@@ -131,14 +131,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseEntity<Object> updateOrder(OrderRequestDTO orderRequestDTO, Long Id) {
-        Optional<Order> updatedOrder = this.orderRepo.findById(orderRequestDTO.getOrderId());
+        Optional<Order> updatedOrder = this.orderRepo.findById(Id);
         if (updatedOrder.isEmpty()) {
-            throw new ResourceNotFoundException("Order not found with id " + orderRequestDTO.getOrderId());
+            throw new ResourceNotFoundException("Order not found with id " + Id);
         }
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Optional <Users> users = usersRepo.findById(userDetails.getUserId());
-
+            if(!updatedOrder.get().getUserId().equals(userDetails.getUserId())){
+                throw new ResourceNotFoundException("You only can update your order");
+            }
             List<Integer> subtotal = new ArrayList<>();
             orderRequestDTO.getOrderProduct().forEach(orderProductId -> {
                 OrderProduct orderProduct = orderProductRepo.findById(orderProductId.getOrderProductId()).orElseThrow(() -> new ResourceNotFoundException("not found"));
@@ -147,6 +149,7 @@ public class OrderServiceImpl implements OrderService {
 
             Integer total = subtotal.stream().mapToInt(map -> map.intValue()).sum();
             Order order = Order.builder()
+                    .orderId(updatedOrder.get().getOrderId())
                     .orderProduct(orderRequestDTO.getOrderProduct())
                     .orderDate(orderRequestDTO.getOrderDate())
                     .ekspedisiId(orderRequestDTO.getEkspedisiId())

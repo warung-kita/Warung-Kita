@@ -1,19 +1,12 @@
 package com.pentagon.warungkita.service.implement;
 
-import com.pentagon.warungkita.dto.ProductRequestDTO;
-import com.pentagon.warungkita.dto.ProductResponseDTO;
-import com.pentagon.warungkita.dto.ProductResponsePOST;
+import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Categories;
-import com.pentagon.warungkita.model.Photo;
-import com.pentagon.warungkita.model.Product;
-import com.pentagon.warungkita.model.Users;
-import com.pentagon.warungkita.repository.CategoriesRepo;
-import com.pentagon.warungkita.repository.ProductRepo;
+import com.pentagon.warungkita.model.*;
+import com.pentagon.warungkita.repository.*;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
-import com.pentagon.warungkita.service.ProductService;
-import com.pentagon.warungkita.service.UsersService;
+import com.pentagon.warungkita.service.*;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +23,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
+
+    UsersRepo usersRepo;
     private final UsersService usersService;
     private static final Logger logger = LogManager.getLogger(ProductServiceImpl.class);
 
@@ -184,12 +179,16 @@ public class ProductServiceImpl implements ProductService {
     public ResponseEntity<Object> updateProduct(Long productId, ProductRequestDTO productRequestDTO) throws ResourceNotFoundException {
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Optional <Users> users = usersService.getUserById(userDetails.getUserId());
-
+            Optional <Users> users = usersRepo.findById(userDetails.getUserId());
+            Optional <Product> product1 = productRepo.findById(productId);
             if(productRequestDTO.getProductName().isEmpty() && productRequestDTO.getCategories().isEmpty() && productRequestDTO.getQuantity() != null
                     && productRequestDTO.getSku().isEmpty() && productRequestDTO.getProductStatusId() != null && productRequestDTO.getRegularPrice() != null){
                 throw new ResourceNotFoundException("Please Input All Field");
             }
+            if(!product1.get().getUsers().equals(userDetails.getUserId())){
+                throw new ResourceNotFoundException("You only update your product");
+            }
+
 
             Product product = Product.builder()
                     .sku(productRequestDTO.getSku())

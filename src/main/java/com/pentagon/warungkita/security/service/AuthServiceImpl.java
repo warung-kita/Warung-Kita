@@ -40,6 +40,9 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity<Object> signup(SignupRequest request){
 
         try {
+            if(request.getPassword().isEmpty() || request.getUsername().isEmpty() || request.getEmail().isEmpty() || request.getFullName().isEmpty()){
+                throw new ResourceNotFoundException("Complete all field");
+            }
 
             if (usersRepo.existsByUsername(request.getUsername())) {
                 throw new Exception("Username already taken!");
@@ -64,12 +67,16 @@ public class AuthServiceImpl implements AuthService {
             logger.error("------------------------------------");
             logger.error(e.getMessage());
             logger.error("------------------------------------");
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "User Already Exist!");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "Sign Up failed");
         }
     }
 
     @Override
     public ResponseEntity<JwtResponse> authenticateUser(LoginRequest request) {
+        if(request.getPassword().isEmpty() || request.getUsername().isEmpty()){
+            throw new ResourceNotFoundException("Username and Password can't be null");
+        }
+
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         Optional<Users> user = usersRepo.findByUsername(request.getUsername());

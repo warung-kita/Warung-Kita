@@ -66,7 +66,7 @@ public class UsersController {
     }
 
     @Operation(summary = "Update User Details (ADMIN, BUYER, SELLER)")
-    @PutMapping("/users/{users_Id}")
+    @PutMapping("/users")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> updateUser(@RequestBody UsersRequestDTO usersRequestDTO){
         return usersService.update(usersRequestDTO);
