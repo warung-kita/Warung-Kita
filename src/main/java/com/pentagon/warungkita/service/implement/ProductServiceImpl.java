@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -108,7 +109,7 @@ public class ProductServiceImpl implements ProductService {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Optional <Users> users = usersService.getUserById(userDetails.getUserId());
             Optional<ProductStatus> productStatus = productStatusRepo.findById(1L);
-            /*
+            /**
              * Logic to complete fill all field request
              * */
             if(productRequestDTO.getProductName().isEmpty() && productRequestDTO.getCategories().isEmpty() && productRequestDTO.getQuantity() != null
@@ -129,6 +130,8 @@ public class ProductServiceImpl implements ProductService {
                     .build();
             if(productRequestDTO.getQuantity()>0){
                 product.setProductStatusId(productStatus.get());
+            }else if(productRequestDTO.getQuantity() == 0){
+                throw new ResourceNotFoundException("Quantity can't be 0");
             }
 
             List<Product> products = productRepo.findByUsersUserId(userDetails.getUserId());
@@ -186,7 +189,7 @@ public class ProductServiceImpl implements ProductService {
             Optional <Product> product1 = productRepo.findById(productId);
             Optional<ProductStatus> productStatus = productStatusRepo.findById(1L);
             if(product1.isEmpty()){
-                throw new ResourceNotFoundException("You only can update your product");
+                throw new ResourceNotFoundException("Product not found");
             }
 
             if(productRequestDTO.getProductName().isEmpty() || productRequestDTO.getCategories().isEmpty() || productRequestDTO.getQuantity() == null
@@ -255,7 +258,24 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseEntity<Object> deleteProduct(Long productId) throws ResourceNotFoundException{
         try {
-            productRepo.deleteById(productId);
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Product product = productRepo.getReferenceById(productId);
+            Optional <Product> product1 = productRepo.findById(productId);
+            if(product1.isEmpty()){
+                throw new ResourceNotFoundException("Product not found");
+            }
+            if(!Objects.equals(product.getUsers().getUserId(), userDetails.getUserId())){
+                throw new ResourceNotFoundException("You only can deleted your product");
+            }
+            product.setProductId(productId);
+            product.setQuantity(0);
+            product.setSku(product.getSku());
+            product.setProductName(product.getProductName());
+            product.setProductStatusId(product.getProductStatusId());
+            ProductStatus psSoldOut = productStatusRepo.findById(2L).get();
+            product.setProductStatusId(psSoldOut);
+            product.setUsers(product.getUsers());
+            productRepo.save(product);
             Boolean result = Boolean.TRUE;
             logger.info("==================== Logger Start Get Deleted Product     ====================");
             logger.info(result);
