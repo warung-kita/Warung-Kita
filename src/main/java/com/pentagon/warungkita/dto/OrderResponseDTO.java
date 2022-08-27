@@ -34,6 +34,7 @@ public class OrderResponseDTO {
             orderProductResponseDTO.setProductId(orderProducts.getProductId().getProductId());
             orderProductResponseDTO.setQuantity(orderProducts.getQuantity());
             orderProductResponseDTO.setSubtotal(orderProducts.getSubtotal());
+            orderProductResponseDTO.setUser(orderProducts.getUserId());
             responseDTOs.add(orderProductResponseDTO);
         });
 

@@ -2,6 +2,7 @@ package com.pentagon.warungkita.dto;
 
 import com.pentagon.warungkita.model.OrderProduct;
 import com.pentagon.warungkita.model.Product;
+import com.pentagon.warungkita.model.Users;
 import lombok.*;
 
 @Getter
@@ -14,6 +15,7 @@ public class OrderProductRequestDTO {
     private Product product;
     private Integer quantity;
     private Integer subtotal;
+    private Users userId;
 
     public OrderProduct convertToEntity(){
         return OrderProduct.builder()
@@ -21,6 +23,7 @@ public class OrderProductRequestDTO {
                 .productId(this.product)
                 .quantity(this.quantity)
                 .subtotal(this.subtotal)
+                .userId(this.userId)
                 .build();
     }
 }

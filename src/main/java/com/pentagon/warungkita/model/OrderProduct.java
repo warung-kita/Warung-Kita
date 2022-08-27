@@ -23,6 +23,9 @@ public class OrderProduct {
     private Product productId;
     private Integer quantity;
     private Integer subtotal;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Users userId;
 
 
     public OrderProductResponseDTO convertToResponse(){
@@ -31,6 +34,7 @@ public class OrderProduct {
                 .productId(this.productId.getProductId())
                 .quantity(this.quantity)
                 .subtotal(this.subtotal)
+                .user(this.userId.convertToResponsePOST())
                 .build();
     }
 

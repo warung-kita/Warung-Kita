@@ -5,11 +5,10 @@ import com.pentagon.warungkita.dto.OrderProductRequestDTO;
 import com.pentagon.warungkita.dto.OrderProductResponseDTO;
 import com.pentagon.warungkita.dto.OrderProductResponsePOST;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.OrderProduct;
-import com.pentagon.warungkita.model.Product;
-import com.pentagon.warungkita.model.ProductStatus;
+import com.pentagon.warungkita.model.*;
 import com.pentagon.warungkita.repository.OrderProductRepo;
 import com.pentagon.warungkita.repository.ProductRepo;
+import com.pentagon.warungkita.repository.UsersRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.OrderProductService;
@@ -35,6 +34,7 @@ public class OrderProductImpl implements OrderProductService {
 
     private OrderProductRepo orderProductRepo;
     private ProductRepo productRepo;
+    UsersRepo usersRepo;
     private ProductStatusService productStatusService;
     UsersService usersService;
     private static final Logger logger = LogManager.getLogger(OrderProductController.class);
@@ -96,7 +96,7 @@ public class OrderProductImpl implements OrderProductService {
              * Logic subtotal on Order Product
              * */
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+            Optional <Users> users = usersRepo.findById(userDetails.getUserId());
             Optional <Product> product1 = productRepo.findById(orderProductRequestDTO.getProduct().getProductId());
             if(product1.get().getUsers().getUserId().equals(userDetails.getUserId()) ){
                 throw new ResourceNotFoundException("Can't add your own product");
@@ -105,10 +105,12 @@ public class OrderProductImpl implements OrderProductService {
                 throw new ResourceNotFoundException("Quantity can't 0");
             }
 
+
             Product product = productRepo.findById(orderProductRequestDTO.getProduct().getProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
             OrderProduct orderProduct = OrderProduct.builder()
                     .productId(orderProductRequestDTO.getProduct())
                     .quantity(orderProductRequestDTO.getQuantity())
+                    .userId(users.get())
                     .build();
             Integer totalPrice = product.getRegularPrice() * orderProductRequestDTO.getQuantity();
             orderProduct.setSubtotal(totalPrice);
@@ -149,10 +151,20 @@ public class OrderProductImpl implements OrderProductService {
     @Override
     public ResponseEntity<Object> updateOrderProduct(@PathVariable Long orderProductId, @RequestBody OrderProductRequestDTO orderProductRequestDTO) {
         try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional <Users> users = usersRepo.findById(userDetails.getUserId());
+            Optional<OrderProduct> updatedOrderProduct = orderProductRepo.findById(orderProductId);
             Product product = productRepo.findById(orderProductRequestDTO.getProduct().getProductId()).orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
+            if (updatedOrderProduct.isEmpty()) {
+                throw new ResourceNotFoundException("Order not found with id " + orderProductId);
+            }
+            if(!updatedOrderProduct.get().getUserId().getUsername().equals(userDetails.getUsername())){
+                throw new ResourceNotFoundException("You only can update your order");
+            }
             OrderProduct orderProduct = OrderProduct.builder()
                     .productId(orderProductRequestDTO.getProduct())
                     .quantity(orderProductRequestDTO.getQuantity())
+                    .userId(users.get())
                     .build();
             Integer totalPrice = product.getRegularPrice() * orderProductRequestDTO.getQuantity();
             orderProduct.setSubtotal(totalPrice);
