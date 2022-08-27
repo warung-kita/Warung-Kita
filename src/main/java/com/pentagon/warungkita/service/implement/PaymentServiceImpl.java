@@ -180,7 +180,7 @@ public class PaymentServiceImpl implements PaymentService {
             }
 
             if(!Objects.equals(optionalPayment.getOrder().getUserId().getUserId(), userDetails.getUserId())){
-                throw new ResourceNotFoundException("You just can update your order");
+                throw new ResourceNotFoundException("You can only update your payment");
             }
             if(!optionalPayment.isActive()){
                 throw new ResourceNotFoundException("Payment is DONE");
