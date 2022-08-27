@@ -101,6 +101,12 @@ public class OrderServiceImpl implements OrderService {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Optional <Users> users = usersRepo.findById(userDetails.getUserId());
 
+            orderRequestDTO.getOrderProduct().forEach(orderProductId -> {
+                OrderProduct orderProduct1 = orderProductRepo.findById(orderProductId.getOrderProductId()).orElseThrow(() -> new ResourceNotFoundException("not found"));
+                if(!orderProduct1.getUserId().getUserId().equals(userDetails.getUserId())){
+                    throw new ResourceNotFoundException("You only can order your order product");
+                }
+            });
             List<Integer> subtotal = new ArrayList<>();
             orderRequestDTO.getOrderProduct().forEach(orderProductId -> {
                 OrderProduct orderProduct = orderProductRepo.findById(orderProductId.getOrderProductId()).orElseThrow(() -> new ResourceNotFoundException("not found"));
@@ -136,6 +142,12 @@ public class OrderServiceImpl implements OrderService {
             Optional<Order> updatedOrder = orderRepo.findById(orderId);
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Optional <Users> users = usersRepo.findById(userDetails.getUserId());
+            orderRequestDTO.getOrderProduct().forEach(orderProductId -> {
+                OrderProduct orderProduct1 = orderProductRepo.findById(orderProductId.getOrderProductId()).orElseThrow(() -> new ResourceNotFoundException("not found"));
+                if(!orderProduct1.getUserId().getUserId().equals(userDetails.getUserId())){
+                    throw new ResourceNotFoundException("You only can order your order product");
+                }
+            });
             if (updatedOrder.isEmpty()) {
                 throw new ResourceNotFoundException("Order not found with id " + orderId);
             }
