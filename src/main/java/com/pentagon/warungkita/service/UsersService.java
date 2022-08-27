@@ -21,6 +21,7 @@ public interface UsersService {
     ResponseEntity<Object> completeUsers(UsersRequestDTO usersRequestDTO);
     ResponseEntity<Object> becameSeller();
     ResponseEntity<Object> userDetail();
+    ResponseEntity<Object> deactiveUserById();
 
     ResponseEntity<Object> update(UsersRequestDTO requestDTO);
 }

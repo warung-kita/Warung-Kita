@@ -5,8 +5,8 @@ import com.pentagon.warungkita.model.OrderProduct;
 import com.pentagon.warungkita.model.Users;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -19,7 +19,7 @@ public class OrderResponseDTO {
     private List<OrderProductResponseDTO> orderProductId;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date orderDate;
+    private LocalDate orderDate;
     private String ekspedisiName;
 
     private Number total;

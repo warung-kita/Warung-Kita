@@ -1,31 +1,31 @@
 package com.pentagon.warungkita.service.implement;
 
-import com.pentagon.warungkita.controller.WishlistController;
 import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.*;
-import com.pentagon.warungkita.repository.ProductRepo;
-import com.pentagon.warungkita.repository.WishlistRepo;
+import com.pentagon.warungkita.repository.*;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.*;
 import lombok.AllArgsConstructor;
-import org.apache.logging.log4j.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 
 @Service
 @AllArgsConstructor
 public class WishlistServiceImpl implements WishlistService {
-    private static final Logger logger = LogManager.getLogger(WishlistController.class);
-    @Autowired
+    private static final Logger logger = LogManager.getLogger(WishlistServiceImpl.class);
+
     WishlistRepo wishlistRepo;
-    @Autowired
+
     UsersService usersService;
-    @Autowired
+
     ProductService productService;
     ProductRepo productRepo;
 
@@ -83,7 +83,6 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public ResponseEntity<Object> createWishlist(WishlistRequestDTO wishlistRequestDTO) {
-
         try{
             if(wishlistRequestDTO.getProduct().getProductId() == null ){
                 throw new ResourceNotFoundException("Wishlist must have product id");

@@ -1,14 +1,13 @@
 package com.pentagon.warungkita.service.implement;
 
-import com.pentagon.warungkita.controller.EkspedisiController;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
 import com.pentagon.warungkita.model.Ekspedisi;
 import com.pentagon.warungkita.repository.EkspedisiRepo;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.service.EkspedisiService;
 import lombok.AllArgsConstructor;
-import org.apache.logging.log4j.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,8 +18,8 @@ import java.util.*;
 @AllArgsConstructor
 public class EkspedisiServiceImpl implements EkspedisiService {
 
-    private static final Logger logger = LogManager.getLogger(EkspedisiController.class);
-    @Autowired
+    private static final Logger logger = LogManager.getLogger(EkspedisiServiceImpl.class);
+
     EkspedisiRepo ekspedisiRepo;
 
     @Override

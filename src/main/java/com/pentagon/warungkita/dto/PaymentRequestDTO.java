@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Builder
 public class PaymentRequestDTO {
     private Order order;
-   @CreatedDate
+    @CreatedDate
     private LocalDate tanggalBayar;
     private Integer amount;
     private String nomorRekening;

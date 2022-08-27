@@ -6,6 +6,7 @@ import com.pentagon.warungkita.model.OrderProduct;
 import com.pentagon.warungkita.model.Users;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -15,9 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class OrderRequestDTO {
-    private Long orderId;
+
     private List<OrderProduct> orderProduct;
-    private Date orderDate;
+    private LocalDate orderDate;
     private Ekspedisi ekspedisiId;
     private Integer total;
     private Users userId;
