@@ -7,7 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -23,7 +23,7 @@ public class Order {
     private Long orderId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreationTimestamp
-    private Date orderDate;
+    private LocalDate orderDate;
     @ManyToOne
     @JoinColumn(name = "ekspedisi_id")
     private Ekspedisi ekspedisiId;

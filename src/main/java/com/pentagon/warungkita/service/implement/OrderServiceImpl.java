@@ -1,18 +1,9 @@
 package com.pentagon.warungkita.service.implement;
 
-import com.pentagon.warungkita.controller.OrderController;
-import com.pentagon.warungkita.dto.OrderRequestDTO;
-import com.pentagon.warungkita.dto.OrderResponseDTO;
-import com.pentagon.warungkita.dto.OrderResponsePOST;
-import com.pentagon.warungkita.dto.WishlistResponseDTO;
+import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Order;
-import com.pentagon.warungkita.model.OrderProduct;
-import com.pentagon.warungkita.model.Users;
-import com.pentagon.warungkita.model.Wishlist;
-import com.pentagon.warungkita.repository.OrderProductRepo;
-import com.pentagon.warungkita.repository.OrderRepo;
-import com.pentagon.warungkita.repository.UsersRepo;
+import com.pentagon.warungkita.model.*;
+import com.pentagon.warungkita.repository.*;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
 import com.pentagon.warungkita.service.OrderService;
@@ -26,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -36,7 +28,7 @@ public class OrderServiceImpl implements OrderService {
     OrderRepo orderRepo;
     UsersRepo usersRepo;
     OrderProductRepo orderProductRepo;
-    private static final Logger logger = LogManager.getLogger(OrderController.class);
+    private static final Logger logger = LogManager.getLogger(OrderServiceImpl.class);
 
     @Override
     public ResponseEntity<Object> getAll() {
@@ -139,15 +131,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseEntity<Object> updateOrder(OrderRequestDTO orderRequestDTO, Long Id) {
-        Optional<Order> updatedOrder = this.orderRepo.findById(orderRequestDTO.getOrderId());
-        if (updatedOrder.isEmpty()) {
-            throw new ResourceNotFoundException("Order not found with id " + orderRequestDTO.getOrderId());
-        }
+    public ResponseEntity<Object> updateOrder(OrderRequestDTO orderRequestDTO, Long orderId) {
         try {
+            Optional<Order> updatedOrder = orderRepo.findById(orderId);
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Optional <Users> users = usersRepo.findById(userDetails.getUserId());
-
+            if (updatedOrder.isEmpty()) {
+                throw new ResourceNotFoundException("Order not found with id " + orderId);
+            }
+            if(!updatedOrder.get().getUserId().getUsername().equals(userDetails.getUsername())){
+                throw new ResourceNotFoundException("You only can update your order");
+            }
             List<Integer> subtotal = new ArrayList<>();
             orderRequestDTO.getOrderProduct().forEach(orderProductId -> {
                 OrderProduct orderProduct = orderProductRepo.findById(orderProductId.getOrderProductId()).orElseThrow(() -> new ResourceNotFoundException("not found"));
@@ -156,14 +150,17 @@ public class OrderServiceImpl implements OrderService {
 
             Integer total = subtotal.stream().mapToInt(map -> map.intValue()).sum();
             Order order = Order.builder()
+
                     .orderProduct(orderRequestDTO.getOrderProduct())
                     .orderDate(orderRequestDTO.getOrderDate())
                     .ekspedisiId(orderRequestDTO.getEkspedisiId())
                     .total(total.intValue())
                     .userId(users.get())
                     .build();
+            order.setOrderDate(LocalDate.now());
+            order.setOrderId(orderId);
             Order responseUpdate = orderRepo.save(order);
-            OrderResponseDTO responseDTO = responseUpdate.convertToResponse();
+            OrderResponsePOST responseDTO = responseUpdate.convertToResponsePOST();
             logger.info("==================== Logger Start Update Order Product By ID ====================");
             logger.info(responseDTO);
             logger.info("==================== Logger End Update Order Product By ID =================");

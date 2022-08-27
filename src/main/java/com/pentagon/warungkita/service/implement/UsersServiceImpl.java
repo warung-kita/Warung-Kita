@@ -1,6 +1,5 @@
 package com.pentagon.warungkita.service.implement;
 
-import com.pentagon.warungkita.controller.UsersController;
 import com.pentagon.warungkita.dto.PassworRequest;
 import com.pentagon.warungkita.dto.UsersRequestDTO;
 import com.pentagon.warungkita.dto.UsersResponseDTO;
@@ -35,7 +34,7 @@ public class UsersServiceImpl implements UsersService {
     private final UsersRepo usersRepo;
     private final RolesRepo rolesRepo;
     private final PasswordEncoder passwordEncoder;
-    private static final Logger logger = LogManager.getLogger(UsersController.class);
+    private static final Logger logger = LogManager.getLogger(UsersServiceImpl.class);
 
     @Override
     public Users findById(Long users_Id) {
@@ -119,8 +118,8 @@ public class UsersServiceImpl implements UsersService {
         if(optionalUser.isEmpty()){
             throw new ResourceNotFoundException("User not exist with id :" + users.getUserId());
         }
-        users.setActive(true);
-        users.setPassword(passwordEncoder.encode(users.getPassword()));
+
+
         return this.usersRepo.save(users);
     }
 
@@ -228,8 +227,9 @@ public class UsersServiceImpl implements UsersService {
             users.setUsername(userDetails.getUsername());
             users.setFullName(user1.get().getFullName());
             users.setRoles(user1.get().getRoles());
+            users.setActive(true);
 
-            Users updateUsers = this.updateUser(users);
+            Users updateUsers = usersRepo.save(users);
             UsersResponseDTO result = updateUsers.convertToResponse();
             logger.info("==================== Logger Start Update User By ID ====================");
             logger.info(result);
@@ -256,7 +256,7 @@ public class UsersServiceImpl implements UsersService {
             roles.add(role2);
             users.setRoles(roles);
             users.setActive(true);
-            Users updateUsers = this.updateUser(users);
+            Users updateUsers = usersRepo.save(users);
             UsersResponseDTO result = updateUsers.convertToResponse();
             logger.info("==================== Logger Start Update User By ID ====================");
             logger.info(result);
@@ -294,19 +294,44 @@ public class UsersServiceImpl implements UsersService {
     public ResponseEntity<Object> update(UsersRequestDTO requestDTO) {
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional<Users> optionalUser = usersRepo.findById(userDetails.getUserId());
             Users users = requestDTO.convertToEntity();
             users.setUserId(userDetails.getUserId());
-            Users updateUsers = this.updateUser(users);
+            users.setRoles(optionalUser.get().getRoles());
+            users.setPassword(userDetails.getPassword());
+            users.setActive(true);
+            Users updateUsers = usersRepo.save(users);
             UsersResponseDTO result = updateUsers.convertToResponse();
             logger.info("==================== Logger Start Update User By ID ====================");
             logger.info(result);
             logger.info("==================== Logger End Update User By ID =================");
-            return ResponseHandler.generateResponse("Successfully Updated User!",HttpStatus.OK, result);
+            return ResponseHandler.generateResponse("Successfully Updated User. If you change username, please login again.",HttpStatus.OK, result);
         }catch(Exception e){
             logger.error("------------------------------------");
             logger.error(e.getMessage());
             logger.error("------------------------------------");
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Bad Request!!");
+        }
+    }
+
+    @Override
+    public ResponseEntity<Object> deactiveUserById() {
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Users users = usersRepo.getReferenceById(userDetails.getUserId());
+            users.setActive(false);
+            Map<String, Boolean> response = new HashMap<>();
+            usersRepo.save(users);
+            response.put("Delete Status", Boolean.TRUE);
+            logger.info("==================== Logger Start Hard Delete User By ID ====================");
+            logger.info(response);
+            logger.info("==================== Logger End Hard Delete User By ID =================");
+            return ResponseHandler.generateResponse("Successfully Delete User! ", HttpStatus.OK, response);
+        } catch (ResourceNotFoundException e){
+            logger.error("------------------------------------");
+            logger.error(e.getMessage());
+            logger.error("------------------------------------");
+            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!" );
         }
     }
 }

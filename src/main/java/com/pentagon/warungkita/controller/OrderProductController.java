@@ -54,9 +54,9 @@ public class OrderProductController {
         return orderProductService.updateOrderProduct(orderProductId, orderProductRequestDTO);
     }
 
-    @Operation(summary = "Delete Order Product by Id (ADMIN, BUYER)")
+    @Operation(summary = "Delete Order Product by Id (ADMIN)")
     @DeleteMapping("/delete/order-products/{orderProductId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_BUYER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Object> deleteOrderProduct(@PathVariable Long orderProductId){
         return orderProductService.deleteOrderProduct(orderProductId);
     }

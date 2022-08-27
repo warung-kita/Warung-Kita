@@ -1,19 +1,12 @@
 package com.pentagon.warungkita.service.implement;
 
-import com.pentagon.warungkita.dto.ProductRequestDTO;
-import com.pentagon.warungkita.dto.ProductResponseDTO;
-import com.pentagon.warungkita.dto.ProductResponsePOST;
+import com.pentagon.warungkita.dto.*;
 import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Categories;
-import com.pentagon.warungkita.model.Photo;
-import com.pentagon.warungkita.model.Product;
-import com.pentagon.warungkita.model.Users;
-import com.pentagon.warungkita.repository.CategoriesRepo;
-import com.pentagon.warungkita.repository.ProductRepo;
+import com.pentagon.warungkita.model.*;
+import com.pentagon.warungkita.repository.*;
 import com.pentagon.warungkita.response.ResponseHandler;
 import com.pentagon.warungkita.security.service.UserDetailsImpl;
-import com.pentagon.warungkita.service.ProductService;
-import com.pentagon.warungkita.service.UsersService;
+import com.pentagon.warungkita.service.*;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,13 +17,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
-    private final CategoriesRepo categoriesRepo;
+
+    UsersRepo usersRepo;
+    ProductStatusRepo productStatusRepo;
     private final UsersService usersService;
     private static final Logger logger = LogManager.getLogger(ProductServiceImpl.class);
 
@@ -112,12 +108,12 @@ public class ProductServiceImpl implements ProductService {
         try{
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Optional <Users> users = usersService.getUserById(userDetails.getUserId());
-
-            /*
+            Optional<ProductStatus> productStatus = productStatusRepo.findById(1L);
+            /**
              * Logic to complete fill all field request
              * */
             if(productRequestDTO.getProductName().isEmpty() && productRequestDTO.getCategories().isEmpty() && productRequestDTO.getQuantity() != null
-                    && productRequestDTO.getSku().isEmpty() && productRequestDTO.getProductStatusId() != null && productRequestDTO.getRegularPrice() != null){
+                    && productRequestDTO.getSku().isEmpty() && productRequestDTO.getRegularPrice() != null){
                 throw new ResourceNotFoundException("Please Input All Field");
             }
 
@@ -128,11 +124,15 @@ public class ProductServiceImpl implements ProductService {
                     .description(productRequestDTO.getDescription())
                     .regularPrice(productRequestDTO.getRegularPrice())
                     .quantity(productRequestDTO.getQuantity())
-                    .productStatusId(productRequestDTO.getProductStatusId())
+
                     .productPicture(productRequestDTO.getProductPicture())
                     .users(users.get())
                     .build();
-
+            if(productRequestDTO.getQuantity()>0){
+                product.setProductStatusId(productStatus.get());
+            }else if(productRequestDTO.getQuantity() == 0){
+                throw new ResourceNotFoundException("Quantity can't be 0");
+            }
 
             List<Product> products = productRepo.findByUsersUserId(userDetails.getUserId());
             List<Photo> photos = productRequestDTO.getProductPicture();
@@ -185,12 +185,21 @@ public class ProductServiceImpl implements ProductService {
     public ResponseEntity<Object> updateProduct(Long productId, ProductRequestDTO productRequestDTO) throws ResourceNotFoundException {
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Optional <Users> users = usersService.getUserById(userDetails.getUserId());
+            Optional <Users> users = usersRepo.findById(userDetails.getUserId());
+            Optional <Product> product1 = productRepo.findById(productId);
+            Optional<ProductStatus> productStatus = productStatusRepo.findById(1L);
+            if(product1.isEmpty()){
+                throw new ResourceNotFoundException("Product not found");
+            }
 
-            if(productRequestDTO.getProductName().isEmpty() && productRequestDTO.getCategories().isEmpty() && productRequestDTO.getQuantity() != null
-                    && productRequestDTO.getSku().isEmpty() && productRequestDTO.getProductStatusId() != null && productRequestDTO.getRegularPrice() != null){
+            if(productRequestDTO.getProductName().isEmpty() || productRequestDTO.getCategories().isEmpty() || productRequestDTO.getQuantity() == null
+                    || productRequestDTO.getSku().isEmpty() || productRequestDTO.getRegularPrice() == null){
                 throw new ResourceNotFoundException("Please Input All Field");
             }
+            if(!product1.get().getUsers().getUserId().equals(userDetails.getUserId())){
+                throw new ResourceNotFoundException("You only can update your product");
+            }
+
 
             Product product = Product.builder()
                     .sku(productRequestDTO.getSku())
@@ -199,11 +208,14 @@ public class ProductServiceImpl implements ProductService {
                     .description(productRequestDTO.getDescription())
                     .regularPrice(productRequestDTO.getRegularPrice())
                     .quantity(productRequestDTO.getQuantity())
-                    .productStatusId(productRequestDTO.getProductStatusId())
                     .productPicture(productRequestDTO.getProductPicture())
                     .users(users.get())
                     .build();
-
+            if(productRequestDTO.getQuantity()==0){
+                throw new ResourceNotFoundException("Quantity can't be 0");
+            }else if(productRequestDTO.getQuantity()>0){
+                product.setProductStatusId(productStatus.get());
+            }
 
             List<Product> products = productRepo.findByUsersUserId(userDetails.getUserId());
             List<Photo> photos = productRequestDTO.getProductPicture();
@@ -246,7 +258,24 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseEntity<Object> deleteProduct(Long productId) throws ResourceNotFoundException{
         try {
-            productRepo.deleteById(productId);
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Product product = productRepo.getReferenceById(productId);
+            Optional <Product> product1 = productRepo.findById(productId);
+            if(product1.isEmpty()){
+                throw new ResourceNotFoundException("Product not found");
+            }
+            if(!Objects.equals(product.getUsers().getUserId(), userDetails.getUserId())){
+                throw new ResourceNotFoundException("You only can deleted your product");
+            }
+            product.setProductId(productId);
+            product.setQuantity(0);
+            product.setSku(product.getSku());
+            product.setProductName(product.getProductName());
+            product.setProductStatusId(product.getProductStatusId());
+            ProductStatus psSoldOut = productStatusRepo.findById(2L).get();
+            product.setProductStatusId(psSoldOut);
+            product.setUsers(product.getUsers());
+            productRepo.save(product);
             Boolean result = Boolean.TRUE;
             logger.info("==================== Logger Start Get Deleted Product     ====================");
             logger.info(result);
@@ -269,7 +298,7 @@ public class ProductServiceImpl implements ProductService {
                 ProductResponseDTO productResponseDTO = dataResult.convertToResponse();
                 productList.add(productResponseDTO);
             }
-            return ResponseHandler.generateResponse("test",HttpStatus.OK,productList);
+            return ResponseHandler.generateResponse("Succes get Product",HttpStatus.OK,productList);
         }catch (ResourceNotFoundException e){
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
@@ -288,7 +317,7 @@ public class ProductServiceImpl implements ProductService {
                 ProductResponseDTO productResponseDTO = dataResult.convertToResponse();
                 productList.add(productResponseDTO);
             }
-            return ResponseHandler.generateResponse("Data Successfully Retrieved",HttpStatus.OK, productList);
+            return ResponseHandler.generateResponse("Succes get Product",HttpStatus.OK, productList);
         }catch (ResourceNotFoundException e){
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
@@ -305,7 +334,26 @@ public class ProductServiceImpl implements ProductService {
                 ProductResponseDTO productResponseDTO = dataResult.convertToResponse();
                 productList.add(productResponseDTO);
             }
-            return ResponseHandler.generateResponse("Data Successfully Retrieved",HttpStatus.OK, productList);
+            return ResponseHandler.generateResponse("Succes get Product",HttpStatus.OK, productList);
+        }catch (ResourceNotFoundException e){
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
+        }
+    }
+
+    @Override
+    public ResponseEntity<Object> findBySellerProduct() {
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            List<Product> products = productRepo.findByUsersUsernameContaining(userDetails.getUsername());
+            if(products.isEmpty()){
+                throw new ResourceNotFoundException("Seller haven't product to sell");
+            }
+            List<ProductResponseDTO> productList = new ArrayList<>();
+            for(Product dataResult:products) {
+                ProductResponseDTO productResponseDTO = dataResult.convertToResponse();
+                productList.add(productResponseDTO);
+            }
+            return ResponseHandler.generateResponse("Succes get Product",HttpStatus.OK, productList);
         }catch (ResourceNotFoundException e){
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }

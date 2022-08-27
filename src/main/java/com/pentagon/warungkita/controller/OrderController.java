@@ -66,7 +66,7 @@ public class OrderController {
      * membuat RequestDTO
      * */
     @Operation(summary = "Update Order (BUYER)")
-    @PutMapping("/update/order")
+    @PutMapping("/update/order/{orderId}")
     @PreAuthorize("hasAuthority('ROLE_BUYER')")
     public ResponseEntity<Object> updateOrder( @PathVariable Long orderId, @RequestBody OrderRequestDTO orderRequestDTO){
         return orderService.updateOrder(orderRequestDTO, orderId);
