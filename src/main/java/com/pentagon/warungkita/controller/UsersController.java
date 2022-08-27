@@ -1,102 +1,102 @@
 package com.pentagon.warungkita.controller;
 
+import com.pentagon.warungkita.dto.PassworRequest;
+import com.pentagon.warungkita.dto.PhotoRequestDTO;
 import com.pentagon.warungkita.dto.UsersRequestDTO;
-import com.pentagon.warungkita.dto.UsersResponseDTO;
-import com.pentagon.warungkita.exception.ResourceNotFoundException;
-import com.pentagon.warungkita.model.Users;
-import com.pentagon.warungkita.response.ResponseHandler;
-import com.pentagon.warungkita.service.implement.UsersServiceImpl;
+import com.pentagon.warungkita.service.PhotoProfileService;
+import com.pentagon.warungkita.service.UsersService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
-
+import org.springframework.web.multipart.MultipartFile;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping("/teamD/v1/")
+@RequestMapping("/pentagon/warung-kita")
+@SecurityRequirement(name = "bearer-key")
+@Tag(name = "02.Users")
 public class UsersController {
 
-    private final UsersServiceImpl usersServiceImpl;
+    @Autowired
+    UsersService usersService;
+    private final PhotoProfileService photoProfileService;
 
-    @GetMapping("/users")
+    @Operation(summary = "Upload Photo Profile (ADMIN, BUYER, SELLER)")
+    @PostMapping(value = "/photo/add/profile",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> createPhoto(@RequestPart PhotoRequestDTO photoRequestDTO, @RequestParam("file") MultipartFile multipartFile){
+
+        return this.photoProfileService.createPhoto(photoRequestDTO, multipartFile);
+    }
+
+    @Operation(summary = "View all User (ADMIN)")
+    @GetMapping("/users/all")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity <Object> getAll() {
-        try {
-            List<Users> result = usersServiceImpl.getAll();
-            List<UsersResponseDTO> usersResponseDTOList = new ArrayList<>();
-            for (Users dataresult:result){
-                UsersResponseDTO usersResponseDTO = dataresult.convertToResponse();
-                usersResponseDTOList.add(usersResponseDTO);
-            }
-            return ResponseHandler.generateResponse("Successfully Get All User!", HttpStatus.OK, usersResponseDTOList);
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.MULTI_STATUS, "Table Has No Value!");
-        }
+        return usersService.getAll();
     }
 
+    @Operation(summary = "View User Details (ADMIN, BUYER, SELLER)")
+    @GetMapping("/users/user_details")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> getUserById() {
+        return usersService.userDetail();
+    }
+
+    @Operation(summary = "Complete User Details (BUYER, SELLER)")
+    @PutMapping("/users/complete_profile")
+    @PreAuthorize("hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> completeProfile(@RequestBody UsersRequestDTO usersRequestDTO){
+        return usersService.completeUsers(usersRequestDTO);
+    }
+
+    @Operation(summary = "Deactive Users (ADMIN)")
+    @DeleteMapping("/users/delete_user/{users_Id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> deactiveUser(@PathVariable Long users_Id){
+       return usersService.deleteUserById(users_Id);
+    }
+
+    @Operation(summary = "Update User Details (ADMIN, BUYER, SELLER)")
+    @PutMapping("/users")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> updateUser(@RequestBody UsersRequestDTO usersRequestDTO){
+        return usersService.update(usersRequestDTO);
+    }
+
+    @Operation(summary = "Update User to Seller (BUYER)")
+    @PutMapping("/become_seller")
+    @PreAuthorize("hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> becomeSeller() {
+        return usersService.becameSeller();
+    }
+
+    @Operation(summary = "Create new user (ADMIN)")
     @PostMapping("/users")
-    public ResponseEntity <Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
-        try {
-            Users users = usersRequestDTO.convertToEntity();
-            usersServiceImpl.createUser(users);
-            UsersResponseDTO userResult = users.convertToResponse();
-            return ResponseHandler.generateResponse("Successfully Created User!", HttpStatus.CREATED, userResult);
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, "User Already Exist!");
-        }
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> createUser(@RequestBody UsersRequestDTO usersRequestDTO) {
+        return this.usersService.createUser(usersRequestDTO);
     }
 
-    @GetMapping("/users/{users_Id}")
-    public ResponseEntity<Object> getUserById(@PathVariable Long users_Id) {
-        try {
-            Optional<Users> users = usersServiceImpl.getUserById(users_Id);
-            Users userResult = users.get();
-            UsersResponseDTO result = userResult.convertToResponse();
-            return ResponseHandler.generateResponse("Successfully Get User By ID!", HttpStatus.OK, result);
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!" );
-        }
+    @Operation(summary = "Change Password (ADMIN, BUYER, SELLER)")
+    @PutMapping("/users/change_password")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> changePassword(@RequestBody PassworRequest request){
+        return usersService.changePassword(request);
     }
 
-    @PutMapping("/users/{users_Id}")
-    public ResponseEntity<Object> updateUser(@PathVariable Long users_Id, @RequestBody UsersRequestDTO usersRequestDTO){
-        try {
-            if(usersRequestDTO.getUserId() == null){
-                throw new ResourceNotFoundException("User not exist");
-            }
-            Users users = usersRequestDTO.convertToEntity();
-            users.setUserId(users_Id);
-            Users updateUsers = usersServiceImpl.updateUser(users);
-            UsersResponseDTO result = updateUsers.convertToResponse();
-//            Users user = usersServiceImpl.getUserById(users_Id)
-//                    .orElseThrow(() -> new ResourceNotFoundException("User not exist with user_Id :" + users_Id));
-//
-//            user.setUsername(userDetails.getUsername());
-//            user.setFullName(userDetails.getFullName());
-//            user.setEmail(userDetails.getEmail());
-//            user.setPassword(userDetails.getPassword());
-//            user.setAddress(userDetails.getAddress());
-//            user.setPhoneNum(userDetails.getPhoneNum());
-//            Users updatedUser = usersServiceImpl.updateUser(user);
-
-            return ResponseHandler.generateResponse("Successfully Updated User!",HttpStatus.OK, result);
-        }catch(Exception e){
-            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data Not Found!");
-        }
-    }
-
-    @DeleteMapping("/users/{users_Id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable Long users_Id){
-        try {
-            usersServiceImpl.deleteUserById(users_Id);
-            Map<String, Boolean> response = new HashMap<>();
-            response.put("hard deleted", Boolean.TRUE);
-            return ResponseHandler.generateResponse("Successfully Delete User! ", HttpStatus.OK, response);
-        } catch (ResourceNotFoundException e){
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.NOT_FOUND, "Data Not Found!" );
-        }
+    @Operation(summary = "Deactive Users (ADMIN, BUYER, SELLER)")
+    @DeleteMapping("/users/deactive_user")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')or hasAuthority('ROLE_SELLER')or hasAuthority('ROLE_BUYER')")
+    public ResponseEntity<Object> deactiveUserLogin(){
+        return usersService.deactiveUserById();
     }
 }

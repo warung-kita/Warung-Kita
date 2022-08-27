@@ -1,5 +1,7 @@
 package com.pentagon.warungkita.dto;
 
+import com.pentagon.warungkita.model.Photo;
+import com.pentagon.warungkita.model.PhotoProfile;
 import com.pentagon.warungkita.model.Roles;
 import lombok.*;
 
@@ -12,30 +14,26 @@ import java.util.List;
 @Builder
 public class UsersResponseDTO {
 
-    private List<Roles> role;
-    private Long id_akun;
-    private String nama_lengkap;
-    private String nama;
+    private List<Roles> roles;
+    private String fullName;
     private String email;
-    private String alamat;
-    private String sandi;
-    private String nomor_tlp;
-    private String foto;
-    private boolean status;
+    private String username;
+    private String address;
+
+    private PhotoProfile profilPicture;
+
+    private String phoneNum;
 
     @Override
     public String toString() {
         return "UsersResponseDTO{" +
-                "role=" + role +
-                ", id_akun=" + id_akun +
-                ", nama_lengkap='" + nama_lengkap + '\'' +
-                ", nama='" + nama + '\'' +
+                "roles=" + roles +
+                ", fullName='" + fullName + '\'' +
                 ", email='" + email + '\'' +
-                ", alamat='" + alamat + '\'' +
-                ", sandi='" + sandi + '\'' +
-                ", nomor_tlp='" + nomor_tlp + '\'' +
-                ", foto='" + foto + '\'' +
-                ", status=" + status +
+                ", username='" + username + '\'' +
+                ", address='" + address + '\'' +
+                ", profilPicture='" + profilPicture + '\'' +
+                ", phoneNum='" + phoneNum + '\'' +
                 '}';
     }
 }

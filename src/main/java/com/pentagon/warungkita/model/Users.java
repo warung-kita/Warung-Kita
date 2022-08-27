@@ -1,15 +1,12 @@
 package com.pentagon.warungkita.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pentagon.warungkita.dto.UsersResponseDTO;
+import com.pentagon.warungkita.dto.UsersResponsePOST;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import static javax.persistence.FetchType.EAGER;
-import static javax.persistence.FetchType.LAZY;
 
 @Getter
 @Setter
@@ -18,6 +15,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Builder
 @Table(name = "users")
+@Data
 public class Users {
 
     @Id
@@ -28,27 +26,49 @@ public class Users {
     private String username;
     private String password;
     private String address;
-    private String profilPicture;
+    @OneToOne
+
+    @JoinColumn(name = "photo_id")
+    private PhotoProfile profilPicture;
+
     private String phoneNum;
     private boolean active;
+
+
+    @JsonIgnore
     @ManyToMany
-    @JoinTable(name = "users_roles",
+    @JoinTable(name = "user_roles",
     joinColumns = @JoinColumn (name = "user_id"),
     inverseJoinColumns = @JoinColumn (name = "role_id" ))
-
     private List<Roles> roles;
+
+    public Users(String username) {
+        this.username = username;
+    }
+
+    public Users(String fullName, String username, String email, String password) {
+        this.fullName = fullName;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 
     public UsersResponseDTO convertToResponse(){
         return UsersResponseDTO.builder()
-                .role(this.getRoles())
-                .id_akun(this.userId)
-                .nama_lengkap(this.fullName)
-                .nama(this.username)
-                .alamat(this.address)
-                .sandi(this.password)
-                .nomor_tlp(this.phoneNum)
-                .foto(this.profilPicture)
-                .status(this.active)
+                .roles(this.roles)
+                .fullName(this.fullName)
+                .username(this.username)
+                .email(this.email)
+                .address(this.address)
+                .phoneNum(this.phoneNum)
+                .profilPicture(this.getProfilPicture())
+                .build();
+    }
+
+    public UsersResponsePOST convertToResponsePOST(){
+        return UsersResponsePOST.builder()
+                .email(this.email)
+                .username(this.username)
                 .build();
     }
 

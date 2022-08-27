@@ -1,10 +1,10 @@
 package com.pentagon.warungkita.model;
 
+import com.pentagon.warungkita.dto.OrderProductResponseDTO;
+import com.pentagon.warungkita.dto.OrderProductResponsePOST;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -12,37 +12,45 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "order_product")
+@Table(name = "order_products")
 public class OrderProduct {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderProductId;
-
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order orderId;
-
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private Product products;
-
-    private String sku;
-    private String productName;
-    private String description;
-    private Number price;
+    private Product productId;
     private Integer quantity;
-    private Number subtotal;
+    private Integer subtotal;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Users userId;
+
+
+    public OrderProductResponseDTO convertToResponse(){
+        return OrderProductResponseDTO.builder()
+                .orderProductId(this.orderProductId)
+                .productId(this.productId.getProductId())
+                .quantity(this.quantity)
+                .subtotal(this.subtotal)
+                .user(this.userId.convertToResponsePOST())
+                .build();
+    }
+
+    public OrderProductResponsePOST convertToResponsePOST(){
+        return OrderProductResponsePOST.builder()
+                .productId(this.productId.getProductId())
+                .quantity(this.quantity)
+                .subtotal(this.subtotal)
+                .build();
+    }
 
     @Override
     public String toString() {
         return "OrderProduct{" +
                 "orderProductId=" + orderProductId +
-                ", orderId=" + orderId +
-                ", products=" + products +
-                ", sku='" + sku + '\'' +
-                ", productName='" + productName + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
+                ", productId=" + productId +
                 ", quantity=" + quantity +
                 ", subtotal=" + subtotal +
                 '}';
