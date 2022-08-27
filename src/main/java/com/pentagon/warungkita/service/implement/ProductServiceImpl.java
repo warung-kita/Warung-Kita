@@ -319,4 +319,23 @@ public class ProductServiceImpl implements ProductService {
             return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
         }
     }
+
+    @Override
+    public ResponseEntity<Object> findBySellerProduct() {
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            List<Product> products = productRepo.findByUsersUsernameContaining(userDetails.getUsername());
+            if(products.isEmpty()){
+                throw new ResourceNotFoundException("Seller haven't product to sell");
+            }
+            List<ProductResponseDTO> productList = new ArrayList<>();
+            for(Product dataResult:products) {
+                ProductResponseDTO productResponseDTO = dataResult.convertToResponse();
+                productList.add(productResponseDTO);
+            }
+            return ResponseHandler.generateResponse("Succes get Product",HttpStatus.OK, productList);
+        }catch (ResourceNotFoundException e){
+            return ResponseHandler.generateResponse(e.getMessage(),HttpStatus.NOT_FOUND,"Data not found");
+        }
+    }
 }

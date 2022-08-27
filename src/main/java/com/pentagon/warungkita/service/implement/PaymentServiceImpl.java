@@ -92,9 +92,9 @@ public class PaymentServiceImpl implements PaymentService {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Payment payment = paymentRequestDTO.convertToEntity();
             Optional <Order> order = orderRepo.findById(paymentRequestDTO.getOrder().getOrderId());
-            Optional<Payment> done = paymentRepo.findByOrderOrderId(paymentRequestDTO.getOrder().getOrderId());
+            List<Payment> done = paymentRepo.findByOrderOrderId(paymentRequestDTO.getOrder().getOrderId());
             if(!done.isEmpty()){
-               throw new ResourceNotFoundException("Your Order is on proses or DONE, please update your payment with payment ID " + done.get().getPaymentId());
+               throw new ResourceNotFoundException("Your Order Id is wrong or on process, please check and update your payment" );
             }
             if(order.get().getUserId().getUserId() != userDetails.getUserId()){
                 throw new ResourceNotFoundException("You just can pay your order");
@@ -122,7 +122,7 @@ public class PaymentServiceImpl implements PaymentService {
                     payment.setActive(true);
                     paymentRepo.save(payment);
                     PaymentResponseDTO result = payment.convertToResponse();
-                    return ResponseHandler.generateResponse("Your Amount is not enough", HttpStatus.BAD_GATEWAY,result);
+                    return ResponseHandler.generateResponse("Your Amount is not match", HttpStatus.BAD_GATEWAY,result);
                 }
 
             paymentRepo.save(payment);
@@ -166,20 +166,27 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public ResponseEntity<Object> updatePayment(Long id, PaymentRequestDTO paymentRequestDTO)throws ResourceNotFoundException {
-        Payment optionalPayment = paymentRepo.getReferenceById(id);
-        if(optionalPayment == null){
-            throw new ResourceNotFoundException("Payment not exist with id " + id);
-        }
         try {
+            Optional<Payment> opPayment = paymentRepo.findById(id);
+            Payment optionalPayment = paymentRepo.getReferenceById(id);
+            Optional <Order> order = orderRepo.findById(paymentRequestDTO.getOrder().getOrderId());
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if(opPayment.isEmpty()){
+                throw new ResourceNotFoundException("Payment not exist with id " + id);
+            }
+
             if(paymentRequestDTO.getOrder() == null ){
                 throw new ResourceNotFoundException("Payment must have order id");
             }
-            if(optionalPayment.isActive() == false){
+
+            if(!Objects.equals(optionalPayment.getOrder().getUserId().getUserId(), userDetails.getUserId())){
+                throw new ResourceNotFoundException("You just can update your order");
+            }
+            if(!optionalPayment.isActive()){
                 throw new ResourceNotFoundException("Payment is DONE");
             }
 
             Payment payment = paymentRequestDTO.convertToEntity();
-            Optional <Order> order = orderRepo.findById(paymentRequestDTO.getOrder().getOrderId());
             Integer amount = paymentRequestDTO.getAmount();
             if(paymentRequestDTO.getNamaBank() == BANK_SYARIAH_INDONESIA){
                 payment.setCcNum("023143213");
@@ -198,12 +205,13 @@ public class PaymentServiceImpl implements PaymentService {
             if(order.get().getTotal().equals(amount)){
                 payment.setResponse(PAYMENT_SUCCES);
             } else {
+                payment.setDatePay(LocalDate.now());
                 payment.setResponse(WAITING);
                 payment.setActive(true);
                 payment.setPaymentId(id);
                 paymentRepo.save(payment);
                 PaymentResponseDTO result = payment.convertToResponse();
-                return ResponseHandler.generateResponse("Your Amount is not enough", HttpStatus.BAD_GATEWAY,result);
+                return ResponseHandler.generateResponse("Your Amount is not match", HttpStatus.BAD_GATEWAY,result);
             }
             payment.setDatePay(LocalDate.now());
             payment.setPaymentId(id);

@@ -136,4 +136,11 @@ public class ProductController {
         return productService.findByCategories(category);
     }
 
+    @Operation(summary = "View Own Product(SELLER)")
+    @GetMapping("/product/own")
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
+    public ResponseEntity<Object> findOwnProduct(){
+        return productService.findBySellerProduct();
+    }
+
 }
