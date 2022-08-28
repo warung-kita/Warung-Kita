@@ -101,8 +101,8 @@ public class OrderProductImpl implements OrderProductService {
             if(product1.get().getUsers().getUserId().equals(userDetails.getUserId()) ){
                 throw new ResourceNotFoundException("Can't add your own product");
             }
-            if(orderProductRequestDTO.getQuantity()==0){
-                throw new ResourceNotFoundException("Quantity can't 0");
+            if(orderProductRequestDTO.getQuantity()<=0){
+                throw new ResourceNotFoundException("qty can't 0 or negative");
             }
 
 

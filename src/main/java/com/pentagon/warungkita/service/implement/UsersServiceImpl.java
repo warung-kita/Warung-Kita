@@ -281,7 +281,7 @@ public class UsersServiceImpl implements UsersService {
             logger.info("==================== Logger Start Get User By ID ====================");
             logger.info(result);
             logger.info("==================== Logger End Get User By ID =================");
-            return ResponseHandler.generateResponse("Successfully Get User By ID!", HttpStatus.OK, result);
+            return ResponseHandler.generateResponse("Successfully Get User Detail", HttpStatus.OK, result);
         } catch (Exception e) {
             logger.error("------------------------------------");
             logger.error(e.getMessage());
